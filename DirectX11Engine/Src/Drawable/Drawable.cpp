@@ -1,8 +1,36 @@
 #include "Drawable.h"
 #include "..\Bindable\Bindable.h"
 #include "..\Bindable\IndexBuffer.h"
+#include "..\Bindable\VertexBuffer.h"
+#include "..\Bindable\Topology.h"
 #include <cassert>
 #include <typeinfo>
+
+void Drawable::AddTechnique(Technique technique) noexcept
+{
+	technique.InitializeParentReferences(*this);
+	techniques.push_back(std::move(technique));
+}
+
+void Drawable::Submit(class FrameCommander& frame) const noexcept
+{
+	for (const Technique& technique : techniques)
+	{
+		technique.Submit(frame, *this);
+	}
+}
+
+void Drawable::Bind(Graphics& gfx) const noexcept
+{
+	pTopo->Bind(gfx);
+	pVertices->Bind(gfx);
+	pIndices->Bind(gfx);
+}
+
+UINT Drawable::GetIndexCount() const noexcept
+{
+	return pIndices->GetCount();
+}
 
 void Drawable::Draw(Graphics& gfx) const noexcept
 {
@@ -11,7 +39,7 @@ void Drawable::Draw(Graphics& gfx) const noexcept
 		b->Bind(gfx);
 	}
 
-	gfx.DrawIndex(pIndexBuffer->GetCount());
+	gfx.DrawIndexed(pIndexBuffer->GetCount());
 }
 
 void Drawable::AddBind(std::shared_ptr<Bindable> bind) noexcept

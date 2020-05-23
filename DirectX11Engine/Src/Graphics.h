@@ -32,7 +32,7 @@ public:
 	~Graphics() = default;
 	void EndFrame();
 	void ClearBuffer(float r, float g, float b) noexcept;
-	void DrawIndex(UINT indexCount)noexcept;
+	void DrawIndexed(UINT indexCount)noexcept;
 	void SetProjection(DirectX::FXMMATRIX proj) noexcept;
 	DirectX::XMMATRIX GetProjection() const noexcept;
 	void SetCamera(DirectX::FXMMATRIX cam) noexcept;

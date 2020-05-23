@@ -110,7 +110,7 @@ void Graphics::ClearBuffer(float r, float g, float b) noexcept
 	pContext->ClearDepthStencilView(pDSV.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
-void Graphics::DrawIndex(UINT indexCount) noexcept
+void Graphics::DrawIndexed(UINT indexCount) noexcept
 {
 	pContext->DrawIndexed(indexCount, 0, 0);
 }

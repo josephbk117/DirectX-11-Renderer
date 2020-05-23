@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\RenderJob\RenderPass.cpp" />
+    <ClCompile Include="Src\RenderJob\RenderJob.cpp" />
+    <ClCompile Include="Src\RenderJob\RenderStep.cpp" />
     <ClCompile Include="Src\Bindable\Rasterizer.cpp" />
     <ClCompile Include="Src\Bindable\BlendOperation.cpp" />
     <ClCompile Include="Src\Camera.cpp" />
@@ -52,13 +55,18 @@
     <ClCompile Include="Src\Bindable\Texture.cpp" />
     <ClCompile Include="Src\Bindable\TransformCBufferEx.cpp" />
     <ClCompile Include="Src\Bindable\StencilOperation.cpp" />
+    <ClCompile Include="Src\RenderJob\Technique.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\RenderJob\RenderPass.h" />
+    <ClInclude Include="Src\RenderJob\RenderJob.h" />
+    <ClInclude Include="Src\RenderJob\RenderStep.h" />
     <ClInclude Include="Src\Bindable\Rasterizer.h" />
     <ClInclude Include="Src\Bindable\BlendOperation.h" />
     <ClInclude Include="Src\Bindable\BindableCodex.h" />
     <ClInclude Include="Src\Camera.h" />
     <ClInclude Include="Src\Drawable\Model.h" />
+    <ClInclude Include="Src\RenderJob\FrameCommander.h" />
     <ClInclude Include="Src\Utilities\EngineUtilities.h" />
     <ClInclude Include="Src\Imgui\ImguiManager.h" />
     <ClInclude Include="Src\Bindable\Sampler.h" />
@@ -92,6 +100,7 @@
     <ClInclude Include="Src\Bindable\Texture.h" />
     <ClInclude Include="Src\Bindable\TransformCBufferEx.h" />
     <ClInclude Include="Src\Bindable\StencilOperation.h" />
+    <ClInclude Include="Src\RenderJob\Technique.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\OutlineVertexShader.hlsl">
