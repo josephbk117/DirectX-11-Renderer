@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Src\Bindable\Rasterizer.cpp" />
+    <ClCompile Include="Src\Bindable\BlendOperation.cpp" />
+    <ClCompile Include="Src\Camera.cpp" />
+    <ClCompile Include="Src\Drawable\Model.cpp" />
+    <ClCompile Include="Src\Imgui\ImguiManager.cpp" />
+    <ClCompile Include="Src\Bindable\Sampler.cpp" />
+    <ClCompile Include="Src\Image.cpp" />
+    <ClCompile Include="Src\Drawable\Drawable.cpp" />
+    <ClCompile Include="Src\Bindable\PixelShader.cpp" />
+    <ClCompile Include="Src\Bindable\InputLayout.cpp" />
+    <ClCompile Include="Src\Bindable\IndexBuffer.cpp" />
+    <ClCompile Include="Src\Bindable\Bindable.cpp" />
+    <ClCompile Include="Src\App.cpp" />
+    <ClCompile Include="Src\EngineException.cpp" />
+    <ClCompile Include="Src\EngineTimer.cpp" />
+    <ClCompile Include="Src\Graphics.cpp" />
+    <ClCompile Include="Src\Imgui\imgui.cpp" />
+    <ClCompile Include="Src\Imgui\imgui_demo.cpp" />
+    <ClCompile Include="Src\Imgui\imgui_draw.cpp" />
+    <ClCompile Include="Src\Imgui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="Src\Imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="Src\Imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Src\Keyboard.cpp" />
+    <ClCompile Include="Src\MainApp.cpp" />
+    <ClCompile Include="Src\Mouse.cpp" />
+    <ClCompile Include="Src\Window.cpp" />
+    <ClCompile Include="Src\Bindable\Topology.cpp" />
+    <ClCompile Include="Src\Bindable\VertexBuffer.cpp" />
+    <ClCompile Include="Src\Bindable\VertexShader.cpp" />
+    <ClCompile Include="Src\Bindable\TransformCBuffer.cpp" />
+    <ClCompile Include="Src\Bindable\Texture.cpp" />
+    <ClCompile Include="Src\Bindable\TransformCBufferEx.cpp" />
+    <ClCompile Include="Src\Bindable\StencilOperation.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Src\Bindable\Rasterizer.h" />
+    <ClInclude Include="Src\Bindable\BlendOperation.h" />
+    <ClInclude Include="Src\Bindable\BindableCodex.h" />
+    <ClInclude Include="Src\Camera.h" />
+    <ClInclude Include="Src\Drawable\Model.h" />
+    <ClInclude Include="Src\Utilities\EngineUtilities.h" />
+    <ClInclude Include="Src\Imgui\ImguiManager.h" />
+    <ClInclude Include="Src\Bindable\Sampler.h" />
+    <ClInclude Include="Src\Image.h" />
+    <ClInclude Include="Src\Drawable\Drawable.h" />
+    <ClInclude Include="Src\Bindable\PixelShader.h" />
+    <ClInclude Include="Src\Bindable\InputLayout.h" />
+    <ClInclude Include="Src\Bindable\IndexBuffer.h" />
+    <ClInclude Include="Src\Bindable\Bindable.h" />
+    <ClInclude Include="Src\App.h" />
+    <ClInclude Include="Src\Bindable\ConstantBuffers.h" />
+    <ClInclude Include="Src\EngineException.h" />
+    <ClInclude Include="Src\EngineTimer.h" />
+    <ClInclude Include="Src\GlobalDefines.h" />
+    <ClInclude Include="Src\Graphics.h" />
+    <ClInclude Include="Src\Imgui\imconfig.h" />
+    <ClInclude Include="Src\Imgui\imgui.h" />
+    <ClInclude Include="Src\Imgui\imgui_impl_dx11.h" />
+    <ClInclude Include="Src\Imgui\imgui_impl_win32.h" />
+    <ClInclude Include="Src\Imgui\imgui_internal.h" />
+    <ClInclude Include="Src\Imgui\imstb_rectpack.h" />
+    <ClInclude Include="Src\Imgui\imstb_textedit.h" />
+    <ClInclude Include="Src\Imgui\imstb_truetype.h" />
+    <ClInclude Include="Src\Keyboard.h" />
+    <ClInclude Include="Src\Mouse.h" />
+    <ClInclude Include="Src\Window.h" />
+    <ClInclude Include="Src\Bindable\Topology.h" />
+    <ClInclude Include="Src\Bindable\VertexBuffer.h" />
+    <ClInclude Include="Src\Bindable\VertexShader.h" />
+    <ClInclude Include="Src\Bindable\TransformCBuffer.h" />
+    <ClInclude Include="Src\Bindable\Texture.h" />
+    <ClInclude Include="Src\Bindable\TransformCBufferEx.h" />
+    <ClInclude Include="Src\Bindable\StencilOperation.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shaders\OutlineVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Shaders\PixelShader.hlsl">
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)/Shaders/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)/Shaders/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)/Shaders/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)/Shaders/%(Filename).cso</ObjectFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Shaders\VertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <DisableOptimizations Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DisableOptimizations>
+      <DisableOptimizations Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DisableOptimizations>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)/Shaders/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)/Shaders/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)/Shaders/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)/Shaders/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Models\CubeSet.fbx" />
+    <None Include="Resources\Models\SimpleTestCube.fbx" />
+    <None Include="Resources\Models\Susanne.mtl" />
+    <None Include="Resources\Models\TestScene.fbx" />
+    <None Include="Shaders\LightVectorData.hlsli" />
+    <None Include="Shaders\ShaderOps.hlsli" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\Images\TesterImage1.png" />
+    <Image Include="Resources\Models\nanosuit.obj Textures\arm_dif.png" />
+    <Image Include="Resources\Models\nanosuit.obj Textures\arm_showroom_ddn.png" />
+    <Image Include="Resources\Models\nanosuit.obj Textures\arm_showroom_spec.png" />
+    <Image Include="Resources\Models\nanosuit.obj Textures\body_dif.png" />
+    <Image Include="Resources\Models\nanosuit.obj Textures\body_showroom_ddn.png" />
+    <Image Include="Resources\Models\nanosuit.obj Textures\body_showroom_spec.png" />
+    <Image Include="Resources\Models\nanosuit.obj Textures\glass_ddn.png" />
+    <Image Include="Resources\Models\nanosuit.obj Textures\glass_dif.png" />
+    <Image Include="Resources\Models\nanosuit.obj Textures\hand_dif.png" />
+    <Image Include="Resources\Models\nanosuit.obj Textures\hand_showroom_ddn.png" />
+    <Image Include="Resources\Models\nanosuit.obj Textures\hand_showroom_spec.png" />
+    <Image Include="Resources\Models\nanosuit.obj Textures\helmet_diff.png" />
+    <Image Include="Resources\Models\nanosuit.obj Textures\helmet_showroom_ddn.png" />
+    <Image Include="Resources\Models\nanosuit.obj Textures\helmet_showroom_spec.png" />
+    <Image Include="Resources\Models\nanosuit.obj Textures\leg_dif.png" />
+    <Image Include="Resources\Models\nanosuit.obj Textures\leg_showroom_ddn.png" />
+    <Image Include="Resources\Models\nanosuit.obj Textures\leg_showroom_spec.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\background.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\backgroundBGR.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\background_bump.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\background_ddn.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\chain_texture.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\chain_texture_bump.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\chain_texture_ddn.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\chain_texture_spec.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\gi_flag.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\lion.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\lion2_bump.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\lion2_ddn.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\lion_bump.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\lion_ddn.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\spnza_bricks_a_bump.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\spnza_bricks_a_ddn.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\spnza_bricks_a_diff.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\spnza_bricks_a_spec.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_arch_bump.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_arch_ddn.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_arch_diff.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_arch_spec.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_ceiling_a_diff.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_ceiling_a_spec.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_ceiling_ddn.jpg" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_column_a_bump.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_column_a_ddn.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_column_a_diff.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_column_a_spec.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_column_b_bump.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_column_b_ddn.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_column_b_diff.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_column_b_spec.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_column_c_bump.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_column_c_ddn.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_column_c_diff.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_column_c_spec.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_curtain_blue_diff.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_curtain_blue_diff_spec.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_curtain_ddn.jpg" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_curtain_diff.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_curtain_green_diff.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_details_ddn.jpg" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_details_diff.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_details_spec.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_fabric_blue_diff.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_fabric_ddn.jpg" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_fabric_diff.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_fabric_green_diff.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_fabric_spec.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_flagpole_diff.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_flagpole_diff_NRM.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_flagpole_spec.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_floor_a_diff.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_floor_a_diff_spec.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_floor_ddn.jpg" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_roof_diff.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_roof_diff_NRM.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_thorn_bump.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_thorn_ddn.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_thorn_diff.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_thorn_spec.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\vase_bump.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\vase_ddn.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\vase_dif.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\vase_hanging.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\vase_hanging_NRM.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\vase_plant.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\vase_plant_ddn.jpg" />
+    <Image Include="Resources\Models\sponza.obj Textures\vase_plant_NRM.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\vase_plant_spec.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\vase_round.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\vase_round_bump.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\vase_round_ddn.png" />
+    <Image Include="Resources\Models\sponza.obj Textures\vase_round_spec.png" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{A19356FA-8421-4079-8D14-F35887EDFE9A}</ProjectGuid>
+    <RootNamespace>DirectX11Engine</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>D:\Visual Studio Projects\DirectX11Engine\Includes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalLibraryDirectories>D:\Visual Studio Projects\DirectX11Engine\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>D:\Visual Studio Projects\DirectX11Engine\Includes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalLibraryDirectories>D:\Visual Studio Projects\DirectX11Engine\Libs\Debug;D:\Visual Studio Projects\DirectX11Engine\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc140-mt.lib;DirectXTex.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);NDEBUG</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <AdditionalIncludeDirectories>D:\Visual Studio Projects\DirectX11Engine\Includes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>D:\Visual Studio Projects\DirectX11Engine\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);NDEBUG</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <AdditionalIncludeDirectories>D:\Visual Studio Projects\DirectX11Engine\Includes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>D:\Visual Studio Projects\DirectX11Engine\Libs\Release;D:\Visual Studio Projects\DirectX11Engine\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc140-mt.lib;DirectXTex.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

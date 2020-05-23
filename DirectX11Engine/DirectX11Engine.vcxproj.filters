@@ -1,0 +1,553 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{fc2cc150-b8bc-4a12-9d5c-858c058cbe5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Bindable">
+      <UniqueIdentifier>{2ece58c3-0b2a-44b1-bfa5-23b79b20ec8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Drawable">
+      <UniqueIdentifier>{4255fa55-86d0-40a4-9665-fb9a1c231d26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Bindable">
+      <UniqueIdentifier>{b3e23ff3-e1d5-40be-b3ea-1c124301aa6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Drawable">
+      <UniqueIdentifier>{c695db6a-19cd-41eb-96b2-e126091339d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Imgui">
+      <UniqueIdentifier>{a4bca98e-b341-4b5f-a60b-122e74c8fb75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Imgui">
+      <UniqueIdentifier>{94c19592-d755-4c41-8c72-3bde68fe600c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Src\App.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\EngineException.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\EngineTimer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Keyboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\MainApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Mouse.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Graphics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Drawable\Drawable.cpp">
+      <Filter>Source Files\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Bindable\IndexBuffer.cpp">
+      <Filter>Source Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Bindable\InputLayout.cpp">
+      <Filter>Source Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Bindable\PixelShader.cpp">
+      <Filter>Source Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Bindable\Topology.cpp">
+      <Filter>Source Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Bindable\TransformCBuffer.cpp">
+      <Filter>Source Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Bindable\VertexBuffer.cpp">
+      <Filter>Source Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Bindable\VertexShader.cpp">
+      <Filter>Source Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Bindable\Bindable.cpp">
+      <Filter>Source Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Bindable\Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Bindable\Sampler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Imgui\imgui.cpp">
+      <Filter>Source Files\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Imgui\imgui_demo.cpp">
+      <Filter>Source Files\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Imgui\imgui_draw.cpp">
+      <Filter>Source Files\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Imgui\imgui_impl_dx11.cpp">
+      <Filter>Source Files\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Imgui\imgui_impl_win32.cpp">
+      <Filter>Source Files\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Imgui\imgui_widgets.cpp">
+      <Filter>Source Files\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Imgui\ImguiManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Drawable\Model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Bindable\TransformCBufferEx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Bindable\BlendOperation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Bindable\Rasterizer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Bindable\StencilOperation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Src\App.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\EngineException.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\EngineTimer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GlobalDefines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Graphics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Keyboard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Mouse.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Bindable\ConstantBuffers.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Bindable\Bindable.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Bindable\IndexBuffer.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Bindable\InputLayout.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Bindable\PixelShader.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Bindable\Topology.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Bindable\TransformCBuffer.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Bindable\VertexBuffer.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Bindable\VertexShader.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Bindable\Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Bindable\Sampler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Drawable\Drawable.h">
+      <Filter>Header Files\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Imgui\imgui.h">
+      <Filter>Header Files\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Imgui\imconfig.h">
+      <Filter>Header Files\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Imgui\imgui_impl_dx11.h">
+      <Filter>Header Files\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Imgui\imgui_impl_win32.h">
+      <Filter>Header Files\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Imgui\imgui_internal.h">
+      <Filter>Header Files\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Imgui\imstb_rectpack.h">
+      <Filter>Header Files\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Imgui\imstb_textedit.h">
+      <Filter>Header Files\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Imgui\imstb_truetype.h">
+      <Filter>Header Files\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Imgui\ImguiManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Drawable\Model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Utilities\EngineUtilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Bindable\TransformCBufferEx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Bindable\BindableCodex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Bindable\BlendOperation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Bindable\Rasterizer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Bindable\StencilOperation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shaders\PixelShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\VertexShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\OutlineVertexShader.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Models\TestScene.fbx" />
+    <None Include="Resources\Models\CubeSet.fbx" />
+    <None Include="Resources\Models\Susanne.mtl" />
+    <None Include="Resources\Models\SimpleTestCube.fbx" />
+    <None Include="Shaders\ShaderOps.hlsli" />
+    <None Include="Shaders\LightVectorData.hlsli" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\Images\TesterImage1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\background.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\background_bump.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\background_ddn.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\backgroundBGR.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\chain_texture.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\chain_texture_bump.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\chain_texture_ddn.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\chain_texture_spec.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\gi_flag.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\lion.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\lion_bump.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\lion_ddn.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\lion2_bump.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\lion2_ddn.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\spnza_bricks_a_bump.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\spnza_bricks_a_ddn.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\spnza_bricks_a_diff.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\spnza_bricks_a_spec.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_arch_bump.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_arch_ddn.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_arch_diff.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_arch_spec.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_ceiling_a_diff.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_ceiling_a_spec.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_ceiling_ddn.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_column_a_bump.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_column_a_ddn.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_column_a_diff.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_column_a_spec.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_column_b_bump.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_column_b_ddn.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_column_b_diff.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_column_b_spec.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_column_c_bump.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_column_c_ddn.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_column_c_diff.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_column_c_spec.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_curtain_blue_diff.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_curtain_blue_diff_spec.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_curtain_ddn.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_curtain_diff.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_curtain_green_diff.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_details_ddn.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_details_diff.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_details_spec.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_fabric_blue_diff.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_fabric_ddn.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_fabric_diff.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_fabric_green_diff.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_fabric_spec.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_flagpole_diff.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_flagpole_diff_NRM.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_flagpole_spec.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_floor_a_diff.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_floor_a_diff_spec.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_floor_ddn.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_roof_diff.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_roof_diff_NRM.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_thorn_bump.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_thorn_ddn.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_thorn_diff.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\sponza_thorn_spec.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\vase_bump.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\vase_ddn.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\vase_dif.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\vase_hanging.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\vase_hanging_NRM.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\vase_plant.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\vase_plant_ddn.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\vase_plant_NRM.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\vase_plant_spec.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\vase_round.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\vase_round_bump.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\vase_round_ddn.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\sponza.obj Textures\vase_round_spec.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\nanosuit.obj Textures\arm_dif.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\nanosuit.obj Textures\arm_showroom_ddn.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\nanosuit.obj Textures\arm_showroom_spec.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\nanosuit.obj Textures\body_dif.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\nanosuit.obj Textures\body_showroom_ddn.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\nanosuit.obj Textures\body_showroom_spec.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\nanosuit.obj Textures\glass_ddn.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\nanosuit.obj Textures\glass_dif.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\nanosuit.obj Textures\hand_dif.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\nanosuit.obj Textures\hand_showroom_ddn.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\nanosuit.obj Textures\hand_showroom_spec.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\nanosuit.obj Textures\helmet_diff.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\nanosuit.obj Textures\helmet_showroom_ddn.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\nanosuit.obj Textures\helmet_showroom_spec.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\nanosuit.obj Textures\leg_dif.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\nanosuit.obj Textures\leg_showroom_ddn.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\nanosuit.obj Textures\leg_showroom_spec.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+</Project>
