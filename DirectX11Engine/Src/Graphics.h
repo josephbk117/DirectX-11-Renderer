@@ -13,6 +13,16 @@ class Graphics
 {
 	friend class Bindable;
 public:
+
+	struct AdapterInfo
+	{
+		std::string desc;
+		UINT vendorId;
+		SIZE_T dedicatedVideoMemory;
+		SIZE_T dedicatedSystemMemory;
+		SIZE_T sharedSystemMemory;
+	};
+
 	class HrException : public EngineException
 	{
 	public:
@@ -41,7 +51,12 @@ public:
 	ID3D11Device* GetDevice() const noexcept { return pDevice.Get(); }
 	ID3D11DeviceContext* GetContext() const noexcept { return pContext.Get(); }
 
+	UINT GetAdapterCount() const noexcept;
+	AdapterInfo GetAdapterInfo(int index) const noexcept;
+
 private:
+	void EnumerateAdapters();
+
 	DirectX::XMMATRIX projection = DirectX::XMMatrixIdentity();
 	DirectX::XMMATRIX view = DirectX::XMMatrixIdentity();
 
@@ -50,5 +65,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pContext = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pTarget = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDSV = nullptr;
+
+	std::vector<AdapterInfo> adapterInfos;
 };
 

@@ -4,11 +4,14 @@
 #include <DirectXMath.h>
 #include "Bindable/VertexBuffer.h"
 #include "Imgui/imgui_impl_dx11.h"
+#include "Utilities/EngineUtilities.h"
+#include <dxgi.h>
 
 namespace wrl = Microsoft::WRL;
 namespace dx = DirectX;
 
 #pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "D3DCompiler.lib")
 
 #define GFX_THROW_FAILED(hrCall) if(FAILED(hr = (hrCall))) throw Graphics::HrException(__LINE__, __FILE__, (hr))
@@ -36,6 +39,8 @@ Graphics::Graphics(HWND hWnd, int width, int height)
 	GFX_THROW_FAILED(D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE,
 		nullptr, D3D11_CREATE_DEVICE_DEBUG, nullptr, 0, D3D11_SDK_VERSION,
 		&sd, &pSawp, &pDevice, nullptr, &pContext));
+
+	EnumerateAdapters();
 
 	wrl::ComPtr<ID3D11Resource> pBackBuffer = nullptr;
 	pSawp->GetBuffer(0, _uuidof(ID3D11Resource), &pBackBuffer);
@@ -123,6 +128,43 @@ void Graphics::SetCamera(DirectX::FXMMATRIX cam) noexcept
 DirectX::XMMATRIX Graphics::GetCamera() const noexcept
 {
 	return view;
+}
+
+UINT Graphics::GetAdapterCount() const noexcept
+{
+	return adapterInfos.size();
+}
+
+Graphics::AdapterInfo Graphics::GetAdapterInfo(int index) const noexcept
+{
+	return adapterInfos.at(index);
+}
+
+void Graphics::EnumerateAdapters()
+{
+	IDXGIAdapter* pAdapter;
+	IDXGIFactory* pFactory = nullptr;
+
+	// Create a DXGIFactory object.
+	if (FAILED(CreateDXGIFactory1(__uuidof(IDXGIFactory), (void**)& pFactory)))
+	{
+		return;
+	}
+
+	for (UINT i = 0; pFactory->EnumAdapters(i, &pAdapter) != DXGI_ERROR_NOT_FOUND; ++i)
+	{
+		DXGI_ADAPTER_DESC desc = {};
+		pAdapter->GetDesc(&desc);
+		AdapterInfo info = { Utility::WStringToString(std::wstring(desc.Description)), desc.VendorId, desc.DedicatedVideoMemory, desc.DedicatedSystemMemory, desc.SharedSystemMemory };
+		adapterInfos.push_back(info);
+
+		pAdapter->Release();
+	}
+
+	if (pFactory)
+	{
+		pFactory->Release();
+	}
 }
 
 Graphics::HrException::HrException(int line, const char* file, HRESULT hr) noexcept :

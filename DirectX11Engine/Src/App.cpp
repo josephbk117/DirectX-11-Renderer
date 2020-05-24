@@ -126,6 +126,16 @@ void App::DoFrame()
 
 	if (ImGui::Begin("INFO"))
 	{
+		ImGui::Text("Graphics device Info");
+
+		Graphics::AdapterInfo info = wnd.Gfx().GetAdapterInfo(0);
+
+		ImGui::Text("Vendor name : %s", info.desc.c_str());
+		ImGui::Text("Vendor ID : %d", info.vendorId);
+		ImGui::Text("Dedicated Video Memory : %d MB", info.dedicatedVideoMemory / 1000000);
+		ImGui::Text("Dedicated System Memory : %d MB", info.dedicatedSystemMemory / 1000000);
+		ImGui::Text("Shared System Memory : %d MB", info.sharedSystemMemory / 1000000);
+
 		auto delta = *wnd.mouse.ReadRawDelta();
 		ImGui::Text("Raw mouse input x : %d y : %d", delta.x, delta.y);
 	}
