@@ -28,16 +28,6 @@ struct plane_t
     int material;
 };
 
-float3x3 rotate_around_x(const in float angle_degrees)
-{
-    float angle = radians(angle_degrees);
-    float _sin = sin(angle);
-    float _cos = cos(angle);
-    
-    return float3x3(1, 0, 0, 0, _cos, -_sin, 0, _sin, _cos);
-}
-
-
 ray_t get_primary_ray( const in float3 cam_local_point, inout float3 cam_origin, inout float3 cam_look_at )
 {
     float3 fwd = normalize(cam_look_at - cam_origin);
@@ -69,7 +59,7 @@ bool isect_sphere(const in ray_t ray, const in sphere_t sphere, inout float t0, 
 
 // scattering coefficients at sea level (m)
 static const float3 betaR = float3(5.5e-6, 13.0e-6, 22.4e-6); // Rayleigh 
-static const float3 betaM = float3(21e-6.rrr); // Mie
+static const float3 betaM = float3(21e-6, 21e-6, 21e-6); // Mie
 
 // scale height (m)
 // thickness of the atmosphere if its density were uniform
@@ -169,6 +159,7 @@ float3 get_incident_light(const in ray_t ray, float3 sun_dir)
     float3 sumM = float3(0, 0, 0);
     float march_pos = 0.;
 
+    [unroll]
     for (int i = 0; i < num_samples; i++)
     {
         float3 s = ray.origin + ray.direction * (march_pos + 0.5 * march_step);
@@ -216,7 +207,7 @@ float4 main(float3 viewPos : Position) : SV_Target
     ray_t ray;
     ray.origin = eye;
     ray.direction = viewPos;
-    
+
     float3 sun_dir = normalize(float3(0, 1, 0));
 
     if (dot(ray.direction, float3(0, 1, 0)) > .0)

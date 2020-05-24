@@ -13,7 +13,7 @@ App::App()
 	//drawables.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\nanosuit.obj"));
 	//drawables.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\BaseBrickCube.obj", 50.0f));
 	//drawables.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\Plane.obj"));
-	//drawables.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\sponza.obj"));
+	models.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\sponza.obj"));
 	drawables.push_back(std::make_unique<PhysicalSkybox>(wnd.Gfx(), "Resources\\Models\\skyboxSphere.fbx"));
 
 	wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 720.0f / 1280.0f, 0.5f, 3500.0f));
@@ -99,6 +99,12 @@ void App::DoFrame()
 		b->Draw(wnd.Gfx());
 	}
 
+	for (auto& m : models)
+	{
+		m->Draw(wnd.Gfx());
+	}
+
+
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
@@ -109,6 +115,8 @@ void App::DoFrame()
 	{
 		ImGui::ShowDemoWindow(&showDemoWindow);
 	}
+
+	models[0]->ShowWindow("DEBUG INFO");
 
 	/*drawables[0]->ShowWindow("DEBUG INFO");
 	drawables[1]->ShowWindow("DEBUG INFO 2");*/

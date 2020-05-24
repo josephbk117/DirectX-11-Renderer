@@ -205,7 +205,7 @@ public:
 
 		//bindablePtrs.push_back(BlendOperation::Resolve(gfx, true));
 
-		bindablePtrs.push_back(Rasterizer::Resolve(gfx, true));
+		bindablePtrs.push_back(Rasterizer::Resolve(gfx, Rasterizer::RasterizerMode{ false, false }));
 
 		if (mesh.mMaterialIndex >= 0)
 		{

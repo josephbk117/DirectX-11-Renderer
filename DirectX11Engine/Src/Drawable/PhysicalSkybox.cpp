@@ -21,15 +21,13 @@ PhysicalSkybox::PhysicalSkybox(Graphics& gfx, const std::string& fileName)
 	Assimp::Importer imp;
 	const auto pScene = imp.ReadFile(fileName, aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices |
-		aiProcess_ConvertToLeftHanded |
-		aiProcess_GenNormals
+		aiProcess_ConvertToLeftHanded
 		);
 
 	namespace dx = DirectX;
 	struct Vertex
 	{
 		dx::XMFLOAT3 pos;
-		dx::XMFLOAT3 norm;
 	};
 
 	std::vector<Vertex> vertices;
@@ -44,10 +42,7 @@ PhysicalSkybox::PhysicalSkybox(Graphics& gfx, const std::string& fileName)
 	{
 		vertices.push_back
 		(
-			{
-			{ mesh.mVertices[i].x * scale, mesh.mVertices[i].y * scale, mesh.mVertices[i].z * scale },
-			{ mesh.mNormals[i].x,  mesh.mNormals[i].y, mesh.mNormals[i].z},
-			}
+			{{ mesh.mVertices[i].x * scale, mesh.mVertices[i].y * scale, mesh.mVertices[i].z * scale },}
 		);
 	}
 
@@ -67,27 +62,22 @@ PhysicalSkybox::PhysicalSkybox(Graphics& gfx, const std::string& fileName)
 
 	AddBind(std::make_shared<VertexBuffer>(gfx, vertices));
 	AddBind(std::make_shared<IndexBuffer>(gfx, indices));
+	AddBind(Rasterizer::Resolve(gfx, Rasterizer::RasterizerMode{ true, false }));
 
 	auto pvs = VertexShader::Resolve(gfx, "Shaders\\SkyboxVertexShader.cso");
 	auto pvsbc = std::static_pointer_cast<VertexShader>(pvs)->GetBytecode();
 
 	AddBind(std::move(pvs));
 	AddBind(Sampler::Resolve(gfx));
-
-	namespace dx = DirectX;
-
 	AddBind(PixelShader::Resolve(gfx, "Shaders\\SkyboxPixelShader.cso"));
 
 	const std::vector< D3D11_INPUT_ELEMENT_DESC >ied =
 	{
-		{ "Position",0,DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 },
-		{ "Normal",0,DXGI_FORMAT_R32G32B32_FLOAT,0,12u,D3D11_INPUT_PER_VERTEX_DATA,0 }
+		{ "Position",0,DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 }
 	};
 
-	AddBind(std::make_shared<InputLayout>(gfx, ied, pvsbc));	
-
+	AddBind(std::make_shared<InputLayout>(gfx, ied, pvsbc));
 	AddBind(Topology::Resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-
 	AddBind(std::make_shared<TransformCBufferEx>(gfx, *this, 0));
 }
 
