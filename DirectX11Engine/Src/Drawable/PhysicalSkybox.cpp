@@ -65,34 +65,28 @@ PhysicalSkybox::PhysicalSkybox(Graphics& gfx, const std::string& fileName)
 		indices.push_back(face.mIndices[2]);
 	}
 
-	std::vector<std::shared_ptr<Bindable>> bindablePtrs;
-
-	bindablePtrs.push_back(std::make_shared<VertexBuffer>(gfx, vertices));
-	bindablePtrs.push_back(std::make_shared<IndexBuffer>(gfx, indices));
+	AddBind(std::make_shared<VertexBuffer>(gfx, vertices));
+	AddBind(std::make_shared<IndexBuffer>(gfx, indices));
 
 	auto pvs = VertexShader::Resolve(gfx, "Shaders\\SkyboxVertexShader.cso");
 	auto pvsbc = std::static_pointer_cast<VertexShader>(pvs)->GetBytecode();
 
-	bindablePtrs.push_back(std::move(pvs));
-	bindablePtrs.push_back(Sampler::Resolve(gfx));
+	AddBind(std::move(pvs));
+	AddBind(Sampler::Resolve(gfx));
 
 	namespace dx = DirectX;
 
-	bindablePtrs.push_back(PixelShader::Resolve(gfx, "Shaders\\SkyboxPixelShader.cso"));
+	AddBind(PixelShader::Resolve(gfx, "Shaders\\SkyboxPixelShader.cso"));
+
 	const std::vector< D3D11_INPUT_ELEMENT_DESC >ied =
 	{
 		{ "Position",0,DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 },
 		{ "Normal",0,DXGI_FORMAT_R32G32B32_FLOAT,0,12u,D3D11_INPUT_PER_VERTEX_DATA,0 }
 	};
-	bindablePtrs.push_back(std::make_shared<InputLayout>(gfx, ied, pvsbc));
-	
+
+	AddBind(std::make_shared<InputLayout>(gfx, ied, pvsbc));	
 
 	AddBind(Topology::Resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-
-	for (auto& pb : bindablePtrs)
-	{
-		AddBind(std::move(pb));
-	}
 
 	AddBind(std::make_shared<TransformCBufferEx>(gfx, *this, 0));
 }

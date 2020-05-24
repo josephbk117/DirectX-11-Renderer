@@ -1,36 +1,62 @@
-const float earthRadius = 6360e3;
-const float atmosphereRadius = 6420e3;
+#define PI 3.14159265359
 
-bool solveQuadratic(float a, float b, float c, inout float x1, inout float x2)
+cbuffer CBuf
 {
-    if (b == 0)
-    {
-        // Handle special case where the the two vector ray.dir and V are perpendicular
-        // with V = ray.orig - sphere.centre
-        if (a == 0)
-            return false;
-        x1 = 0;
-        x2 = sqrt(-c / a);
-        return true;
-    }
+    matrix view;
+    matrix modelView;
+    matrix modelViewProj;
+};
+
+struct ray_t
+{
+    float3 origin;
+    float3 direction;
+};
+#define BIAS 1e-4 // small offset to avoid self-intersections
+
+struct sphere_t
+{
+    float3 origin;
+    float radius;
+    int material;
+};
+
+struct plane_t
+{
+    float3 direction;
+    float distance;
+    int material;
+};
+
+float3x3 rotate_around_x(const in float angle_degrees)
+{
+    float angle = radians(angle_degrees);
+    float _sin = sin(angle);
+    float _cos = cos(angle);
     
-    float discr = b * b - (4.0f * a * c);
- 
-    if (discr < 0)
-        return false;
- 
-    float q = (b < 0.f) ? -0.5f * (b - sqrt(discr)) : -0.5f * (b + sqrt(discr));
-    x1 = q / a;
-    x2 = c / q;
- 
-    return true;
+    return float3x3(1, 0, 0, 0, _cos, -_sin, 0, _sin, _cos);
 }
 
-bool raySphereIntersect(float3 orig, float3 dir, float radius, inout float t0, inout float t1)
+
+ray_t get_primary_ray( const in float3 cam_local_point, inout float3 cam_origin, inout float3 cam_look_at )
 {
-    float3 rc = float3(0, 1, 0) * radius - orig;
-    float radius2 = radius * radius;
-    float tca = dot(rc, dir);
+    float3 fwd = normalize(cam_look_at - cam_origin);
+    float3 up = float3(0, 1, 0);
+    float3 right = cross(up, fwd);
+    up = cross(fwd, right);
+
+    ray_t r;
+    r.origin = cam_origin;
+    r.direction = normalize(fwd + up * cam_local_point.y + right * cam_local_point.x);
+
+    return r;
+}
+
+bool isect_sphere(const in ray_t ray, const in sphere_t sphere, inout float t0, inout float t1)
+{
+    float3 rc = sphere.origin - ray.origin;
+    float radius2 = sphere.radius * sphere.radius;
+    float tca = dot(rc, ray.direction);
     float d2 = dot(rc, rc) - tca * tca;
     if (d2 > radius2)
         return false;
@@ -41,84 +67,166 @@ bool raySphereIntersect(float3 orig, float3 dir, float radius, inout float t0, i
     return true;
 }
 
-float3 computeIncidentLight(float3 orig, float3 dir, float tmin, float tmax)
-{
-    
-    const float3 sunDirection = normalize(float3(0, 1, 0));
-    const float M_PI = 22.0f / 7.0f;
-   
-    const float3 betaR = float3(3.8e-6f, 13.5e-6f, 33.1e-6f);
-    const float betaM = 21e-6f;
-    float Hr = 7994;
-    float Hm = 1200;
-    
-    double t0 = 10.0f, t1 = 6000.0f;
-    
-    if (!raySphereIntersect(orig, dir, atmosphereRadius, t0, t1) || t1 < 0)
-        return float4(0, 1, 0, 1);
-    if (t0 > tmin && t0 > 0)
-        tmin = t0;
-    if (t1 < tmax)
-        tmax = t1;
-    int numSamples = 16;
-    int numSamplesLight = 8;
-    float segmentLength = (tmax - tmin) / numSamples;
-    float tCurrent = tmin;
-    float3 sumR = float3(0, 0, 0); // mie and rayleigh contribution 
-    float3 sumM = float3(0, 0, 0);
+// scattering coefficients at sea level (m)
+static const float3 betaR = float3(5.5e-6, 13.0e-6, 22.4e-6); // Rayleigh 
+static const float3 betaM = float3(21e-6.rrr); // Mie
 
-    float opticalDepthR = 0, opticalDepthM = 0;
-    float mu = dot(dir, sunDirection); // mu in the paper which is the cosine of the angle between the sun direction and the ray direction 
-    float phaseR = 3.f / (16.f * M_PI) * (1 + mu * mu);
-    float g = 0.76f;
-    float phaseM = 3.f / (8.f * M_PI) * ((1.f - g * g) * (1.f + mu * mu)) / ((2.f + g * g) * pow(1.f + g * g - 2.f * g * mu, 1.5f));
-    
-    for (int i = 0; i < numSamples; ++i)
-    {
-        float3 samplePosition = orig + (tCurrent + segmentLength * 0.5f) * dir;
-        float height = length(samplePosition) - earthRadius;
-        // compute optical depth for light
-        float hr = exp(-height / Hr) * segmentLength;
-        float hm = exp(-height / Hm) * segmentLength;
-        opticalDepthR += hr;
-        opticalDepthM += hm;
-        // light optical depth
-        float t0Light = 0.0f, t1Light = 0.0f;
-        raySphereIntersect(samplePosition, sunDirection, atmosphereRadius, t0Light, t1Light);
-        
-        float segmentLengthLight = t1Light / numSamplesLight, tCurrentLight = 0;
-        float opticalDepthLightR = 0, opticalDepthLightM = 0;
-        int j;
-        for (j = 0; j < numSamplesLight; ++j)
-        {
-            float3 samplePositionLight = samplePosition + (tCurrentLight + segmentLengthLight * 0.5f) * sunDirection;
-            float heightLight = length(samplePositionLight) - earthRadius;
-            if (heightLight < 0)
-                break;
-            opticalDepthLightR += exp(-heightLight / Hr) * segmentLengthLight;
-            opticalDepthLightM += exp(-heightLight / Hm) * segmentLengthLight;
-            tCurrentLight += segmentLengthLight;
-        }
-        if (j == numSamplesLight)
-        {
-            float3 tau = betaR * (opticalDepthR + opticalDepthLightR) + betaM * 1.1f * (opticalDepthM + opticalDepthLightM);
-            float3 attenuation = float3(exp(-tau.x), exp(-tau.y), exp(-tau.z));
-            sumR += attenuation * hr;
-            sumM += attenuation * hm;
-        }
-        tCurrent += segmentLength;
-    }
- 
-    // We use a magic number here for the intensity of the sun (20). We will make it more
-    // scientific in a future revision of this lesson/code
-    return (sumR * betaR * phaseR + sumM * betaM * phaseM) * 20;
+// scale height (m)
+// thickness of the atmosphere if its density were uniform
+static const float hR = 7994.0; // Rayleigh
+static const float hM = 1200.0; // Mie
+
+float rayleigh_phase_func(float mu)
+{
+    return
+			3. * (1. + mu * mu)
+	/ //------------------------
+				(16. * PI);
 }
 
-
-float4 main(float3 viewPos : Position) : SV_TARGET
+// Henyey-Greenstein phase function factor [-1, 1]
+// represents the average cosine of the scattered directions
+// 0 is isotropic scattering
+// > 1 is forward scattering, < 1 is backwards
+static const float g = 0.76;
+float henyey_greenstein_phase_func(float mu)
 {
-    float3 dir = normalize(viewPos) ;
-    float3 col = computeIncidentLight(float3(0, earthRadius + 1, 0), dir, 0, 999999999.0f);
-    return float4(col.rgb, 1.0);
+    return
+						(1. - g * g)
+	/ //---------------------------------------------
+		((4. * PI) * pow(1. + g * g - 2. * g * mu, 1.5));
+}
 
+// Schlick Phase Function factor
+// Pharr and  Humphreys [2004] equivalence to g above
+static const float k = 1.55 * g - 0.55 * (g * g * g);
+
+static const float earth_radius = 6360e3; // (m)
+static const float atmosphere_radius = 6420e3; // (m)
+
+static const float sun_power = 20.0;
+
+static const sphere_t atmosphere = { float3(0.0f, 0.0f, 0.0f), atmosphere_radius, 0 };
+
+static const int num_samples = 16;
+static const int num_samples_light = 8;
+
+bool get_sun_light(const in ray_t ray, inout float optical_depthR, inout float optical_depthM)
+{
+    float t0, t1;
+    isect_sphere(ray, atmosphere, t0, t1);
+
+    float march_pos = 0.;
+    float march_step = t1 / float(num_samples_light);
+
+    for (int i = 0; i < num_samples_light; i++)
+    {
+        float3 s = ray.origin + ray.direction * (march_pos + 0.5 * march_step);
+        float height = length(s) - earth_radius;
+        if (height < 0.)
+            return false;
+
+        optical_depthR += exp(-height / hR) * march_step;
+        optical_depthM += exp(-height / hM) * march_step;
+
+        march_pos += march_step;
+    }
+
+    return true;
+}
+
+float3 get_incident_light(const in ray_t ray, float3 sun_dir)
+{
+	// "pierce" the atmosphere with the viewing ray
+    float t0, t1;
+    if (!isect_sphere(ray, atmosphere, t0, t1))
+    {
+        return float3(0.0f, 0.0f, 0.0f);
+    }
+
+    float march_step = t1 / float(num_samples);
+
+	// cosine of angle between view and light directions
+    float mu = dot(ray.direction, sun_dir);
+
+	// Rayleigh and Mie phase functions
+	// A black box indicating how light is interacting with the material
+	// Similar to BRDF except
+	// * it usually considers a single angle
+	//   (the phase angle between 2 directions)
+	// * integrates to 1 over the entire sphere of directions
+    float phaseR = rayleigh_phase_func(mu);
+    float phaseM = henyey_greenstein_phase_func(mu);
+
+
+	// optical depth (or "average density")
+	// represents the accumulated extinction coefficients
+	// along the path, multiplied by the length of that path
+    float optical_depthR = 0.;
+    float optical_depthM = 0.;
+
+    float3 sumR = float3(0, 0, 0);
+    float3 sumM = float3(0, 0, 0);
+    float march_pos = 0.;
+
+    for (int i = 0; i < num_samples; i++)
+    {
+        float3 s = ray.origin + ray.direction * (march_pos + 0.5 * march_step);
+        float height = length(s) - earth_radius;
+
+		// integrate the height scale
+        float hr = exp(-height / hR) * march_step;
+        float hm = exp(-height / hM) * march_step;
+        optical_depthR += hr;
+        optical_depthM += hm;
+
+		// gather the sunlight
+        ray_t light_ray;
+        light_ray.origin = s;
+        light_ray.direction = sun_dir;
+        
+        float optical_depth_lightR = 0.;
+        float optical_depth_lightM = 0.;
+        
+        bool overground = get_sun_light( light_ray, optical_depth_lightR, optical_depth_lightM);
+
+        if (overground)
+        {
+            float3 tau = betaR * (optical_depthR + optical_depth_lightR) + betaM * 1.1 * (optical_depthM + optical_depth_lightM);
+            float3 attenuation = exp(-tau);
+
+            sumR += hr * attenuation;
+            sumM += hm * attenuation;
+        }
+
+        march_pos += march_step;
+    }
+
+    return sun_power * (sumR * phaseR * betaR + sumM * phaseM * betaM);
+}
+
+float4 main(float3 viewPos : Position) : SV_Target
+{
+    viewPos = normalize(viewPos);
+    float3 col = float3(0,0,0);
+
+    float3 eye = float3(0, earth_radius + 1., 0);
+    float3 look_at = float3(0, earth_radius + 1.5, 1);
+
+    ray_t ray;
+    ray.origin = eye;
+    ray.direction = viewPos;
+    
+    float3 sun_dir = normalize(float3(0, 1, 0));
+
+    if (dot(ray.direction, float3(0, 1, 0)) > .0)
+    {
+        col = get_incident_light(ray, sun_dir);
+    }
+    else
+    {
+        col = float3(0.333f, 0.333f, 0.333f);
+    }
+
+    return float4(col, 1);
 }
