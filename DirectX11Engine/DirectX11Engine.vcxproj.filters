@@ -147,6 +147,9 @@
     <ClCompile Include="Src\RenderJob\RenderPass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Drawable\PhysicalSkybox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\App.h">
@@ -278,6 +281,9 @@
     <ClInclude Include="Src\RenderJob\RenderPass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Drawable\PhysicalSkybox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\PixelShader.hlsl">
@@ -287,6 +293,8 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\OutlineVertexShader.hlsl" />
+    <FxCompile Include="Shaders\SkyboxVertexShader.hlsl" />
+    <FxCompile Include="Shaders\SkyboxPixelShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Models\TestScene.fbx" />

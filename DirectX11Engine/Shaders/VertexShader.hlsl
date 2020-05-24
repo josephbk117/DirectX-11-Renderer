@@ -1,6 +1,7 @@
 cbuffer CBuf
 {
     matrix view;
+    matrix projection;
     matrix modelView;
     matrix modelViewProj;
 };

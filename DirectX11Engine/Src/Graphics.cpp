@@ -41,16 +41,6 @@ Graphics::Graphics(HWND hWnd, int width, int height)
 	pSawp->GetBuffer(0, _uuidof(ID3D11Resource), &pBackBuffer);
 	pDevice->CreateRenderTargetView(pBackBuffer.Get(), nullptr, &pTarget);
 
-	//D3D11_DEPTH_STENCIL_DESC dsc = {};
-	//dsc.DepthEnable = TRUE;
-	//dsc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	//dsc.DepthFunc = D3D11_COMPARISON_LESS;
-
-	//wrl::ComPtr<ID3D11DepthStencilState> pDSState;
-	//pDevice->CreateDepthStencilState(&dsc, &pDSState);
-
-	//pContext->OMSetDepthStencilState(pDSState.Get(), 1);
-
 	wrl::ComPtr<ID3D11Texture2D> pDepthStencil;
 	D3D11_TEXTURE2D_DESC descDepth = {};
 	descDepth.Width = width;
