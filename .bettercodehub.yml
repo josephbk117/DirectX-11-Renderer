@@ -1,2 +1,4 @@
 exclude:
 - /DirectX11Engine/Src/Imgui/.*
+- /Includes/assimp/.*
+- /Includes/DirectXTex/.*
