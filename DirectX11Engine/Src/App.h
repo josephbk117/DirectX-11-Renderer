@@ -16,5 +16,5 @@ private:
 	ImguiManager imgui;
 	Window wnd;
 	EngineTimer timer;
-	std::vector<std::unique_ptr<class Model>> drawables;
+	std::vector<std::unique_ptr<class Drawable>> drawables;
 };
