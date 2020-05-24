@@ -23,6 +23,7 @@ TransformCbuffer::Transforms TransformCbuffer::GetTransforms(Graphics& gfx) noex
 	const auto modelView = parent.GetTransformXM() * gfx.GetCamera();
 	return {
 		DirectX::XMMatrixTranspose(gfx.GetCamera()),
+		DirectX::XMMatrixTranspose(gfx.GetProjection()),
 		DirectX::XMMatrixTranspose(modelView),
 		DirectX::XMMatrixTranspose(
 			modelView *

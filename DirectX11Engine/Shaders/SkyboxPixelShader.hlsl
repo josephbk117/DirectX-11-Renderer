@@ -1,10 +1,13 @@
 #define PI 3.14159265359
 
-cbuffer CBuf
+cbuffer CSkyInfo
 {
-    matrix view;
-    matrix modelView;
-    matrix modelViewProj;
+    // thickness of the atmosphere if its density were uniform
+    float hR = 7994.0; // Rayleigh
+    float hM = 1200.0; // Mie
+    float height = 1.0f; // Height from surface
+    float sun_power = 20.0f; // Sun intensity
+    float3 sun_dir = float3(0,1,0);
 };
 
 struct ray_t
@@ -63,8 +66,8 @@ static const float3 betaM = float3(21e-6, 21e-6, 21e-6); // Mie
 
 // scale height (m)
 // thickness of the atmosphere if its density were uniform
-static const float hR = 7994.0; // Rayleigh
-static const float hM = 1200.0; // Mie
+//static const float hR = 7994.0; // Rayleigh
+//static const float hM = 1200.0; // Mie
 
 float rayleigh_phase_func(float mu)
 {
@@ -94,7 +97,7 @@ static const float k = 1.55 * g - 0.55 * (g * g * g);
 static const float earth_radius = 6360e3; // (m)
 static const float atmosphere_radius = 6420e3; // (m)
 
-static const float sun_power = 20.0;
+//static const float sun_power = 20.0;
 
 static const sphere_t atmosphere = { float3(0.0f, 0.0f, 0.0f), atmosphere_radius, 0 };
 
@@ -197,22 +200,19 @@ float3 get_incident_light(const in ray_t ray, float3 sun_dir)
 }
 
 float4 main(float3 viewPos : Position) : SV_Target
-{
+{    
     viewPos = normalize(viewPos);
     float3 col = float3(0,0,0);
 
-    float3 eye = float3(0, earth_radius + 1., 0);
-    float3 look_at = float3(0, earth_radius + 1.5, 1);
+    float3 eye = float3(0, earth_radius + height, 0);
 
     ray_t ray;
     ray.origin = eye;
     ray.direction = viewPos;
 
-    float3 sun_dir = normalize(float3(0, 1, 0));
-
     if (dot(ray.direction, float3(0, 1, 0)) > .0)
     {
-        col = get_incident_light(ray, sun_dir);
+        col = get_incident_light(ray, normalize(sun_dir));
     }
     else
     {

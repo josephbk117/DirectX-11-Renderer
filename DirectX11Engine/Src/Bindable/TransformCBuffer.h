@@ -12,6 +12,7 @@ protected:
 	struct Transforms
 	{
 		DirectX::XMMATRIX view;
+		DirectX::XMMATRIX projection;
 		DirectX::XMMATRIX modelView;
 		DirectX::XMMATRIX modelViewProj;
 	};
