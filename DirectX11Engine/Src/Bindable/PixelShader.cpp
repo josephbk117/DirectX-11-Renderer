@@ -1,15 +1,6 @@
 #include "PixelShader.h"
 #include "BindableCodex.h"
 #include "../Utilities/EngineUtilities.h"
-//#include "..\Utilities\EngineUtilities.h"
-//#include <D3Dcompiler.h>
-
-//std::wstring StringToWString(const std::string& s)
-//{
-//	std::wstring temp(s.length(), L' ');
-//	std::copy(s.begin(), s.end(), temp.begin());
-//	return temp;
-//}
 
 PixelShader::PixelShader(Graphics& gfx, const std::string& path) : path(path)
 {

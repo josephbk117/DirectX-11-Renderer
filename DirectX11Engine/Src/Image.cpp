@@ -22,25 +22,6 @@ Image Image::FromFile(const std::string& imagePath)
 		assert("Failed to load image");
 	}
 
-	/*if (scratch.GetImage(0, 0, 0)->format != format)
-	{
-		DirectX::ScratchImage converted;
-		hr = DirectX::Convert(
-			*scratch.GetImage(0, 0, 0),
-			format,
-			DirectX::TEX_FILTER_DEFAULT,
-			DirectX::TEX_THRESHOLD_DEFAULT,
-			converted
-		);
-
-		if (FAILED(hr))
-		{
-			assert("Failed to convert image");
-		}
-
-		return Image(std::move(converted), imagePath);
-	}*/
-
 	return Image(std::move(scratch), imagePath);
 }
 
