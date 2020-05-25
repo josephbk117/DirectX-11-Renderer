@@ -42,6 +42,12 @@ Window::WindowClass::~WindowClass()
 	UnregisterClass(wndClassName, GetInstance());
 }
 
+void Window::GetNativeScreenResolution(unsigned int& width, unsigned int& height) noexcept
+{
+	width = GetSystemMetrics(SM_CXSCREEN);
+	height = GetSystemMetrics(SM_CYSCREEN);
+}
+
 Window::Window(int width, int height, const char* name) : width(width), height(height)
 {
 	RECT wr;
@@ -50,16 +56,17 @@ Window::Window(int width, int height, const char* name) : width(width), height(h
 	wr.top = 100;
 	wr.bottom = height + wr.top;
 
-	if (AdjustWindowRect(&(wr), WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE) == 0)
+	if (AdjustWindowRect(&(wr), WS_CAPTION | WS_MAXIMIZEBOX | WS_MINIMIZEBOX | WS_SYSMENU, FALSE) == 0)
 	{
 		throw ENG_WND_LASTEXCEPT();
 	}
 
 	hWnd = CreateWindow(WindowClass::GetName(), name,
-		WS_CAPTION | WS_MAXIMIZEBOX | WS_SYSMENU,
+		WS_CAPTION | WS_MAXIMIZEBOX | WS_MINIMIZEBOX | WS_SYSMENU,
 		CW_USEDEFAULT, CW_USEDEFAULT,
 		wr.right - wr.left, wr.bottom - wr.top,
 		nullptr, nullptr, WindowClass::GetInstance(), this);
+
 	if (hWnd == nullptr)
 	{
 		throw ENG_WND_LASTEXCEPT();
@@ -73,9 +80,10 @@ Window::Window(int width, int height, const char* name) : width(width), height(h
 
 	RAWINPUTDEVICE rid;
 	rid.usUsagePage = 0x01; // mouse usage page
-	rid.usUsage = 0x02; // maouse usage
+	rid.usUsage = 0x02; // mouse usage
 	rid.dwFlags = 0;
 	rid.hwndTarget = nullptr;
+
 	if (RegisterRawInputDevices(&rid, 1, sizeof(rid)) == FALSE)
 	{
 		throw ENG_WND_LASTEXCEPT();

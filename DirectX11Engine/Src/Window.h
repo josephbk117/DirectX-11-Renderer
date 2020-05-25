@@ -38,6 +38,8 @@ private:
 		HINSTANCE hInst;
 	};
 public:
+	static void GetNativeScreenResolution(unsigned int& width, unsigned int& height) noexcept;
+
 	Window(int width, int height, const char* name);
 	~Window();
 	Window(const Window&) = delete;
@@ -66,8 +68,8 @@ private:
 
 	bool isCursorVisible = true;
 	bool isCursorConfined = false;
-	int width;
-	int height;
+	unsigned int width = 0;
+	unsigned int height = 0;
 	HWND hWnd;
 	std::unique_ptr<Graphics> pGfx;
 	std::vector<char> rawBuffer;

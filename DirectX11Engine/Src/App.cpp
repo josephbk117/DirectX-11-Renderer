@@ -136,6 +136,13 @@ void App::DoFrame()
 		ImGui::Text("Dedicated System Memory : %d MB", info.dedicatedSystemMemory / 1000000);
 		ImGui::Text("Shared System Memory : %d MB", info.sharedSystemMemory / 1000000);
 
+		static unsigned int nativeScreenW = 0, nativeScreenH = 0;
+		if (nativeScreenW == 0 || nativeScreenH == 0)
+		{
+			Window::GetNativeScreenResolution(nativeScreenW, nativeScreenH);
+		}
+		ImGui::Text("Native Screen Resolution : %d x %d", nativeScreenW, nativeScreenH);
+
 		auto delta = *wnd.mouse.ReadRawDelta();
 		ImGui::Text("Raw mouse input x : %d y : %d", delta.x, delta.y);
 	}
