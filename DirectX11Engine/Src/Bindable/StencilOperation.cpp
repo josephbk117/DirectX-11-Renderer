@@ -21,12 +21,12 @@ StencilOperation::StencilOperation(Graphics& gfx, Mode mode) : mode(mode)
 		desc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 	}
 
-	gfx.GetDevice()->CreateDepthStencilState(&desc, &pDepthStencil);
+	GetDevice(gfx)->CreateDepthStencilState(&desc, &pDepthStencil);
 }
 
 void StencilOperation::Bind(Graphics& gfx) noexcept
 {
-	gfx.GetContext()->OMSetDepthStencilState(pDepthStencil.Get(), 0xFF);
+	GetContext(gfx)->OMSetDepthStencilState(pDepthStencil.Get(), 0xFF);
 }
 
 std::shared_ptr<Bindable> StencilOperation::Resolve(Graphics& gfx, Mode mode)

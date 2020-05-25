@@ -40,6 +40,7 @@ public:
 	Graphics(const Graphics&) = delete;
 	Graphics& operator=(const Graphics&) = delete;
 	~Graphics() = default;
+
 	void EndFrame();
 	void ClearBuffer(float r, float g, float b) noexcept;
 	void DrawIndexed(UINT indexCount)noexcept;
@@ -47,9 +48,6 @@ public:
 	DirectX::XMMATRIX GetProjection() const noexcept;
 	void SetCamera(DirectX::FXMMATRIX cam) noexcept;
 	DirectX::XMMATRIX GetCamera() const noexcept;
-	//temp
-	ID3D11Device* GetDevice() const noexcept { return pDevice.Get(); }
-	ID3D11DeviceContext* GetContext() const noexcept { return pContext.Get(); }
 
 	UINT GetAdapterCount() const noexcept;
 	AdapterInfo GetAdapterInfo(int index) const noexcept;

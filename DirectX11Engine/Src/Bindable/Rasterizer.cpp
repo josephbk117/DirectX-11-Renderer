@@ -6,12 +6,12 @@ Rasterizer::Rasterizer(Graphics& gfx, RasterizerMode rasterizerMode) : rasterize
 	D3D11_RASTERIZER_DESC rasterDesc = CD3D11_RASTERIZER_DESC(CD3D11_DEFAULT{});
 	rasterDesc.CullMode = rasterizerMode.isTwoSided ? D3D11_CULL_NONE : D3D11_CULL_BACK;
 	rasterDesc.FillMode = rasterizerMode.isWireframe ? D3D11_FILL_WIREFRAME : D3D11_FILL_SOLID;
-	gfx.GetDevice()->CreateRasterizerState(&rasterDesc, &pRasterizer);
+	GetDevice(gfx)->CreateRasterizerState(&rasterDesc, &pRasterizer);
 }
 
 void Rasterizer::Bind(Graphics& gfx) noexcept
 {
-	gfx.GetContext()->RSSetState(pRasterizer.Get());
+	GetContext(gfx)->RSSetState(pRasterizer.Get());
 }
 
 std::shared_ptr<Bindable> Rasterizer::Resolve(Graphics& gfx, RasterizerMode rasterizerMode)

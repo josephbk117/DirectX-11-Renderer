@@ -23,12 +23,12 @@ BlendOperation::BlendOperation(Graphics& gfx, bool blendingEnabled) : isBlending
 		brt.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 	}
 
-	gfx.GetDevice()->CreateBlendState(&blendDesc, &pBlendOp);
+	GetDevice(gfx)->CreateBlendState(&blendDesc, &pBlendOp);
 }
 
 void BlendOperation::Bind(Graphics& gfx) noexcept
 {
-	gfx.GetContext()->OMSetBlendState(pBlendOp.Get(), nullptr, 0xFFFFFFFF);
+	GetContext(gfx)->OMSetBlendState(pBlendOp.Get(), nullptr, 0xFFFFFFFF);
 }
 
 std::shared_ptr<Bindable> BlendOperation::Resolve(Graphics& gfx, bool blendingEnabled)
