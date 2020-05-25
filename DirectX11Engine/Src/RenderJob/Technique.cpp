@@ -18,14 +18,23 @@ void Technique::AddStep(RenderStep step) noexcept
 	steps.push_back(std::move(step));
 }
 
-void Technique::Activate() noexcept
+void Technique::SetActivateState(bool isActive) noexcept
 {
-	isActive = true;
+	this->isActive = isActive;
 }
 
-void Technique::Deactivate() noexcept
+bool Technique::IsActive() const noexcept
 {
-	isActive = false;
+	return isActive;
+}
+
+void Technique::Accept(TechniqueProbe& probe) noexcept
+{
+	probe.SetTechnique(this);
+	for (auto& s : steps)
+	{
+		s.Accept(probe);
+	}
 }
 
 void Technique::InitializeParentReferences(const Drawable& parent) noexcept
@@ -34,4 +43,9 @@ void Technique::InitializeParentReferences(const Drawable& parent) noexcept
 	{
 		s.InitializeParentReferences(parent);
 	}
+}
+
+const std::string& Technique::GetName() const noexcept
+{
+	return name;
 }

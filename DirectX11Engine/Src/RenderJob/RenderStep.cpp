@@ -21,6 +21,15 @@ void RenderStep::Bind(Graphics& gfx) const
 	}
 }
 
+void RenderStep::Accept(TechniqueProbe& probe)
+{
+	probe.SetStep(this);
+	for (auto& b : bindables)
+	{
+		b->Accept(probe);
+	}
+}
+
 void RenderStep::InitializeParentReferences(const Drawable& parent) noexcept
 {
 	for (auto& b : bindables)

@@ -5,7 +5,7 @@ void RenderPass::Accept(RenderJob job) noexcept
 	jobs.push_back(job);
 }
 
-void RenderPass::Execute(Graphics& gfx)
+void RenderPass::Execute(Graphics& gfx) const
 {
 	for (const auto& j : jobs)
 	{

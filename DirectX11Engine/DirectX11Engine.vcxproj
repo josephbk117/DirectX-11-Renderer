@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Bindable\NullPixelShader.cpp" />
     <ClCompile Include="Src\Drawable\PhysicalSkybox.cpp" />
     <ClCompile Include="Src\RenderJob\RenderPass.cpp" />
     <ClCompile Include="Src\RenderJob\RenderJob.cpp" />
@@ -57,8 +58,10 @@
     <ClCompile Include="Src\Bindable\TransformCBufferEx.cpp" />
     <ClCompile Include="Src\Bindable\StencilOperation.cpp" />
     <ClCompile Include="Src\RenderJob\Technique.cpp" />
+    <ClCompile Include="Src\RenderJob\TechniqueProbe.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Bindable\NullPixelShader.h" />
     <ClInclude Include="Src\Drawable\PhysicalSkybox.h" />
     <ClInclude Include="Src\RenderJob\RenderPass.h" />
     <ClInclude Include="Src\RenderJob\RenderJob.h" />
@@ -103,6 +106,7 @@
     <ClInclude Include="Src\Bindable\TransformCBufferEx.h" />
     <ClInclude Include="Src\Bindable\StencilOperation.h" />
     <ClInclude Include="Src\RenderJob\Technique.h" />
+    <ClInclude Include="Src\RenderJob\TechniqueProbe.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\OutlineVertexShader.hlsl">
