@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\LayoutCodex.cpp" />
+    <ClCompile Include="Src\DynamicConstantBuffer.cpp" />
     <ClCompile Include="Src\Bindable\NullPixelShader.cpp" />
     <ClCompile Include="Src\Drawable\PhysicalSkybox.cpp" />
     <ClCompile Include="Src\RenderJob\RenderPass.cpp" />
@@ -61,6 +63,8 @@
     <ClCompile Include="Src\RenderJob\TechniqueProbe.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\LayoutCodex.h" />
+    <ClInclude Include="Src\DynamicConstantBuffer.h" />
     <ClInclude Include="Src\Bindable\NullPixelShader.h" />
     <ClInclude Include="Src\Drawable\PhysicalSkybox.h" />
     <ClInclude Include="Src\RenderJob\RenderPass.h" />
