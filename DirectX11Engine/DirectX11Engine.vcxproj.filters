@@ -161,6 +161,12 @@
     <ClCompile Include="Src\RenderJob\TechniqueProbe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\DynamicConstantBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\LayoutCodex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\App.h">
@@ -299,6 +305,12 @@
       <Filter>Header Files\Drawable</Filter>
     </ClInclude>
     <ClInclude Include="Src\RenderJob\TechniqueProbe.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\DynamicConstantBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\LayoutCodex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
