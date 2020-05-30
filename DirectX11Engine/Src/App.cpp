@@ -11,8 +11,8 @@ App::App()
 {
 	//drawables.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\TestScene.fbx"));
 	//drawables.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\nanosuit.obj"));
-	//drawables.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\BaseBrickCube.obj", 50.0f));
-	//drawables.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\Plane.obj"));
+	//models.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\BaseBrickCube.obj", 50.0f));
+	//models.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\Plane.obj", 50.0f));
 	models.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\sponza.obj", 0.5f));
 	drawables.push_back(std::make_unique<PhysicalSkybox>(wnd.Gfx(), "Resources\\Models\\skyboxSphere.fbx"));
 
@@ -81,6 +81,7 @@ int App::Start()
 		}
 
 		wnd.Gfx().SetCamera(wnd.cam.GetMatrix());
+		wnd.Gfx().SetCameraPos(wnd.cam.GetPosition());
 
 		DoFrame();
 	}

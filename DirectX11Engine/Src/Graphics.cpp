@@ -130,6 +130,16 @@ DirectX::XMMATRIX Graphics::GetCamera() const noexcept
 	return view;
 }
 
+void Graphics::SetCameraPos(DirectX::XMVECTOR camPos) noexcept
+{
+	this->camPos = camPos;
+}
+
+DirectX::XMVECTOR Graphics::GetCameraPos() const noexcept
+{
+	return camPos;
+}
+
 UINT Graphics::GetAdapterCount() const noexcept
 {
 	return adapterInfos.size();

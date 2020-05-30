@@ -256,6 +256,16 @@ public:
 					bindablePtrs.push_back(std::make_shared<Texture>(gfx, img, 2));
 				}
 			}
+			if (material.GetTexture(aiTextureType_DISPLACEMENT, 0, &textFileName) == aiReturn_SUCCESS)
+			{
+				bindablePtrs.push_back(Texture::Resolve(gfx, IMG_PATH + textFileName.C_Str(), 3));
+			}
+			else
+			{
+				Image img(1, 1);
+				img.ClearData(Image::Color(0, 0, 0));
+				bindablePtrs.push_back(std::make_shared<Texture>(gfx, img, 3));
+			}
 		}
 
 		return std::make_unique<Mesh>(gfx, std::move(bindablePtrs));
