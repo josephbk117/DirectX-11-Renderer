@@ -1,11 +1,12 @@
 cbuffer CBuf
 {
+    matrix model;
     matrix view;
     matrix projection;
     matrix modelView;
     matrix modelViewProj;
+    float4 camPos;
 };
-
 struct VS_Out
 {
     float2 tex : TexCoord;
