@@ -127,11 +127,7 @@ public:
 	Model(Graphics& gfx, const std::string& fileName, float scale = 1.0f)
 	{
 		Assimp::Importer imp;
-		const auto pScene = imp.ReadFile(fileName, aiProcess_Triangulate |
-			aiProcess_JoinIdenticalVertices |
-			aiProcess_ConvertToLeftHanded |
-			aiProcess_GenNormals |
-			aiProcess_CalcTangentSpace);
+		const auto pScene = imp.ReadFile(fileName, aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast);
 
 		for (size_t i = 0; i < pScene->mNumMeshes; ++i)
 		{
@@ -255,6 +251,16 @@ public:
 					img.ClearData(Image::Color(128, 128, 255));
 					bindablePtrs.push_back(std::make_shared<Texture>(gfx, img, 2));
 				}
+			}
+			if (material.GetTexture(aiTextureType_DISPLACEMENT, 0, &textFileName) == aiReturn_SUCCESS)
+			{
+				bindablePtrs.push_back(Texture::Resolve(gfx, IMG_PATH + textFileName.C_Str(), 3));
+			}
+			else
+			{
+				Image img(1, 1);
+				img.ClearData(Image::Color(0, 0, 0));
+				bindablePtrs.push_back(std::make_shared<Texture>(gfx, img, 3));
 			}
 		}
 

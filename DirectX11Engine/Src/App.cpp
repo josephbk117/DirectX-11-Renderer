@@ -83,6 +83,7 @@ int App::Start()
 		}
 
 		wnd.Gfx().SetCamera(wnd.cam.GetMatrix());
+		wnd.Gfx().SetCameraPos(wnd.cam.GetPosition());
 
 		DoFrame();
 	}

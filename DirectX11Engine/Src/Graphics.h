@@ -48,6 +48,8 @@ public:
 	DirectX::XMMATRIX GetProjection() const noexcept;
 	void SetCamera(DirectX::FXMMATRIX cam) noexcept;
 	DirectX::XMMATRIX GetCamera() const noexcept;
+	void SetCameraPos(DirectX::XMVECTOR camPos) noexcept;
+	DirectX::XMVECTOR GetCameraPos() const noexcept;
 
 	UINT GetAdapterCount() const noexcept;
 	AdapterInfo GetAdapterInfo(int index) const noexcept;
@@ -57,6 +59,7 @@ private:
 
 	DirectX::XMMATRIX projection = DirectX::XMMatrixIdentity();
 	DirectX::XMMATRIX view = DirectX::XMMatrixIdentity();
+	DirectX::XMVECTOR camPos;
 
 	Microsoft::WRL::ComPtr<ID3D11Device> pDevice = nullptr;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pSawp = nullptr;
