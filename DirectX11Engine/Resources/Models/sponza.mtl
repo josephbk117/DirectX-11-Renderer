@@ -102,6 +102,7 @@ newmtl bricks
 	map_Kd spnza_bricks_a_diff.png
 	map_Kn spnza_bricks_a_ddn.png
 	map_Ks spnza_bricks_a_spec.png
+	disp spnza_bricks_a_bump.png
 
 newmtl arch
 	Ns 10.0000

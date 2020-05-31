@@ -25,8 +25,8 @@ static const float3 diffuseColour =
 { 1.0f, 1.0f, 1.0f };
 static const float diffuseIntensity = 1.0f;
 static const float attConst = 1.0f;
-static const float attLin = 0.045f;
-static const float attQuad = 0.0075f;
+static const float attLin = 0.0001f;
+static const float attQuad = 0.000075f;
 static const float specularIntensity = 100.0f;
 static const float specularPower = 1.0f;
 
@@ -47,8 +47,8 @@ struct PS_IN
 float2 ParallaxMapping(float2 texCoords, float3 viewDir)
 {
     // number of depth layers
-    const float minLayers = 18;
-    const float maxLayers = 64;
+    const float minLayers = 16;
+    const float maxLayers = 32;
     float numLayers = lerp(maxLayers, minLayers, abs(dot(float3(0.0, 0.0, 1.0), viewDir)));
 
     // calculate the size of each layer
@@ -56,8 +56,12 @@ float2 ParallaxMapping(float2 texCoords, float3 viewDir)
     // depth of current layer
     float currentLayerDepth = 0.0;
     // the amount to shift the texture coordinates per layer (from vector P)
-    float2 P = viewDir.xy * 0.1f;
+    
+    const float strength = 0.06f;
+    
+    float2 P = viewDir.xy * strength;
     float2 deltaTexCoords = P / numLayers;
+    deltaTexCoords.y *= -1;
     
     // get initial values
     float2 currentTexCoords = texCoords;
@@ -76,7 +80,7 @@ float2 ParallaxMapping(float2 texCoords, float3 viewDir)
         curLoopCount += 1;
 
         // shift texture coordinates along direction of P
-        currentTexCoords -= float2(deltaTexCoords.x, -deltaTexCoords.y);
+        currentTexCoords -= deltaTexCoords;
         // get depthmap value at current texture coordinates
         currentDepthMapValue = tex3.Sample(splr, currentTexCoords).r;
         // get depth of next layer
@@ -84,7 +88,7 @@ float2 ParallaxMapping(float2 texCoords, float3 viewDir)
     }
 
     // get texture coordinates before collision (reverse operations)
-    float2 prevTexCoords = currentTexCoords + float2(deltaTexCoords.x, -deltaTexCoords.y);
+    float2 prevTexCoords = currentTexCoords + deltaTexCoords;
 
     // get depth after and before collision for linear interpolation
     float afterDepth = currentDepthMapValue - currentLayerDepth;
@@ -117,56 +121,23 @@ float4 main(PS_IN psIn) : SV_Target
     // ambient
     float3 ambient = 0.1 * color;
     // diffuse
-    float3 lightDir = normalize(psIn.lightPos - psIn.tPos);
-    float diff = max(dot(lightDir, normal), 0.0);
-    float3 diffuse = diff * color;
+    
+    const LightVectorData lv = CalculateLightVectorData(psIn.lightPos, psIn.tPos); 
+    const float att = Attenuate(attConst, attLin, attQuad, lv.distToL);
+    
+    float diff = max(dot(lv.dirToL, normal), 0.0);
+    float3 diffuse = diff * att * color;
     // specular    
-    float3 reflectDir = reflect(-lightDir, normal);
-    float3 halfwayDir = normalize(lightDir + viewDir);
+    float3 reflectDir = reflect(-lv.dirToL, normal);
+    float3 halfwayDir = normalize(lv.dirToL + viewDir);
     
     const float4 specularSample = tex1.Sample(splr, texCoords);
     float3 specularReflectionColor = specularSample.rgb;
 
     float specularPower = pow(2.0f, specularSample.a * 13.0f);
     
-    float spec = pow(max(dot(normal, halfwayDir), 0.0), specularPower);
+    float spec = pow(max(dot(normal, halfwayDir), 0.0), specularPower) * att;
 
     float3 specular = specularReflectionColor * spec;
     return float4(ambient + diffuse + specular, 1.0);
-    
-    
-    
-    
-    
-    //float3 viewDir = normalize(psIn.tViewPos - psIn.tPos);
-    //float2 texCoords = psIn.tc;
-    
-    //texCoords = ParallaxMapping(psIn.tc, viewDir);
-   
-    
-    
-    //float4 diffuseTex = tex.Sample(splr, texCoords);
-    //return diffuseTex;
- //   clip(diffuseTex.a < 0.5f ? -1 : 1);
-    
- //   viewNorm = MapNormal(viewTan, viewBiTan, viewNorm, tc, tex2, splr);
- //   const LightVectorData lv = CalculateLightVectorData((float3) mul(float4(4, 12, 4, 1.0f), view), viewPos);
-        
- //   const float att = Attenuate(attConst, attLin, attQuad, lv.distToL);
-    
-	//// diffuse light
- //   const float3 diffuse = Diffuse(diffuseColour, diffuseIntensity, att, lv.vToL, viewNorm);
-
- //   float3 specularReflectionColor;
-
- //   const float4 specularSample = tex1.Sample(splr, tc);
- //   specularReflectionColor = specularSample.rgb;
-
- //   float specularPower = pow(2.0f, specularSample.a * 13.0f);
-    
- //   // specular reflected
- //   const float3 specularReflected = Speculate(specularReflectionColor, specularIntensity, viewNorm, lv.vToL, viewPos, att, specularPower);
-	//// final color = attenuate diffuse & ambient by diffuse texture color and add specular reflected
- //   return float4( saturate((diffuse + ambient) * diffuseTex.rgb + specularReflected), diffuseTex.a);
-
 }

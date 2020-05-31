@@ -127,11 +127,7 @@ public:
 	Model(Graphics& gfx, const std::string& fileName, float scale = 1.0f)
 	{
 		Assimp::Importer imp;
-		const auto pScene = imp.ReadFile(fileName, aiProcess_Triangulate |
-			aiProcess_JoinIdenticalVertices |
-			aiProcess_ConvertToLeftHanded |
-			aiProcess_GenNormals |
-			aiProcess_CalcTangentSpace);
+		const auto pScene = imp.ReadFile(fileName, aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast);
 
 		for (size_t i = 0; i < pScene->mNumMeshes; ++i)
 		{
