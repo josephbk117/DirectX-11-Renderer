@@ -20,6 +20,11 @@ DirectX::XMMATRIX Camera::GetMatrix() const noexcept
 	return XMMatrixLookAtLH(camPos, camTarget, { 0.0f, 1.0f,0.0f, 0.0f });
 }
 
+DirectX::XMVECTOR Camera::GetPosition() const noexcept
+{
+	return DirectX::XMLoadFloat3(&pos);
+}
+
 void Camera::Reset() noexcept
 {
 	pos = { 0.0f, 0.0, 0.0f };

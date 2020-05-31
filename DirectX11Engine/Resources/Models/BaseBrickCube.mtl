@@ -11,7 +11,8 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd factory_brick_diff_1k.jpg
-map_Bump -bm 0.677420 factory_brick_nor_1k.jpg
+map_Kn factory_brick_nor_1k.jpg
+disp factory_brick_disp_1k.jpg
 
 newmtl Brick_mt_NONE
 Ns 96.078431
@@ -22,5 +23,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Bump -bm 0.677420 factory_brick_nor_1k.jpg
+map_kn factory_brick_nor_1k.jpg
 map_Kd factory_brick_diff_1k.jpg
+disp factory_brick_disp_1k.jpg
+

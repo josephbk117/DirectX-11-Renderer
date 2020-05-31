@@ -5,6 +5,7 @@ class Camera
 public:
 	Camera() noexcept;
 	DirectX::XMMATRIX GetMatrix() const noexcept;
+	DirectX::XMVECTOR GetPosition() const noexcept;
 	void Reset() noexcept;
 	void Rotate(float dx, float dy) noexcept;
 	void Translate(DirectX::XMFLOAT3 translation) noexcept;

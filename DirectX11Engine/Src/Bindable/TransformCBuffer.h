@@ -11,10 +11,12 @@ public:
 protected:
 	struct Transforms
 	{
+		DirectX::XMMATRIX model;
 		DirectX::XMMATRIX view;
 		DirectX::XMMATRIX projection;
 		DirectX::XMMATRIX modelView;
 		DirectX::XMMATRIX modelViewProj;
+		DirectX::XMVECTOR camPos;
 	};
 	void UpdateBindImpl(Graphics& gfx, const Transforms& tf) noexcept;
 	Transforms GetTransforms(Graphics& gfx) noexcept;
