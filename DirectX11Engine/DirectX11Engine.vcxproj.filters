@@ -167,6 +167,9 @@
     <ClCompile Include="Src\LayoutCodex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Drawable\Terrain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\App.h">
@@ -313,6 +316,9 @@
     <ClInclude Include="Src\LayoutCodex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Drawable\Terrain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\PixelShader.hlsl">
@@ -330,6 +336,8 @@
     <FxCompile Include="Shaders\SkyboxVertexShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Shaders\TerrainVertexShader.hlsl" />
+    <FxCompile Include="Shaders\TerrainPixelShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\LightVectorData.hlsli">
@@ -631,5 +639,8 @@
     <Image Include="Resources\Models\sponza.obj Textures\vase_round_spec.png">
       <Filter>Resources</Filter>
     </Image>
+    <Image Include="Resources\Images\Seamless ground sand texture.jpg" />
+    <Image Include="Resources\Images\Kbsd_Heightmap.jpg" />
+    <Image Include="Resources\Images\testHeightMap.png" />
   </ItemGroup>
 </Project>

@@ -200,7 +200,7 @@ float3 get_incident_light(const in ray_t ray, float3 sun_dir)
 }
 
 float4 main(float3 viewPos : Position) : SV_Target
-{    
+{
     viewPos = normalize(viewPos);
     float3 col = float3(0,0,0);
 

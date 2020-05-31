@@ -3,20 +3,22 @@
 #include "Imgui/imgui_impl_dx11.h"
 #include "Drawable/Model.h"
 #include "Drawable/PhysicalSkybox.h"
+#include "Drawable/Terrain.h"
 #include "Image.h"
 
 App::App()
 	:
-	wnd(1280, 720, "Dx11 Engine Test")
+	wnd(1536, 864, "Dx11 Engine Test")
 {
 	//drawables.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\TestScene.fbx"));
 	//drawables.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\nanosuit.obj"));
 	//drawables.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\BaseBrickCube.obj", 50.0f));
 	//drawables.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\Plane.obj"));
-	models.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\sponza.obj", 0.5f));
+	//models.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\sponza.obj", 0.5f));
+	terrains.push_back(std::make_unique<Terrain>(wnd.Gfx(), "Resources\\Images\\testHeightMap2.png", 150.0f));
 	drawables.push_back(std::make_unique<PhysicalSkybox>(wnd.Gfx(), "Resources\\Models\\skyboxSphere.fbx"));
 
-	wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 720.0f / 1280.0f, 0.5f, 3500.0f));
+	wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 720.0f / 1280.0f, 0.5f, 50000.0f));
 }
 
 int App::Start()
@@ -94,6 +96,11 @@ void App::DoFrame()
 	auto dt = timer.Mark();
 	wnd.Gfx().ClearBuffer(0.07f, 0.2f, 0.42f);
 
+	for (auto& t : terrains)
+	{
+		t->Draw(wnd.Gfx());
+	}
+
 	for (auto& b : drawables)
 	{
 		b->Draw(wnd.Gfx());
@@ -116,7 +123,7 @@ void App::DoFrame()
 		ImGui::ShowDemoWindow(&showDemoWindow);
 	}
 
-	models[0]->ShowWindow("DEBUG INFO");
+	//models[0]->ShowWindow("DEBUG INFO");
 
 	/*drawables[0]->ShowWindow("DEBUG INFO");
 	drawables[1]->ShowWindow("DEBUG INFO 2");*/
