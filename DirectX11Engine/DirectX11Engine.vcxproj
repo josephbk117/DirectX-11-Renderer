@@ -62,6 +62,7 @@
     <ClCompile Include="Src\RenderJob\Technique.cpp" />
     <ClCompile Include="Src\RenderJob\TechniqueProbe.cpp" />
     <ClCompile Include="Src\Drawable\Terrain.cpp" />
+    <ClCompile Include="Src\Bindable\TextureArray.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\LayoutCodex.h" />
@@ -113,6 +114,7 @@
     <ClInclude Include="Src\RenderJob\Technique.h" />
     <ClInclude Include="Src\RenderJob\TechniqueProbe.h" />
     <ClInclude Include="Src\Drawable\Terrain.h" />
+    <ClInclude Include="Src\Bindable\TextureArray.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\OutlineVertexShader.hlsl">

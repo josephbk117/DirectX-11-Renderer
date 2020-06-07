@@ -13,9 +13,13 @@
 #include "../Bindable/IndexBuffer.h"
 #include "../Bindable/BlendOperation.h"
 #include "../Bindable/Rasterizer.h"
+#include "../Imgui/imgui.h"
+#include "../Bindable/TextureArray.h"
 
 Terrain::Terrain(Graphics& gfx, const std::string& heightMap, float scale /*= 1.0f*/) noexcept
 {
+	info.heightScale = scale;
+
 	const Image& img = Image::FromFile(heightMap);
 
 	heightMapData.reserve(img.GetPixelCount());
@@ -26,6 +30,7 @@ Terrain::Terrain(Graphics& gfx, const std::string& heightMap, float scale /*= 1.
 	vertices.reserve(meshResolution);
 
 	const unsigned int indexCount = (meshResolution - 1) * (meshResolution - 1) * 4;
+	const float scaleToFit_1Km_Unit = 1000.0f / 512.0f;
 
 	std::vector<unsigned int> indices;
 	indices.reserve(indexCount);
@@ -35,7 +40,7 @@ Terrain::Terrain(Graphics& gfx, const std::string& heightMap, float scale /*= 1.
 	{
 		for (unsigned int j = 0; j < meshResolution; j++)
 		{
-			float x = i * 5.0f, z = j * 5.0f;
+			float x = i * scaleToFit_1Km_Unit, z = j * scaleToFit_1Km_Unit;
 			float height = ((heightMapData[i + meshResolution * j].GetR() / 255.0f) * 2.0f - 1.0f) * scale;
 			vertices.push_back({ { x, height, z } , { 0.0f, 1.0f, 0.0f } });
 		}
@@ -60,7 +65,13 @@ Terrain::Terrain(Graphics& gfx, const std::string& heightMap, float scale /*= 1.
 	AddBind(std::make_shared<VertexBuffer>(gfx, vertices));
 	AddBind(std::make_shared<IndexBuffer>(gfx, indices));
 	AddBind(Rasterizer::Resolve(gfx, Rasterizer::RasterizerMode{ false, false }));
-	AddBind(Texture::Resolve(gfx, "Resources\\Images\\Seamless ground sand texture.jpg", 0));
+
+	std::vector<std::string> paths(3);
+	paths[0] = "Resources\\Images\\RocksArid0038_1_600.jpg";
+	paths[1] = "Resources\\Images\\Seamless stone cliff face mountain.jpg";
+	paths[2] = "Resources\\Images\\Cliffs0073_1_600.jpg";
+
+	AddBind(TextureArray::Resolve(gfx, paths, 0));
 
 	auto pvs = VertexShader::Resolve(gfx, "Shaders\\TerrainVertexShader.cso");
 	auto pvsbc = std::static_pointer_cast<VertexShader>(pvs)->GetBytecode();
@@ -81,6 +92,10 @@ Terrain::Terrain(Graphics& gfx, const std::string& heightMap, float scale /*= 1.
 	AddBind(Topology::Resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 	AddBind(std::make_shared<TransformCbuffer>(gfx, *this, 0));
 
+
+	pTerrainInfoBuffer = std::make_shared<PixelConstantBuffer<TerrainInfo>>(gfx, info, 0);
+	AddBind(pTerrainInfoBuffer);
+
 }
 
 DirectX::XMMATRIX Terrain::GetTransformXM() const noexcept
@@ -90,7 +105,33 @@ DirectX::XMMATRIX Terrain::GetTransformXM() const noexcept
 
 void Terrain::Draw(Graphics& gfx) const noexcept
 {
+	pTerrainInfoBuffer->Update(gfx, info);
 	Drawable::Draw(gfx);
+}
+
+void Terrain::ShowWindow(const char* windowName) noexcept
+{
+	windowName = windowName ? windowName : "Model";
+	using namespace std::string_literals;
+	if (ImGui::Begin(windowName))
+	{
+		ImGui::Text("Terrain Info");
+
+		for (int i = 0; i < 3; i++)
+		{
+			const std::string sliderName = "Start Height #"s + std::to_string(i);
+			ImGui::SliderFloat(sliderName.c_str(), &info.startHeight[i], 0.0f, 1.0f);
+
+			const std::string texScale = "Texture Scale #"s + std::to_string(i);
+			ImGui::SliderFloat(texScale.c_str(), &info.texScale[i], -1.0f, 1.0f);
+
+			const std::string colourAndBlend = "Colour And Blend #"s + std::to_string(i);
+			DirectX::XMVECTOR col = DirectX::XMLoadFloat4(&info.colourBlendInfo[i]);
+			ImGui::ColorEdit4(colourAndBlend.c_str(), &col.m128_f32[0]);
+			DirectX::XMStoreFloat4(&info.colourBlendInfo[i], col);
+		}
+	}
+	ImGui::End();
 }
 
 void Terrain::CalculateNormals() noexcept

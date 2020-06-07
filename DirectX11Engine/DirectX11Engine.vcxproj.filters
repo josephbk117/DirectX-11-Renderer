@@ -170,6 +170,9 @@
     <ClCompile Include="Src\Drawable\Terrain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Bindable\TextureArray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\App.h">
@@ -317,6 +320,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\Drawable\Terrain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Bindable\TextureArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
