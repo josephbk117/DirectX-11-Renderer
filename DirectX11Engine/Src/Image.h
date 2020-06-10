@@ -3,7 +3,6 @@
 #include "DirectXTex/DirectXTex.h"
 #include <vector>
 
-
 class Image
 {
 public:

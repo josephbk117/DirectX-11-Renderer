@@ -18,4 +18,5 @@ private:
 	EngineTimer timer;
 	std::vector<std::unique_ptr<class Drawable>> drawables;
 	std::vector<std::unique_ptr<class Model>> models;
+	std::vector<std::unique_ptr<class Terrain>> terrains;
 };

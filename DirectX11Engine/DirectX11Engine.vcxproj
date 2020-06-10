@@ -61,6 +61,8 @@
     <ClCompile Include="Src\Bindable\StencilOperation.cpp" />
     <ClCompile Include="Src\RenderJob\Technique.cpp" />
     <ClCompile Include="Src\RenderJob\TechniqueProbe.cpp" />
+    <ClCompile Include="Src\Drawable\Terrain.cpp" />
+    <ClCompile Include="Src\Bindable\TextureArray.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\LayoutCodex.h" />
@@ -111,6 +113,8 @@
     <ClInclude Include="Src\Bindable\StencilOperation.h" />
     <ClInclude Include="Src\RenderJob\Technique.h" />
     <ClInclude Include="Src\RenderJob\TechniqueProbe.h" />
+    <ClInclude Include="Src\Drawable\Terrain.h" />
+    <ClInclude Include="Src\Bindable\TextureArray.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\OutlineVertexShader.hlsl">
@@ -155,6 +159,26 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)/Shaders/%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)/Shaders/%(Filename).cso</ObjectFileOutput>
     </FxCompile>
+    <FxCompile Include="Shaders\TerrainPixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)/Shaders/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)/Shaders/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Shaders\TerrainVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)/Shaders/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)/Shaders/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
     <FxCompile Include="Shaders\VertexShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
@@ -181,7 +205,10 @@
     <None Include="Shaders\ShaderOps.hlsli" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Resources\Images\Kbsd_Heightmap.jpg" />
+    <Image Include="Resources\Images\Seamless ground sand texture.jpg" />
     <Image Include="Resources\Images\TesterImage1.png" />
+    <Image Include="Resources\Images\testHeightMap.png" />
     <Image Include="Resources\Models\nanosuit.obj Textures\arm_dif.png" />
     <Image Include="Resources\Models\nanosuit.obj Textures\arm_showroom_ddn.png" />
     <Image Include="Resources\Models\nanosuit.obj Textures\arm_showroom_spec.png" />

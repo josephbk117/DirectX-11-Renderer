@@ -161,7 +161,7 @@ public:
 				{ mesh.mTextureCoords[0][i].x, mesh.mTextureCoords[0][i].y} });
 		}
 
-		std::vector<unsigned short> indices;
+		std::vector<unsigned int> indices;
 		indices.reserve(static_cast<size_t>(mesh.mNumFaces) * 3);
 
 		for (unsigned int i = 0; i < mesh.mNumFaces; ++i)

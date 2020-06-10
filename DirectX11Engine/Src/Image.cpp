@@ -3,9 +3,10 @@
 #include "Utilities/EngineUtilities.h"
 #include <assert.h>
 
+
 Image::Image(int width, int height) noexcept
 {
-	HRESULT hr = scratch.Initialize2D( format, width, height, 1u, 1u );
+	HRESULT hr = scratch.Initialize2D(format, width, height, 1u, 1u);
 	if (FAILED(hr))
 	{
 		assert("Failed to initialize image");
