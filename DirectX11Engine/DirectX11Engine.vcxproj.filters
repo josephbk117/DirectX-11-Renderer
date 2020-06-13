@@ -173,6 +173,12 @@
     <ClCompile Include="Src\Bindable\TextureArray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Bindable\DomainShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Bindable\HullShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\App.h">
@@ -325,6 +331,12 @@
     <ClInclude Include="Src\Bindable\TextureArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Bindable\DomainShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Bindable\HullShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\PixelShader.hlsl">
@@ -344,6 +356,8 @@
     </FxCompile>
     <FxCompile Include="Shaders\TerrainVertexShader.hlsl" />
     <FxCompile Include="Shaders\TerrainPixelShader.hlsl" />
+    <FxCompile Include="Shaders\TerrainHullShader.hlsl" />
+    <FxCompile Include="Shaders\TerrainDomainShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\LightVectorData.hlsli">

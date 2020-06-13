@@ -22,6 +22,12 @@ public:
 		float heightScale = 0.0f;
 	};
 
+	struct DetailInfo
+	{
+		float maxTessellationAmount = 1.0f;
+		float padding[3];
+	};
+
 	Terrain(Graphics& gfx, const std::string& heightMap, float scale = 1.0f) noexcept;
 	DirectX::XMMATRIX GetTransformXM() const noexcept override;
 	void Draw(Graphics& gfx) const noexcept override;
@@ -38,10 +44,12 @@ private:
 	void CalculateNormals() noexcept;
 	std::vector<Image::Color> heightMapData;
 	std::vector<Vertex> vertices;
-	TerrainInfo info;
+	TerrainInfo terrainInfo;
+	DetailInfo detailInfo;
 	std::shared_ptr<PixelConstantBuffer<TerrainInfo>> pTerrainInfoBuffer = nullptr;
+	std::shared_ptr<HullConstantBuffer<DetailInfo>> pDetailInfoBuffer = nullptr;
 
-	static constexpr unsigned int meshResolution = 512;
+	static constexpr unsigned int meshResolution = 256;
 
 };
 

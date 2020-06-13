@@ -15,10 +15,12 @@
 #include "../Bindable/Rasterizer.h"
 #include "../Imgui/imgui.h"
 #include "../Bindable/TextureArray.h"
+#include "../Bindable/HullShader.h"
+#include "../Bindable/DomainShader.h"
 
 Terrain::Terrain(Graphics& gfx, const std::string& heightMap, float scale /*= 1.0f*/) noexcept
 {
-	info.heightScale = scale;
+	terrainInfo.heightScale = scale;
 
 	const Image& img = Image::FromFile(heightMap);
 
@@ -30,10 +32,13 @@ Terrain::Terrain(Graphics& gfx, const std::string& heightMap, float scale /*= 1.
 	vertices.reserve(meshResolution);
 
 	const unsigned int indexCount = (meshResolution - 1) * (meshResolution - 1) * 4;
-	const float scaleToFit_1Km_Unit = 1000.0f / 512.0f;
+	const float scaleToFit_1Km_Unit = 1000.0f / static_cast<float>(meshResolution);
 
 	std::vector<unsigned int> indices;
 	indices.reserve(indexCount);
+
+	unsigned int skipIndex = (int)((float)img.GetWidth() / meshResolution);
+	unsigned int rowOffset = img.GetWidth() * skipIndex;
 
 	int index = 0;
 	for (unsigned int i = 0; i < meshResolution; i++)
@@ -41,7 +46,7 @@ Terrain::Terrain(Graphics& gfx, const std::string& heightMap, float scale /*= 1.
 		for (unsigned int j = 0; j < meshResolution; j++)
 		{
 			float x = i * scaleToFit_1Km_Unit, z = j * scaleToFit_1Km_Unit;
-			float height = ((heightMapData[i + meshResolution * j].GetR() / 255.0f) * 2.0f - 1.0f) * scale;
+			float height = ((heightMapData[i* skipIndex + rowOffset * j].GetR() / 255.0f) * 2.0f - 1.0f) * scale;
 			vertices.push_back({ { x, height, z } , { 0.0f, 1.0f, 0.0f } });
 		}
 	}
@@ -79,6 +84,8 @@ Terrain::Terrain(Graphics& gfx, const std::string& heightMap, float scale /*= 1.
 	AddBind(std::move(pvs));
 	AddBind(Sampler::Resolve(gfx));
 	AddBind(PixelShader::Resolve(gfx, "Shaders\\TerrainPixelShader.cso"));
+	AddBind(HullShader::Resolve(gfx, "Shaders\\TerrainHullShader.cso"));
+	AddBind(DomainShader::Resolve(gfx, "Shaders\\TerrainDomainShader.cso"));
 
 	const std::vector< D3D11_INPUT_ELEMENT_DESC >ied =
 	{
@@ -89,12 +96,14 @@ Terrain::Terrain(Graphics& gfx, const std::string& heightMap, float scale /*= 1.
 	};
 
 	AddBind(std::make_shared<InputLayout>(gfx, ied, pvsbc));
-	AddBind(Topology::Resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+	AddBind(Topology::Resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST));
 	AddBind(std::make_shared<TransformCbuffer>(gfx, *this, 0));
 
 
-	pTerrainInfoBuffer = std::make_shared<PixelConstantBuffer<TerrainInfo>>(gfx, info, 0);
+	pTerrainInfoBuffer = std::make_shared<PixelConstantBuffer<TerrainInfo>>(gfx, terrainInfo, 0);
+	pDetailInfoBuffer = std::make_shared<HullConstantBuffer<DetailInfo>>(gfx, detailInfo, 0);
 	AddBind(pTerrainInfoBuffer);
+	AddBind(pDetailInfoBuffer);
 
 }
 
@@ -105,7 +114,8 @@ DirectX::XMMATRIX Terrain::GetTransformXM() const noexcept
 
 void Terrain::Draw(Graphics& gfx) const noexcept
 {
-	pTerrainInfoBuffer->Update(gfx, info);
+	pTerrainInfoBuffer->Update(gfx, terrainInfo);
+	pDetailInfoBuffer->Update(gfx, detailInfo);
 	Drawable::Draw(gfx);
 }
 
@@ -120,16 +130,19 @@ void Terrain::ShowWindow(const char* windowName) noexcept
 		for (int i = 0; i < 3; i++)
 		{
 			const std::string sliderName = "Start Height #"s + std::to_string(i);
-			ImGui::SliderFloat(sliderName.c_str(), &info.startHeight[i], 0.0f, 1.0f);
+			ImGui::SliderFloat(sliderName.c_str(), &terrainInfo.startHeight[i], 0.0f, 1.0f);
 
 			const std::string texScale = "Texture Scale #"s + std::to_string(i);
-			ImGui::SliderFloat(texScale.c_str(), &info.texScale[i], -1.0f, 1.0f);
+			ImGui::SliderFloat(texScale.c_str(), &terrainInfo.texScale[i], -1.0f, 1.0f);
 
 			const std::string colourAndBlend = "Colour And Blend #"s + std::to_string(i);
-			DirectX::XMVECTOR col = DirectX::XMLoadFloat4(&info.colourBlendInfo[i]);
+			DirectX::XMVECTOR col = DirectX::XMLoadFloat4(&terrainInfo.colourBlendInfo[i]);
 			ImGui::ColorEdit4(colourAndBlend.c_str(), &col.m128_f32[0]);
-			DirectX::XMStoreFloat4(&info.colourBlendInfo[i], col);
+			DirectX::XMStoreFloat4(&terrainInfo.colourBlendInfo[i], col);
 		}
+
+		ImGui::Separator();
+		ImGui::SliderFloat("Tessellation Factor", &detailInfo.maxTessellationAmount, 1.0f, 64.0f);
 	}
 	ImGui::End();
 }
@@ -141,14 +154,14 @@ void Terrain::CalculateNormals() noexcept
 	DirectX::XMFLOAT3 vertex1, vertex2, vertex3;
 	DirectX::XMVECTOR vector1, vector2;
 	float sum[3], length;
-	std::vector<DirectX::XMFLOAT3> normals(511 * 511);
+	std::vector<DirectX::XMFLOAT3> normals((meshResolution-1) * (meshResolution - 1));
 
-	const unsigned int m_terrainWidth = 512, m_terrainHeight = 512;
+	const unsigned int m_terrainWidth = meshResolution, m_terrainHeight = meshResolution;
 
 	// Go through all the faces in the mesh and calculate their normals.
-	for (j = 0; j < (512 - 1); j++)
+	for (j = 0; j < (meshResolution - 1); j++)
 	{
-		for (i = 0; i < (512 - 1); i++)
+		for (i = 0; i < (meshResolution - 1); i++)
 		{
 			index1 = ((j + 1) * m_terrainWidth) + i;      // Bottom left vertex.
 			index2 = ((j + 1) * m_terrainWidth) + (i + 1);  // Bottom right vertex.

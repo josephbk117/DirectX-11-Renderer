@@ -9,6 +9,7 @@ cbuffer CBuf
 };
 struct VS_Out
 {
+    matrix modelViewProj : MATRIX;
     float2 tex : TexCoord;
     float3 worldPos : Position;
     float3 normal : Normal;
@@ -18,7 +19,7 @@ struct VS_Out
 VS_Out main(float3 pos : Position, float3 norm : Normal, float3 tan : Tangent, float biTan : BiTangent)
 {
     VS_Out vso;
-    //pos.y = sin(pos.x + pos.z) * 4.0f;
+    vso.modelViewProj = modelViewProj;
     vso.worldPos = pos;
     vso.pos = mul(float4(pos, 1.0f), modelViewProj);
     vso.normal = norm;
