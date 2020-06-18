@@ -2,7 +2,7 @@
 #include "../Image.h"
 #include "BindableCodex.h"
 
-Texture::Texture(Graphics& gfx, Image& img, unsigned int slot) : slot(slot)
+Texture::Texture(Graphics& gfx, Image& img, unsigned int slot, PipelineStage stage /*= PipelineStage::PixelShader*/) : slot(slot), stage(stage)
 {
 	const bool MIPMAP_ENABLED = true;
 
@@ -50,7 +50,7 @@ Texture::Texture(Graphics& gfx, Image& img, unsigned int slot) : slot(slot)
 	}
 }
 
-Texture::Texture(Graphics& gfx, const std::string& path, unsigned int slot /*= 0*/) : path(path), slot(slot)
+Texture::Texture(Graphics& gfx, const std::string& path, unsigned int slot /*= 0*/, PipelineStage stage /*= PipelineStage::PixelShader*/) : path(path), slot(slot), stage(stage)
 {
 	const auto img = Image::FromFile(path);
 
@@ -102,7 +102,24 @@ Texture::Texture(Graphics& gfx, const std::string& path, unsigned int slot /*= 0
 
 void Texture::Bind(Graphics& gfx) noexcept
 {
-	GetContext(gfx)->PSSetShaderResources(slot, 1, pTextureView.GetAddressOf());
+	switch (stage)
+	{
+	case PipelineStage::VertexShader:
+		GetContext(gfx)->VSSetShaderResources(slot, 1, pTextureView.GetAddressOf());
+		break;
+	case PipelineStage::HullShader:
+		GetContext(gfx)->HSSetShaderResources(slot, 1, pTextureView.GetAddressOf());
+		break;
+	case PipelineStage::DomainShader:
+		GetContext(gfx)->DSSetShaderResources(slot, 1, pTextureView.GetAddressOf());
+		break;
+	case PipelineStage::PixelShader:
+		GetContext(gfx)->PSSetShaderResources(slot, 1, pTextureView.GetAddressOf());
+		break;
+	default:
+		GetContext(gfx)->PSSetShaderResources(slot, 1, pTextureView.GetAddressOf());
+		break;
+	}
 }
 
 std::shared_ptr<Bindable> Texture::Resolve(Graphics& gfx, const std::string& path, UINT slot)

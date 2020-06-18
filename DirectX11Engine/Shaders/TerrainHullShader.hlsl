@@ -5,6 +5,8 @@ struct VS_CONTROL_POINT_OUTPUT
     float2 tex : TexCoord;
     float3 worldPos : Position;
     float3 normal : Normal;
+    float3 tan : Tangent;
+    float3 biTan : BiTangent;
 	// TODO: change/add other stuff
 };
 
@@ -15,6 +17,8 @@ struct HS_CONTROL_POINT_OUTPUT
     float2 tex : TexCoord;
     float3 worldPos : Position;
     float3 normal : Normal;
+    float3 tan : Tangent;
+    float3 biTan : BiTangent;
 };
 
 // Output patch constant data.
@@ -65,6 +69,8 @@ HS_CONTROL_POINT_OUTPUT main(
     Output.tex = ip[i].tex;
     Output.worldPos = ip[i].worldPos;
     Output.normal = ip[i].normal;
+    Output.tan = ip[i].tan;
+    Output.biTan = ip[i].biTan;
 
 	return Output;
 }

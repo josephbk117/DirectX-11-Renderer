@@ -36,12 +36,16 @@ private:
 	struct Vertex
 	{
 		DirectX::XMFLOAT3 pos;
+		DirectX::XMFLOAT2 tex;
 		DirectX::XMFLOAT3 normal;
 		DirectX::XMFLOAT3 tangent;
 		DirectX::XMFLOAT3 binormal;
 	};
 
 	void CalculateNormals() noexcept;
+	void CalculateTerrainVectors() noexcept;
+	void CalculateTangentBinormal(Vertex vertex1, Vertex vertex2, Vertex vertex3, DirectX::XMVECTOR& tangent, DirectX::XMVECTOR& binormal) noexcept;
+
 	std::vector<Image::Color> heightMapData;
 	std::vector<Vertex> vertices;
 	TerrainInfo terrainInfo;
@@ -49,7 +53,6 @@ private:
 	std::shared_ptr<PixelConstantBuffer<TerrainInfo>> pTerrainInfoBuffer = nullptr;
 	std::shared_ptr<HullConstantBuffer<DetailInfo>> pDetailInfoBuffer = nullptr;
 
-	static constexpr unsigned int meshResolution = 256;
+	static constexpr unsigned int meshResolution = 512;
 
 };
-

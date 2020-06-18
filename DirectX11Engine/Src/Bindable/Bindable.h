@@ -3,6 +3,14 @@
 #include "..\RenderJob\TechniqueProbe.h"
 #include <string>
 
+enum class PipelineStage
+{
+	VertexShader,
+	HullShader,
+	DomainShader,
+	PixelShader
+};
+
 class Bindable
 {
 public:
