@@ -65,7 +65,7 @@ float4 main(PS_In psIn, uint tid : SV_PrimitiveID) : SV_Target
         float3 nCol = triplanarNorm(psIn.worldPos, texScale[i], blendAxes, i);
         
         layerCol = (layerCol * (1.0f - drawStr)) + texCol * colourBlendInfo[i].rgb * drawStr;
-        normCol = (normCol * (1.0f - drawStr)) + nCol * colourBlendInfo[i].rgb * drawStr;
+        normCol = (normCol * (1.0f - drawStr)) + nCol * drawStr;
     }
     
      // build the tranform (rotation) into same space as tan/bitan/normal (target space)
