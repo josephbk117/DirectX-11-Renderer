@@ -1,10 +1,12 @@
 Texture2D tex[3] : register(t0);
 Texture2D tex1[3] : register(t3);
+Texture2D tex2 : register(t6);
+
 SamplerState splr;
 
 cbuffer TerrainInfo
 {
-    float4 colourBlendInfo [3];
+    float4 colourBlendInfo[3];
     vector<float, 3> texScale;
     vector<float, 3> startHeight;
     float heightScale;
@@ -47,11 +49,22 @@ float3 triplanarNorm(float3 worldPos, float scale, float3 blendAxes, int texInde
     return xproj + yproj + zproj;
 }
 
+// Reoriented Normal Blending
+float3 blend_rnm(float3 n1, float3 n2)
+{
+    n1 = n1 * 0.5 + 0.5;
+    n2 = n2 * 0.5 + 0.5;
+    n1 = n1 * float3(2, 2, 2) + float3(-1, -1, 0);
+    n2 = n2 * float3(-2, -2, 2) + float3(1, 1, -1);
+    return n1 * dot(n1, n2) / n1.z - n2;
+}
+
 float4 main(PS_In psIn, uint tid : SV_PrimitiveID) : SV_Target
 {
     float heightPercent = inverseLerp(0.0f, heightScale * 2.0f, psIn.worldPos.y + heightScale);
 
     float e = 1E-4;
+       
     float3 blendAxes = abs(normalize(psIn.normal));
     blendAxes /= blendAxes.x + blendAxes.y + blendAxes.z;
     float3 layerCol = (0, 0, 0);
@@ -72,12 +85,17 @@ float4 main(PS_In psIn, uint tid : SV_PrimitiveID) : SV_Target
     const float3x3 tanToTarget = float3x3(psIn.tan, psIn.biTan, psIn.normal);
     // sample and unpack the normal from texture into target space
     const float3 normalSample = normCol;
-    const float3 tanNormal = normalSample * 2.0f - 1.0f;
-    // bring normal from tanspace into target space
-    normCol = normalize(mul(tanNormal, tanToTarget));
     
+    float3 sampledNormal = normalize(tex2.Sample(splr, psIn.tex).rgb) * 2.0f - 1.0f;
+    const float3 tanNormal = normalSample * 2.0f - 1.0f;
+    
+    sampledNormal = blend_rnm(tanNormal, sampledNormal);
+    
+    // bring normal from tanspace into target space
+    normCol = normalize(mul(sampledNormal, tanToTarget));
+        
     float vdot = max(dot(normalize(float3(0, 1, 1)), normCol), 0.0f);
     
-    return float4((layerCol * vdot) + layerCol*0.2f, 1.0f);
+    return float4((layerCol * vdot) + layerCol * 0.2f, 1.0f);
 
 }

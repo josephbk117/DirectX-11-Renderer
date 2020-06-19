@@ -90,6 +90,8 @@ Terrain::Terrain(Graphics& gfx, const std::string& heightMap, float scale /*= 1.
 
 	AddBind(TextureArray::Resolve(gfx, paths, 3));
 
+	AddBind(Texture::Resolve(gfx, "Resources\\Images\\testHeightMap3Normal.png", 6));
+
 	auto pvs = VertexShader::Resolve(gfx, "Shaders\\TerrainVertexShader.cso");
 	auto pvsbc = std::static_pointer_cast<VertexShader>(pvs)->GetBytecode();
 
