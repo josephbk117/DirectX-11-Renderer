@@ -104,3 +104,94 @@ private:
 	DirectX::ScratchImage scratch;
 };
 
+class ImageHDR
+{
+public:
+	class ColorFloat
+	{
+	public:
+		DirectX::XMFLOAT4 data;
+	public:
+		constexpr ColorFloat() noexcept : data()
+		{}
+		constexpr ColorFloat(const ColorFloat& col) noexcept
+			:
+			data(col.data)
+		{}
+		constexpr ColorFloat(float d) noexcept
+			:
+			data(d,d,d,d)
+		{}
+		constexpr ColorFloat(float r, float g, float b, float a) noexcept
+			:
+			data(r,g,b,a)
+		{}
+		constexpr ColorFloat(float r, float g, float b) noexcept
+			:
+			data(r,g,b,1.0f)
+		{}
+		ColorFloat& operator =(ColorFloat color) noexcept
+		{
+			data = color.data;
+			return *this;
+		}
+		constexpr float GetA() const noexcept
+		{
+			return data.z;
+		}
+		constexpr float GetR() const noexcept
+		{
+			return data.w;
+		}
+		constexpr float GetG() const noexcept
+		{
+			return data.x;
+		}
+		constexpr float GetB() const noexcept
+		{
+			return data.y;
+		}
+		void SetA(float a) noexcept
+		{
+			data.z = a;
+		}
+		void SetR(float r) noexcept
+		{
+			data.w = r;
+		}
+		void SetG(float g) noexcept
+		{
+			data.x = g;
+		}
+		void SetB(float b) noexcept
+		{
+			data.y = b;
+		}
+	};
+
+public:
+	static constexpr DXGI_FORMAT format = DXGI_FORMAT::DXGI_FORMAT_R32G32B32A32_FLOAT;
+
+	ImageHDR() noexcept = default;
+	ImageHDR(int width, int height) noexcept;
+
+	static ImageHDR FromFile(const std::string& name);
+	static ImageHDR FromData(std::vector<ColorFloat>& colourData, unsigned int width, unsigned int height);
+
+	ImageHDR(ImageHDR&& source) noexcept = default;
+	ImageHDR(ImageHDR&) = delete;
+	ImageHDR& operator=(ImageHDR&& donor) noexcept = default;
+	ImageHDR& operator=(const ImageHDR&) = delete;
+
+	int GetWidth() const noexcept;
+	int GetHeight() const noexcept;
+	ColorFloat* GetData() const noexcept;
+	void ClearData(ColorFloat clearValue) noexcept;
+	int GetPixelCount() const noexcept;
+	int GetAllocatedMemorySize() const noexcept;
+	~ImageHDR() = default;
+private:
+	ImageHDR(DirectX::ScratchImage scratch, const std::string& path) noexcept;
+	DirectX::ScratchImage scratch;
+};
+

@@ -46,13 +46,15 @@ private:
 	void CalculateTerrainVectors() noexcept;
 	void CalculateTangentBinormal(Vertex vertex1, Vertex vertex2, Vertex vertex3, DirectX::XMVECTOR& tangent, DirectX::XMVECTOR& binormal) noexcept;
 
-	std::vector<Image::Color> heightMapData;
+	std::vector<ImageHDR::ColorFloat> terraintexture;
+	unsigned int terrainTextureDimenion = 0;
+
 	std::vector<Vertex> vertices;
 	TerrainInfo terrainInfo;
 	DetailInfo detailInfo;
 	std::shared_ptr<PixelConstantBuffer<TerrainInfo>> pTerrainInfoBuffer = nullptr;
 	std::shared_ptr<HullConstantBuffer<DetailInfo>> pDetailInfoBuffer = nullptr;
 
-	static constexpr unsigned int meshResolution = 512;
+	static constexpr unsigned int meshResolution = 128;
 
 };

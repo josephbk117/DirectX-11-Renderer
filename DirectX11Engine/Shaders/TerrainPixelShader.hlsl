@@ -61,6 +61,8 @@ float3 blend_rnm(float3 n1, float3 n2)
 
 float4 main(PS_In psIn, uint tid : SV_PrimitiveID) : SV_Target
 {
+    return tex2.Sample(splr, psIn.tex);
+    
     float heightPercent = inverseLerp(0.0f, heightScale * 2.0f, psIn.worldPos.y + heightScale);
 
     float e = 1E-4;

@@ -20,16 +20,27 @@
 
 Terrain::Terrain(Graphics& gfx, const std::string& heightMap, float scale /*= 1.0f*/) noexcept
 {
-	terrainInfo.heightScale = scale;
+	{
+		terrainInfo.heightScale = scale;
 
-	AddBind(std::make_shared<Texture>(gfx, heightMap, 0, PipelineStage::DomainShader));
+		const Image& img = Image::FromFile(heightMap);
 
-	const Image& img = Image::FromFile(heightMap);
+		terrainTextureDimenion = img.GetHeight();
 
-	heightMapData.reserve(img.GetPixelCount());
-	heightMapData.insert(heightMapData.end(), &img.GetData()[0], &img.GetData()[img.GetPixelCount()]);
+		std::vector<Image::Color> heightMapData;
+		heightMapData.reserve(img.GetPixelCount());
+		heightMapData.insert(heightMapData.end(), &img.GetData()[0], &img.GetData()[img.GetPixelCount()]);
+		terraintexture.reserve(img.GetPixelCount());
 
-	namespace dx = DirectX;
+		for (int i = 0; i < img.GetPixelCount(); i++)
+		{
+			float height = ((heightMapData[i].GetR() / 255.0f) * 2.0f - 1.0f) * scale;
+			terraintexture.push_back({ 1.0f, 0.5f, 0.2f, height });
+		}
+	}
+
+	AddBind(Texture::Resolve(gfx, heightMap, 0, PipelineStage::DomainShader));
+	AddBind(Texture::Resolve(gfx, "Resources\\Images\\testHeightMap3Normal.png", 1, PipelineStage::DomainShader));
 
 	vertices.reserve(meshResolution);
 
@@ -39,8 +50,8 @@ Terrain::Terrain(Graphics& gfx, const std::string& heightMap, float scale /*= 1.
 	std::vector<unsigned int> indices;
 	indices.reserve(indexCount);
 
-	unsigned int skipIndex = static_cast<unsigned int>((static_cast<float>(img.GetWidth()) / meshResolution));
-	unsigned int rowOffset = img.GetWidth() * skipIndex;
+	unsigned int skipIndex = static_cast<unsigned int>((static_cast<float>(terrainTextureDimenion) / meshResolution));
+	unsigned int rowOffset = terrainTextureDimenion * skipIndex;
 
 	int index = 0;
 	for (unsigned int i = 0; i < meshResolution; i++)
@@ -48,11 +59,11 @@ Terrain::Terrain(Graphics& gfx, const std::string& heightMap, float scale /*= 1.
 		for (unsigned int j = 0; j < meshResolution; j++)
 		{
 			float x = i * scaleToFit_1Km_Unit, z = j * scaleToFit_1Km_Unit;
-			float height = ((heightMapData[i * skipIndex + rowOffset * j].GetR() / 255.0f) * 2.0f - 1.0f) * scale;
+			//float height = ((heightMapData[i * skipIndex + rowOffset * j].GetR() / 255.0f) * 2.0f - 1.0f) * scale;
 
 			float u = static_cast<float>(i) / meshResolution;
 			float v = static_cast<float>(j) / meshResolution;
-			vertices.push_back({ { x, height, z } , {u, v},  { 0.0f, 1.0f, 0.0f } });
+			vertices.push_back({ { x, terraintexture[i * skipIndex + rowOffset * j].data.w, z } , {u, v},  { 0.0f, 1.0f, 0.0f } });
 		}
 	}
 
@@ -88,9 +99,10 @@ Terrain::Terrain(Graphics& gfx, const std::string& heightMap, float scale /*= 1.
 	paths[0] = "Resources\\Images\\Triplanar set\\tefndhwq_4K_Normal.jpg";
 	paths[2] = "Resources\\Images\\Triplanar set\\ueumdayn_2K_Normal.jpg";
 
-	AddBind(TextureArray::Resolve(gfx, paths, 3));
 
-	AddBind(Texture::Resolve(gfx, "Resources\\Images\\testHeightMap3Normal.png", 6));
+	ImageHDR imgHdr = ImageHDR::FromData(terraintexture, terrainTextureDimenion, terrainTextureDimenion);
+	AddBind(std::make_shared<Texture>(gfx, imgHdr, 6, PipelineStage::PixelShader));
+	//AddBind(Texture::Resolve(gfx, "Resources\\Images\\testHeightMap3Normal.png", 6));
 
 	auto pvs = VertexShader::Resolve(gfx, "Shaders\\TerrainVertexShader.cso");
 	auto pvsbc = std::static_pointer_cast<VertexShader>(pvs)->GetBytecode();
@@ -164,6 +176,118 @@ void Terrain::ShowWindow(const char* windowName) noexcept
 
 void Terrain::CalculateNormals() noexcept
 {
+	int pixelIndex = 0;
+
+	const unsigned int maxNUm = terrainTextureDimenion * terrainTextureDimenion;
+	for (int j = 0; j < terrainTextureDimenion - 1; j++)
+	{
+		for (int i = 0; i < terrainTextureDimenion; i++)
+		{
+			int tempIndex1 = ((j + 1) * terrainTextureDimenion) + i;      // Bottom left vertex.
+			int tempIndex2 = ((j + 1) * terrainTextureDimenion) + (i + 1);  // Bottom right vertex.
+			int tempIndex3 = (j * terrainTextureDimenion) + i;          // Upper left vertex.
+
+			if (tempIndex1 < maxNUm && tempIndex2 < maxNUm && tempIndex3 < maxNUm)
+			{
+
+				// Get three vertices from the face.
+				DirectX::XMFLOAT3 vertex1 = { 0, terraintexture[tempIndex1].data.w, 0 };
+				DirectX::XMFLOAT3 vertex2 = { 0, terraintexture[tempIndex2].data.w, 1 };
+				DirectX::XMFLOAT3 vertex3 = { -1, terraintexture[tempIndex3].data.w, 0 };
+
+
+				using namespace DirectX;
+
+				// Calculate the two vectors for this face.
+
+				DirectX::XMVECTOR vector1 = DirectX::XMLoadFloat3(&vertex1) - DirectX::XMLoadFloat3(&vertex3);
+				DirectX::XMVECTOR vector2 = DirectX::XMLoadFloat3(&vertex3) - DirectX::XMLoadFloat3(&vertex2);
+
+				// Calculate the cross product of those two vectors to get the un-normalized value for this face normal.
+
+				DirectX::XMFLOAT3 normals;
+
+				XMStoreFloat3(&normals, DirectX::XMVector3Cross(vector1, vector2));
+
+				// Calculate the length.
+				float length = (float)sqrt((normals.x * normals.x) + (normals.y * normals.y) + (normals.z * normals.z));
+
+				// Normalize the final value for this face using the length.
+				terraintexture[pixelIndex].data.x = normals.x / length;
+				terraintexture[pixelIndex].data.y = normals.y / length;
+				terraintexture[pixelIndex].data.z = normals.z / length;
+			}
+
+			pixelIndex++;
+		}
+	}
+
+	pixelIndex = 0;
+	for (int j = 0; j < terrainTextureDimenion; j++)
+	{
+		for (int i = 0; i < terrainTextureDimenion; i++)
+		{
+			// Initialize the sum.
+			float sum[3];
+			sum[0] = 0.0f;
+			sum[1] = 0.0f;
+			sum[2] = 0.0f;
+
+			// Bottom left face.
+			if (((i - 1) >= 0) && ((j - 1) >= 0))
+			{
+				int index = ((j - 1) * (terrainTextureDimenion - 1)) + (i - 1);
+
+				sum[0] += terraintexture[index].data.x;
+				sum[1] += terraintexture[index].data.y;
+				sum[2] += terraintexture[index].data.z;
+			}
+
+			// Bottom right face.
+			if ((i < (terrainTextureDimenion - 1)) && ((j - 1) >= 0))
+			{
+				int index = ((j - 1) * (terrainTextureDimenion - 1)) + i;
+				sum[0] += terraintexture[index].data.x;
+				sum[1] += terraintexture[index].data.y;
+				sum[2] += terraintexture[index].data.z;
+			}
+
+			// Upper left face.
+			if (((i - 1) >= 0) && (j < (terrainTextureDimenion - 1)))
+			{
+				int index = (j * (terrainTextureDimenion - 1)) + (i - 1);
+
+				sum[0] += terraintexture[index].data.x;
+				sum[1] += terraintexture[index].data.y;
+				sum[2] += terraintexture[index].data.z;
+			}
+
+			// Upper right face.
+			if ((i < (terrainTextureDimenion - 1)) && (j < (terrainTextureDimenion - 1)))
+			{
+				int index = (j * (terrainTextureDimenion - 1)) + i;
+
+				sum[0] += terraintexture[index].data.x;
+				sum[1] += terraintexture[index].data.y;
+				sum[2] += terraintexture[index].data.z;
+			}
+
+			// Calculate the length of this normal.
+			float length = (float)sqrt((sum[0] * sum[0]) + (sum[1] * sum[1]) + (sum[2] * sum[2]));
+
+			// Get an index to the vertex location in the height map array.
+			
+
+			// Normalize the final shared normal for this vertex and store it in the height map array.
+			terraintexture[pixelIndex].data.w = (sum[0] / length);
+			terraintexture[pixelIndex].data.x = (sum[1] / length);
+			terraintexture[pixelIndex].data.y = (sum[2] / length);
+
+			pixelIndex++;
+		}
+	}
+
+
 
 	int i, j, index1, index2, index3, index;
 	DirectX::XMFLOAT3 vertex1, vertex2, vertex3;
@@ -184,8 +308,6 @@ void Terrain::CalculateNormals() noexcept
 			vertex1 = vertices[index1].pos;
 			vertex2 = vertices[index2].pos;
 			vertex3 = vertices[index3].pos;
-
-			vertices[index1].tangent;
 
 			DirectX::XMVECTOR tangent, biTan;
 			CalculateTangentBinormal(vertices[index1], vertices[index2], vertices[index3], tangent, biTan);
@@ -216,6 +338,7 @@ void Terrain::CalculateNormals() noexcept
 			normals[index].x = (normals[index].x / length);
 			normals[index].y = (normals[index].y / length);
 			normals[index].z = (normals[index].z / length);
+
 		}
 	}
 
@@ -337,28 +460,14 @@ void Terrain::CalculateTangentBinormal(Vertex vertex1, Vertex vertex2, Vertex ve
 	using namespace DirectX;
 
 	// Calculate the two vectors for this face.
-	
+
 	vector1 = DirectX::XMLoadFloat3(&vertex1.pos) - DirectX::XMLoadFloat3(&vertex3.pos);
 	vector2 = DirectX::XMLoadFloat3(&vertex3.pos) - DirectX::XMLoadFloat3(&vertex2.pos);
-
-	/*vector1[0] = vertex2.x - vertex1.x;
-	vector1[1] = vertex2.y - vertex1.y;
-	vector1[2] = vertex2.z - vertex1.z;
-
-	vector2[0] = vertex3.x - vertex1.x;
-	vector2[1] = vertex3.y - vertex1.y;
-	vector2[2] = vertex3.z - vertex1.z;*/
 
 	// Calculate the tu and tv texture space vectors.
 
 	tuVector = DirectX::XMLoadFloat2(&vertex1.tex) - DirectX::XMLoadFloat2(&vertex2.tex);
 	tvVector = DirectX::XMLoadFloat2(&vertex1.tex) - DirectX::XMLoadFloat2(&vertex3.tex);
-
-	//tuVector.m128_f32[0] = vertex2.tex.x - vertex1.tex.x;
-	//tvVector.m128_f32[0] = vertex2.tex.y - vertex1.tex.y;
-
-	//tuVector.m128_f32[1] = vertex3.tex.x - vertex1.tex.x;
-	//tvVector.m128_f32[1] = vertex3.tex.y - vertex1.tex.y;
 
 	// Calculate the denominator of the tangent/binormal equation.
 	//den = 1.0f / (tuVector[0] * tvVector[1] - tuVector[1] * tvVector[0]);
@@ -377,9 +486,6 @@ void Terrain::CalculateTangentBinormal(Vertex vertex1, Vertex vertex2, Vertex ve
 	//length = DirectX::XMVector3Length(tangent).m128_f32[0];//(float)sqrt((tangent.x * tangent.x) + (tangent.y * tangent.y) + (tangent.z * tangent.z));
 
 	// Normalize the tangent and then store it.
-	//tangent.x = tangent.x / length;
-	//tangent.y = tangent.y / length;
-	//tangent.z = tangent.z / length;
 
 	tangent = DirectX::XMVector3Normalize(tangent);
 
@@ -387,9 +493,6 @@ void Terrain::CalculateTangentBinormal(Vertex vertex1, Vertex vertex2, Vertex ve
 	//length = (float)sqrt((binormal.x * binormal.x) + (binormal.y * binormal.y) + (binormal.z * binormal.z));
 
 	// Normalize the binormal and then store it.
-	/*binormal.x = binormal.x / length;
-	binormal.y = binormal.y / length;
-	binormal.z = binormal.z / length;*/
 
 	binormal = DirectX::XMVector3Normalize(binormal);
 }
