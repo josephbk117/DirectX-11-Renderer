@@ -110,7 +110,7 @@ public:
 	class ColorFloat
 	{
 	public:
-		DirectX::XMFLOAT4 data;
+		DirectX::XMFLOAT4 data{ 0 };
 	public:
 		constexpr ColorFloat() noexcept : data()
 		{}
@@ -120,15 +120,15 @@ public:
 		{}
 		constexpr ColorFloat(float d) noexcept
 			:
-			data(d,d,d,d)
+			data(d, d, d, d)
 		{}
 		constexpr ColorFloat(float r, float g, float b, float a) noexcept
 			:
-			data(r,g,b,a)
+			data(r, g, b, a)
 		{}
 		constexpr ColorFloat(float r, float g, float b) noexcept
 			:
-			data(r,g,b,1.0f)
+			data(r, g, b, 1.0f)
 		{}
 		ColorFloat& operator =(ColorFloat color) noexcept
 		{
@@ -153,19 +153,91 @@ public:
 		}
 		void SetA(float a) noexcept
 		{
-			data.z = a;
+			data.w = a;
 		}
 		void SetR(float r) noexcept
 		{
-			data.w = r;
+			data.x = r;
 		}
 		void SetG(float g) noexcept
 		{
-			data.x = g;
+			data.y = g;
 		}
 		void SetB(float b) noexcept
 		{
-			data.y = b;
+			data.z = b;
+		}
+
+		ColorFloat operator+(const ColorFloat& col) noexcept
+		{
+			ColorFloat outCol;
+
+			outCol.data.w = this->data.w + col.data.w;
+			outCol.data.x = this->data.x + col.data.x;
+			outCol.data.y = this->data.y + col.data.y;
+			outCol.data.z = this->data.z + col.data.z;
+
+			return outCol;
+		}
+
+		ColorFloat operator-(const ColorFloat& col) noexcept
+		{
+			ColorFloat outCol;
+
+			outCol.data.w = this->data.w - col.data.w;
+			outCol.data.x = this->data.x - col.data.x;
+			outCol.data.y = this->data.y - col.data.y;
+			outCol.data.z = this->data.z - col.data.z;
+
+			return outCol;
+		}
+
+		ColorFloat operator*(const ColorFloat& col) noexcept
+		{
+			ColorFloat outCol;
+
+			outCol.data.w = this->data.w * col.data.w;
+			outCol.data.x = this->data.x * col.data.x;
+			outCol.data.y = this->data.y * col.data.y;
+			outCol.data.z = this->data.z * col.data.z;
+
+			return outCol;
+		}
+
+		ColorFloat operator*(float scalar) noexcept
+		{
+			ColorFloat outCol;
+
+			outCol.data.w = this->data.w * scalar;
+			outCol.data.x = this->data.x * scalar;
+			outCol.data.y = this->data.y * scalar;
+			outCol.data.z = this->data.z * scalar;
+
+			return outCol;
+		}
+
+		ColorFloat operator/(const ColorFloat& col) noexcept
+		{
+			ColorFloat outCol;
+
+			outCol.data.w = this->data.w / col.data.w;
+			outCol.data.x = this->data.x / col.data.x;
+			outCol.data.y = this->data.y / col.data.y;
+			outCol.data.z = this->data.z / col.data.z;
+
+			return outCol;
+		}
+
+		ColorFloat operator/(float scalar) noexcept
+		{
+			ColorFloat outCol;
+
+			outCol.data.x = this->data.x / scalar;
+			outCol.data.y = this->data.y / scalar;
+			outCol.data.w = this->data.w / scalar;
+			outCol.data.z = this->data.z / scalar;
+
+			return outCol;
 		}
 	};
 

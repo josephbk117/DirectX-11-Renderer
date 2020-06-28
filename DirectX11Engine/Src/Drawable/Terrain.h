@@ -8,6 +8,13 @@ class Terrain : public Drawable
 {
 public:
 
+	struct TerrainInitInfo
+	{
+		unsigned int baseMeshResolution = 64; // Values above 512 might be redundant as tessellation will provide detail up close
+		float terrainUnitScale = 500.0f; // The world unit it extends in meters
+		float heightScale = 100.0f; // Height scale in meters
+	};
+
 	struct TerrainInfo
 	{
 		DirectX::XMFLOAT4 colourBlendInfo[3] =
@@ -25,10 +32,11 @@ public:
 	struct DetailInfo
 	{
 		float maxTessellationAmount = 1.0f;
-		float padding[3];
+		int smoothing = 1;
+		float padding[2];
 	};
 
-	Terrain(Graphics& gfx, const std::string& heightMap, float scale = 1.0f) noexcept;
+	Terrain(Graphics& gfx, const std::string& heightMap, const TerrainInitInfo& initInfo) noexcept;
 	DirectX::XMMATRIX GetTransformXM() const noexcept override;
 	void Draw(Graphics& gfx) const noexcept override;
 	void ShowWindow(const char* windowName) noexcept;
@@ -50,11 +58,10 @@ private:
 	unsigned int terrainTextureDimenion = 0;
 
 	std::vector<Vertex> vertices;
+	TerrainInitInfo terrainInitInfo;
 	TerrainInfo terrainInfo;
 	DetailInfo detailInfo;
 	std::shared_ptr<PixelConstantBuffer<TerrainInfo>> pTerrainInfoBuffer = nullptr;
-	std::shared_ptr<HullConstantBuffer<DetailInfo>> pDetailInfoBuffer = nullptr;
-
-	static constexpr unsigned int meshResolution = 128;
-
+	std::shared_ptr<HullConstantBuffer<DetailInfo>> pDetailInfoBufferHull = nullptr;
+	std::shared_ptr<DomainConstantBuffer<DetailInfo>> pDetailInfoBufferDomain = nullptr;
 };

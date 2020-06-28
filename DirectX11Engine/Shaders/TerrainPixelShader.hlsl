@@ -59,45 +59,36 @@ float3 blend_rnm(float3 n1, float3 n2)
     return n1 * dot(n1, n2) / n1.z - n2;
 }
 
+
 float4 main(PS_In psIn, uint tid : SV_PrimitiveID) : SV_Target
 {
-    return tex2.Sample(splr, psIn.tex);
+    const float3 texNormal = normalize(psIn.normal); //normalize(tex2.Sample(splr, psIn.tex).rgb);
+    const float heightPercent = inverseLerp(0.0f, heightScale * 2.0f, psIn.worldPos.y + heightScale);
+    const float e = 1E-4;
     
-    float heightPercent = inverseLerp(0.0f, heightScale * 2.0f, psIn.worldPos.y + heightScale);
-
-    float e = 1E-4;
-       
-    float3 blendAxes = abs(normalize(psIn.normal));
+    float3 blendAxes = abs(texNormal);
     blendAxes /= blendAxes.x + blendAxes.y + blendAxes.z;
+    
     float3 layerCol = (0, 0, 0);
     float3 normCol = (0, 0, 0);
-    
+
     for (int i = 0; i < 3; i++)
     {
-        float drawStr = inverseLerp(-colourBlendInfo[i].a / 2 - e, colourBlendInfo[i].a / 2, heightPercent - startHeight[i]);
-        
-        float3 texCol = triplanar(psIn.worldPos, texScale[i], blendAxes, i);
-        float3 nCol = triplanarNorm(psIn.worldPos, texScale[i], blendAxes, i);
-        
+        const float drawStr = inverseLerp(-colourBlendInfo[i].a / 2 - e, colourBlendInfo[i].a / 2, heightPercent - startHeight[i]);
+        const float3 texCol = triplanar(psIn.worldPos, texScale[i], blendAxes, i);
+        const float3 nCol = triplanarNorm(psIn.worldPos, texScale[i], blendAxes, i);
+
         layerCol = (layerCol * (1.0f - drawStr)) + texCol * colourBlendInfo[i].rgb * drawStr;
         normCol = (normCol * (1.0f - drawStr)) + nCol * drawStr;
     }
-    
+
      // build the tranform (rotation) into same space as tan/bitan/normal (target space)
-    const float3x3 tanToTarget = float3x3(psIn.tan, psIn.biTan, psIn.normal);
-    // sample and unpack the normal from texture into target space
-    const float3 normalSample = normCol;
-    
-    float3 sampledNormal = normalize(tex2.Sample(splr, psIn.tex).rgb) * 2.0f - 1.0f;
-    const float3 tanNormal = normalSample * 2.0f - 1.0f;
-    
-    sampledNormal = blend_rnm(tanNormal, sampledNormal);
-    
+    const float3x3 tanToTarget = float3x3(normalize(psIn.tan), normalize(psIn.biTan), texNormal);
+    const float3 tanNormal = normCol * 2.0f - 1.0f;
+
     // bring normal from tanspace into target space
-    normCol = normalize(mul(sampledNormal, tanToTarget));
-        
-    float vdot = max(dot(normalize(float3(0, 1, 1)), normCol), 0.0f);
-    
+    normCol = normalize(mul(tanNormal, tanToTarget));
+    const float vdot = max(dot(normalize(float3(0, 1, 1)), normCol), 0.0f);
     return float4((layerCol * vdot) + layerCol * 0.2f, 1.0f);
 
 }
