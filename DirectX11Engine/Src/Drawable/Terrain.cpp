@@ -35,7 +35,7 @@ Terrain::Terrain(Graphics& gfx, const std::string& heightMap, const TerrainInitI
 		for (int i = 0; i < img.GetPixelCount(); i++)
 		{
 			const float height = ((heightMapData[i].GetR() / 255.0f) * 2.0f - 1.0f) * initInfo.heightScale;
-			terraintexture.push_back({ 1.0f, 0.5f, 0.2f, height });
+			terraintexture.push_back({ height });
 		}
 	}
 
@@ -50,7 +50,6 @@ Terrain::Terrain(Graphics& gfx, const std::string& heightMap, const TerrainInitI
 	unsigned int skipIndex = static_cast<unsigned int>((static_cast<float>(terrainTextureDimenion) / initInfo.baseMeshResolution));
 	unsigned int rowOffset = terrainTextureDimenion * skipIndex;
 
-	int index = 0;
 	for (unsigned int i = 0; i < initInfo.baseMeshResolution; i++)
 	{
 		for (unsigned int j = 0; j < initInfo.baseMeshResolution; j++)

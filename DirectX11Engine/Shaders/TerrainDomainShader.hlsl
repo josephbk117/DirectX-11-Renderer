@@ -56,6 +56,7 @@ DS_OUTPUT main(
     Output.tex = patch[0].tex * domain.x + patch[1].tex * domain.y + patch[2].tex * domain.z;
     Output.worldPos = (patch[0].worldPos * domain.x + patch[1].worldPos * domain.y + patch[2].worldPos * domain.z);
 
+   
     const float2 texDim = dim(terrainTex);
     const uint3 texIndex = { Output.tex * texDim, 0 };
     
@@ -76,7 +77,7 @@ DS_OUTPUT main(
         }
     }
 
-    float kernelSizeDivide = 1.0f / ((kernelSize * 2.0f) * (kernelSize * 2.0f));
+   float kernelSizeDivide = 1.0f / ((kernelSize * 2.0f) * (kernelSize * 2.0f));
     
     yPos = yPos * kernelSizeDivide;
     Output.worldPos.y = yPos;

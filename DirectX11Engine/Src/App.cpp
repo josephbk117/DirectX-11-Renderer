@@ -17,9 +17,9 @@ App::App()
 	//models.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\sponza.obj", 0.5f));
 
 	Terrain::TerrainInitInfo terrainInfo;
-	terrainInfo.baseMeshResolution = 64;
+	terrainInfo.baseMeshResolution = 32;
 	terrainInfo.heightScale = 100.0f;
-	terrainInfo.terrainUnitScale = 2500.0f;
+	terrainInfo.terrainUnitScale = 1000.0f;
 	terrains.push_back(std::make_unique<Terrain>(wnd.Gfx(), "Resources\\Images\\testHeightMap3.png", terrainInfo));
 	//drawables.push_back(std::make_unique<PhysicalSkybox>(wnd.Gfx(), "Resources\\Models\\skyboxSphere.fbx"));
 
