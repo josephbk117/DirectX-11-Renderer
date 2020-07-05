@@ -21,7 +21,7 @@ App::App()
 	terrainInfo.heightScale = 100.0f;
 	terrainInfo.terrainUnitScale = 1000.0f;
 	terrains.push_back(std::make_unique<Terrain>(wnd.Gfx(), "Resources\\Images\\testHeightMap3.png", terrainInfo));
-	//drawables.push_back(std::make_unique<PhysicalSkybox>(wnd.Gfx(), "Resources\\Models\\skyboxSphere.fbx"));
+	drawables.push_back(std::make_unique<PhysicalSkybox>(wnd.Gfx(), "Resources\\Models\\skyboxSphere.fbx"));
 
 	wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 720.0f / 1280.0f, 0.5f, 50000.0f));
 }
@@ -136,8 +136,8 @@ void App::DoFrame()
 
 	static_cast<Terrain*>(terrains[0].get())->ShowWindow("TERRAIN INFO");
 
-	//static_cast<PhysicalSkybox*>(drawables[0].get())->ShowWindow("SKY INFO");
-	//static_cast<PhysicalSkybox*>(drawables[0].get())->Update(wnd.Gfx());
+	static_cast<PhysicalSkybox*>(drawables[0].get())->ShowWindow("SKY INFO");
+	static_cast<PhysicalSkybox*>(drawables[0].get())->Update(wnd.Gfx());
 
 	if (ImGui::Begin("INFO"))
 	{

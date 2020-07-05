@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Bindable\NullDomainShader.cpp" />
+    <ClCompile Include="Src\Bindable\NullHullShader.cpp" />
     <ClCompile Include="Src\Bindable\HullShader.cpp" />
     <ClCompile Include="Src\Bindable\DomainShader.cpp" />
     <ClCompile Include="Src\LayoutCodex.cpp" />
@@ -67,6 +69,8 @@
     <ClCompile Include="Src\Bindable\TextureArray.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Bindable\NullDomainShader.h" />
+    <ClInclude Include="Src\Bindable\NullHullShader.h" />
     <ClInclude Include="Src\Bindable\HullShader.h" />
     <ClInclude Include="Src\Bindable\DomainShader.h" />
     <ClInclude Include="Src\LayoutCodex.h" />
