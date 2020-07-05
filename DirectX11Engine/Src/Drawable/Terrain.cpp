@@ -122,9 +122,12 @@ Terrain::Terrain(Graphics& gfx, const std::string& heightMap, const TerrainInitI
 
 
 	pTerrainInfoBuffer = std::make_shared<PixelConstantBuffer<TerrainInfo>>(gfx, terrainInfo, 0);
+	pDetailInfoBufferVertex = std::make_shared<VertexConstantBuffer<DetailInfo>>(gfx, detailInfo, 1);
 	pDetailInfoBufferHull = std::make_shared<HullConstantBuffer<DetailInfo>>(gfx, detailInfo, 0);
 	pDetailInfoBufferDomain = std::make_shared<DomainConstantBuffer<DetailInfo>>(gfx, detailInfo, 0);
+
 	AddBind(pTerrainInfoBuffer);
+	AddBind(pDetailInfoBufferVertex);
 	AddBind(pDetailInfoBufferHull);
 	AddBind(pDetailInfoBufferDomain);
 
@@ -138,6 +141,7 @@ DirectX::XMMATRIX Terrain::GetTransformXM() const noexcept
 void Terrain::Draw(Graphics& gfx) const noexcept
 {
 	pTerrainInfoBuffer->Update(gfx, terrainInfo);
+	pDetailInfoBufferVertex->Update(gfx, detailInfo);
 	pDetailInfoBufferHull->Update(gfx, detailInfo);
 	pDetailInfoBufferDomain->Update(gfx, detailInfo);
 	Drawable::Draw(gfx);
@@ -167,6 +171,7 @@ void Terrain::ShowWindow(const char* windowName) noexcept
 
 		ImGui::Separator();
 		ImGui::SliderFloat("Tessellation Factor", &detailInfo.maxTessellationAmount, 1.0f, 64.0f);
+		ImGui::SliderFloat("Max Tessellation Distance", &detailInfo.maxDistance, 50.0f, 2500.0f);
 		ImGui::SliderInt("Smoothing", &detailInfo.smoothing, 1, 8);
 	}
 	ImGui::End();

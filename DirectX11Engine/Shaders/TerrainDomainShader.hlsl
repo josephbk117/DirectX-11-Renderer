@@ -32,7 +32,8 @@ struct HS_CONSTANT_DATA_OUTPUT
 
 cbuffer DetailInfo
 {
-    float tessellationAmount;
+    float maxTessellationAmount;
+    float maxDistance;
     int smoothing;
 };
 
@@ -56,7 +57,6 @@ DS_OUTPUT main(
     Output.tex = patch[0].tex * domain.x + patch[1].tex * domain.y + patch[2].tex * domain.z;
     Output.worldPos = (patch[0].worldPos * domain.x + patch[1].worldPos * domain.y + patch[2].worldPos * domain.z);
 
-   
     const float2 texDim = dim(terrainTex);
     const uint3 texIndex = { Output.tex * texDim, 0 };
     
@@ -65,13 +65,12 @@ DS_OUTPUT main(
     const int kernelSize = min(8, smoothing);
     
     float3 outNorm;
-    
 
     for (int i = -kernelSize; i < kernelSize; i++)
     {
         for (int j = -kernelSize; j < kernelSize; j++)
         {
-            uint3 tempIndex = { texIndex.x + i, texIndex.y + j, 0 };
+            const uint3 tempIndex = { texIndex.x + i, texIndex.y + j, 0 };
             yPos += terrainTex.Load(tempIndex).a;
             outNorm.rgb += terrainTex.Load(tempIndex).rgb;
         }

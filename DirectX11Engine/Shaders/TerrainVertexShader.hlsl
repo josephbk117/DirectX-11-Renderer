@@ -7,6 +7,12 @@ cbuffer CBuf
     matrix modelViewProj;
     float4 camPos;
 };
+cbuffer DetailInfo
+{
+    float maxTessellationAmount;
+    float maxDistance;
+    int smoothing;
+};
 struct VS_Out
 {
     matrix modelViewProj : MATRIX;
@@ -29,6 +35,6 @@ VS_Out main(float3 pos : Position, float2 tex : TexCoord, float3 norm : Normal, 
     vso.tan = tan;
     vso.biTan = biTan;
     vso.tex = tex;
-    vso.tessFactor = max((1.0f - (min(distance(pos, camPos.xyz), 1000.0f) / 1000.0f)) * 64.0f, 1.0f);
+    vso.tessFactor = max((1.0f - (min(floor(distance(pos, camPos.xyz)), maxDistance) / maxDistance)) * maxTessellationAmount, 1.0f);
     return vso;
 }

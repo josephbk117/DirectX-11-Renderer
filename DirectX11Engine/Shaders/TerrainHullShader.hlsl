@@ -27,14 +27,14 @@ struct HS_CONSTANT_DATA_OUTPUT
 {
     float EdgeTessFactor[3] : SV_TessFactor; // e.g. would be [4] for a quad domain
     float InsideTessFactor : SV_InsideTessFactor; // e.g. would be Inside[2] for a quad domain
-	// TODO: change/add other stuff
 };
 
 #define NUM_CONTROL_POINTS 3
 
 cbuffer DetailInfo
 {
-    float tessellationAmount;
+    float maxTessellationAmount;
+    float maxDistance;
     int smoothing;
 };
 
@@ -44,8 +44,6 @@ HS_CONSTANT_DATA_OUTPUT CalcHSPatchConstants(
 	uint PatchID : SV_PrimitiveID)
 {
     HS_CONSTANT_DATA_OUTPUT Output;
-    
-	// Insert code to compute Output here
 
     Output.EdgeTessFactor[0] = 0.5f * (ip[1].tessFactor + ip[2].tessFactor);
     Output.EdgeTessFactor[1] = 0.5f * (ip[2].tessFactor + ip[0].tessFactor);
@@ -67,7 +65,6 @@ HS_CONTROL_POINT_OUTPUT main(
 {
     HS_CONTROL_POINT_OUTPUT Output;
 
-	// Insert code to compute Output here
     Output.modelViewProj = ip[i].modelViewProj;
     Output.tex = ip[i].tex;
     Output.worldPos = ip[i].worldPos;
