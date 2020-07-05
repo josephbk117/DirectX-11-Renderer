@@ -15,7 +15,12 @@ App::App()
 	//drawables.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\BaseBrickCube.obj", 50.0f));
 	//drawables.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\Plane.obj"));
 	//models.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\sponza.obj", 0.5f));
-	terrains.push_back(std::make_unique<Terrain>(wnd.Gfx(), "Resources\\Images\\testHeightMap2.png", 100.0f));
+
+	Terrain::TerrainInitInfo terrainInfo;
+	terrainInfo.baseMeshResolution = 32;
+	terrainInfo.heightScale = 100.0f;
+	terrainInfo.terrainUnitScale = 1000.0f;
+	terrains.push_back(std::make_unique<Terrain>(wnd.Gfx(), "Resources\\Images\\testHeightMap3.png", terrainInfo));
 	drawables.push_back(std::make_unique<PhysicalSkybox>(wnd.Gfx(), "Resources\\Models\\skyboxSphere.fbx"));
 
 	wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 720.0f / 1280.0f, 0.5f, 50000.0f));

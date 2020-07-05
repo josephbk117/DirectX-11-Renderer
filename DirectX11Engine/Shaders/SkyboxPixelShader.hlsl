@@ -7,7 +7,7 @@ cbuffer CSkyInfo
     float hM = 1200.0; // Mie
     float height = 1.0f; // Height from surface
     float sun_power = 20.0f; // Sun intensity
-    float3 sun_dir = float3(0,1,0);
+    float3 sun_dir = float3(0, 1, 0);
 };
 
 struct ray_t
@@ -31,7 +31,7 @@ struct plane_t
     int material;
 };
 
-ray_t get_primary_ray( const in float3 cam_local_point, inout float3 cam_origin, inout float3 cam_look_at )
+ray_t get_primary_ray(const in float3 cam_local_point, inout float3 cam_origin, inout float3 cam_look_at)
 {
     float3 fwd = normalize(cam_look_at - cam_origin);
     float3 up = float3(0, 1, 0);
@@ -71,10 +71,7 @@ static const float3 betaM = float3(21e-6, 21e-6, 21e-6); // Mie
 
 float rayleigh_phase_func(float mu)
 {
-    return
-			3. * (1. + mu * mu)
-	/ //------------------------
-				(16. * PI);
+    return 3.0f * (1.0f + mu * mu) / (16.0f * PI);
 }
 
 // Henyey-Greenstein phase function factor [-1, 1]
@@ -84,10 +81,7 @@ float rayleigh_phase_func(float mu)
 static const float g = 0.76;
 float henyey_greenstein_phase_func(float mu)
 {
-    return
-						(1. - g * g)
-	/ //---------------------------------------------
-		((4. * PI) * pow(1. + g * g - 2. * g * mu, 1.5));
+    return (1. - g * g) / ((4. * PI) * pow(1. + g * g - 2. * g * mu, 1.5));
 }
 
 // Schlick Phase Function factor
@@ -96,8 +90,6 @@ static const float k = 1.55 * g - 0.55 * (g * g * g);
 
 static const float earth_radius = 6360e3; // (m)
 static const float atmosphere_radius = 6420e3; // (m)
-
-//static const float sun_power = 20.0;
 
 static const sphere_t atmosphere = { float3(0.0f, 0.0f, 0.0f), atmosphere_radius, 0 };
 
@@ -182,7 +174,7 @@ float3 get_incident_light(const in ray_t ray, float3 sun_dir)
         float optical_depth_lightR = 0.;
         float optical_depth_lightM = 0.;
         
-        bool overground = get_sun_light( light_ray, optical_depth_lightR, optical_depth_lightM);
+        bool overground = get_sun_light(light_ray, optical_depth_lightR, optical_depth_lightM);
 
         if (overground)
         {
@@ -202,7 +194,7 @@ float3 get_incident_light(const in ray_t ray, float3 sun_dir)
 float4 main(float3 viewPos : Position) : SV_Target
 {
     viewPos = normalize(viewPos);
-    float3 col = float3(0,0,0);
+    float3 col = float3(0, 0, 0);
 
     float3 eye = float3(0, earth_radius + height, 0);
 

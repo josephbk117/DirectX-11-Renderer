@@ -69,3 +69,31 @@ public:
 		GetContext(gfx)->PSSetConstantBuffers(slot, 1u, pConstantBuffer.GetAddressOf());
 	}
 };
+
+template<typename C>
+class HullConstantBuffer : public ConstantBuffer<C>
+{
+	using ConstantBuffer<C>::pConstantBuffer;
+	using ConstantBuffer<C>::slot;
+	using Bindable::GetContext;
+public:
+	using ConstantBuffer<C>::ConstantBuffer;
+	void Bind(Graphics& gfx) noexcept override
+	{
+		GetContext(gfx)->HSSetConstantBuffers(slot, 1u, pConstantBuffer.GetAddressOf());
+	}
+};
+
+template<typename C>
+class DomainConstantBuffer : public ConstantBuffer<C>
+{
+	using ConstantBuffer<C>::pConstantBuffer;
+	using ConstantBuffer<C>::slot;
+	using Bindable::GetContext;
+public:
+	using ConstantBuffer<C>::ConstantBuffer;
+	void Bind(Graphics& gfx) noexcept override
+	{
+		GetContext(gfx)->DSSetConstantBuffers(slot, 1u, pConstantBuffer.GetAddressOf());
+	}
+};

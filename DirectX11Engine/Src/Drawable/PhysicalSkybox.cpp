@@ -16,6 +16,8 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include "../Imgui/imgui.h"
+#include "../Bindable/NullHullShader.h"
+#include "../Bindable/NullDomainShader.h"
 
 PhysicalSkybox::PhysicalSkybox(Graphics& gfx, const std::string& fileName)
 {
@@ -71,6 +73,9 @@ PhysicalSkybox::PhysicalSkybox(Graphics& gfx, const std::string& fileName)
 	AddBind(std::move(pvs));
 	AddBind(Sampler::Resolve(gfx));
 	AddBind(PixelShader::Resolve(gfx, "Shaders\\SkyboxPixelShader.cso"));
+
+	AddBind(NullHullShader::Resolve(gfx));
+	AddBind(NullDomainShader::Resolve(gfx));
 
 	const std::vector< D3D11_INPUT_ELEMENT_DESC >ied =
 	{

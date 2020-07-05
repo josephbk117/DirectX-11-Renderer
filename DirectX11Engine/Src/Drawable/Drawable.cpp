@@ -40,7 +40,6 @@ void Drawable::Draw(Graphics& gfx) const noexcept
 	}
 
 	gfx.DrawIndexed(pIndexBuffer->GetCount());
-	//gfx.DrawIndexed()
 }
 
 void Drawable::AddBind(std::shared_ptr<Bindable> bind) noexcept
