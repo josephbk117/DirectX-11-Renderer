@@ -25,8 +25,8 @@ static const float3 diffuseColour =
 { 1.0f, 1.0f, 1.0f };
 static const float diffuseIntensity = 1.0f;
 static const float attConst = 1.0f;
-static const float attLin = 0.0001f;
-static const float attQuad = 0.000075f;
+static const float attLin = 0.001f;
+static const float attQuad = 0.0075f;
 static const float specularIntensity = 100.0f;
 static const float specularPower = 1.0f;
 
@@ -109,8 +109,6 @@ float4 main(PS_IN psIn) : SV_Target
     float2 texCoords = psIn.tc;
     
     texCoords = ParallaxMapping(psIn.tc, viewDir);
-    //if (texCoords.x > 1.0 || texCoords.y > 1.0 || texCoords.x < 0.0 || texCoords.y < 0.0)
-    //    discard;
 
     // obtain normal from normal map
     float3 normal = tex2.Sample(splr, texCoords);

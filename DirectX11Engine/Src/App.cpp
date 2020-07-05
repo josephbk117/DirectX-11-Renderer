@@ -14,7 +14,7 @@ App::App()
 	//drawables.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\nanosuit.obj"));
 	//drawables.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\BaseBrickCube.obj", 50.0f));
 	//drawables.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\Plane.obj"));
-	//models.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\sponza.obj", 0.5f));
+	models.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\sponza.obj", 0.05f));
 
 	Terrain::TerrainInitInfo terrainInfo;
 	terrainInfo.baseMeshResolution = 32;
@@ -54,7 +54,7 @@ int App::Start()
 
 		if (!wnd.GetIsCursorEnabled())
 		{
-			const float moveInc = 0.3f;
+			const float moveInc = 0.03f;
 
 			if (wnd.kbd.KeyIsPressed('W'))
 			{
@@ -129,7 +129,7 @@ void App::DoFrame()
 		ImGui::ShowDemoWindow(&showDemoWindow);
 	}
 
-	//models[0]->ShowWindow("DEBUG INFO");
+	models[0]->ShowWindow("DEBUG INFO");
 
 	/*drawables[0]->ShowWindow("DEBUG INFO");
 	drawables[1]->ShowWindow("DEBUG INFO 2");*/

@@ -46,7 +46,7 @@ VS_Out main(float3 pos : Position, float3 norm : Normal, float3 tan : Tangent, f
     
     vso.tPos = mul(fragPos, TBN);
     vso.tViewPos = mul(camPos.xyz, TBN);
-    vso.lightPos = mul(float3(100.0f, 100.0f, 0.0f), TBN);
+    vso.lightPos = mul(float3(0.0f, 10.0f, 0.0f), TBN);
     
 	return vso;
 }
