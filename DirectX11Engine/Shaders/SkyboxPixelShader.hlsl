@@ -8,6 +8,7 @@ cbuffer CSkyInfo
     float height = 1.0f; // Height from surface
     float sun_power = 20.0f; // Sun intensity
     float3 sun_dir = float3(0, 1, 0);
+    float3 groundColour = float3(0.33f, 0.33f, 0.33f);
 };
 
 struct ray_t
@@ -202,14 +203,12 @@ float4 main(float3 viewPos : Position) : SV_Target
     ray.origin = eye;
     ray.direction = viewPos;
 
-    if (dot(ray.direction, float3(0, 1, 0)) > .0)
-    {
-        col = get_incident_light(ray, normalize(sun_dir));
-    }
-    else
-    {
-        col = float3(0.333f, 0.333f, 0.333f);
-    }
+    col = get_incident_light(ray, normalize(sun_dir));
+    col = max(col, float3(0, 0, 0));
+    
+    float dVal = 1.0f - abs(dot(ray.direction, float3(0, 1, 0)));
+    dVal = pow(dVal, 20.0f);
+    col += groundColour * dVal;
 
     return float4(col, 1);
 }

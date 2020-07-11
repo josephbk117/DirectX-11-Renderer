@@ -20,6 +20,7 @@ private:
 		float height = 1.0f;
 		float sunPower = 20.0f;
 		DirectX::XMFLOAT3A sunDir = { 0.0f, 1.0f, 0.0f };
+		DirectX::XMFLOAT3A groundColour = { 0.18, 0.1f, 0.05f };
 
 	} 
 	skyInfo;

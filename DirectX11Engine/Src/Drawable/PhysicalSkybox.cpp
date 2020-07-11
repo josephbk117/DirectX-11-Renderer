@@ -123,6 +123,10 @@ void PhysicalSkybox::ShowWindow(const char* windowName) noexcept
 		DirectX::XMVECTOR sunDirVec = DirectX::XMVector3Transform({ 0.0f, 1.0f, 0.0f }, DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMVECTOR{ vals[0] - 22.0f / 7.0f, vals[1], 0.0f }));
 		DirectX::XMStoreFloat3(&skyInfo.sunDir, sunDirVec);
 
+		DirectX::XMVECTOR col = DirectX::XMLoadFloat3(&skyInfo.groundColour);
+		ImGui::ColorEdit4("Ground Colour", &col.m128_f32[0]);
+		DirectX::XMStoreFloat3(&skyInfo.groundColour, col);
+
 	}
 	ImGui::End();
 
