@@ -19,6 +19,7 @@ public:
 	void Bind(Graphics& gfx) const noexcept;
 	UINT GetIndexCount() const noexcept;
 	virtual void Draw(Graphics& gfx) const noexcept; // Mark for delete
+	virtual void DrawInstanced(Graphics& gfx, UINT instanceCount) const noexcept; // Mark for delete
 	virtual ~Drawable() = default;
 protected:
 	void AddBind(std::shared_ptr<Bindable> bind) noexcept;

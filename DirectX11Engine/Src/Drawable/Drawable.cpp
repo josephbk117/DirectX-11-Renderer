@@ -42,6 +42,16 @@ void Drawable::Draw(Graphics& gfx) const noexcept
 	gfx.DrawIndexed(pIndexBuffer->GetCount());
 }
 
+void Drawable::DrawInstanced(Graphics& gfx, UINT instanceCount) const noexcept
+{
+	for (auto& b : binds)
+	{
+		b->Bind(gfx);
+	}
+
+	gfx.DrawIndexedInstanced(pIndexBuffer->GetCount(), instanceCount);
+}
+
 void Drawable::AddBind(std::shared_ptr<Bindable> bind) noexcept
 {
 	if (typeid(*bind) == typeid(IndexBuffer))

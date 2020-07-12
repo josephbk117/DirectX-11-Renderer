@@ -110,6 +110,11 @@ void Graphics::DrawIndexed(UINT indexCount) noexcept
 	pContext->DrawIndexed(indexCount, 0, 0);
 }
 
+void Graphics::DrawIndexedInstanced(UINT indexCount, UINT instanceCount) noexcept
+{
+	pContext->DrawIndexedInstanced(indexCount, instanceCount, 0, 0, 0);
+}
+
 void Graphics::SetProjection(DirectX::FXMMATRIX proj) noexcept
 {
 	projection = proj;

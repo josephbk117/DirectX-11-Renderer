@@ -12,7 +12,7 @@ App::App()
 {
 	//drawables.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\TestScene.fbx"));
 	//drawables.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\nanosuit.obj"));
-	//drawables.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\BaseBrickCube.obj", 50.0f));
+	models.push_back(std::make_unique<InstanceModel>(wnd.Gfx(), "Resources\\Models\\BaseBrickCube.obj", 5.0f));
 	//drawables.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\Plane.obj"));
 	models.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\sponza.obj", 0.05f));
 
