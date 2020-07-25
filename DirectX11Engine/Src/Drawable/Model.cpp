@@ -7,7 +7,7 @@ Model::Model(Graphics& gfx, const std::string& fileName, float scale /*= 1.0f*/)
 
 	for (size_t i = 0; i < pScene->mNumMeshes; ++i)
 	{
-		meshPtrs.push_back(ParseMesh<Mesh>(gfx, *pScene->mMeshes[i], pScene->mMaterials, fileName, scale));
+		meshPtrs.push_back(ParseMesh<Mesh>(gfx, *pScene->mMeshes[i], pScene->mMaterials, fileName, scale, "Shaders\\VertexShader.cso"));
 	}
 
 	pRoot = ParseNode(*pScene->mRootNode);
@@ -68,7 +68,7 @@ InstanceModel::InstanceModel(Graphics& gfx, const std::string& fileName, float s
 
 	for (size_t i = 0; i < pScene->mNumMeshes; ++i)
 	{
-		meshPtrs.push_back(ParseMesh<InstancedMesh>(gfx, *pScene->mMeshes[i], pScene->mMaterials, fileName, scale));
+		meshPtrs.push_back(ParseMesh<InstancedMesh>(gfx, *pScene->mMeshes[i], pScene->mMaterials, fileName, scale, "Shaders\\InstancedFoliageVertexShader.cso"));
 	}
 
 	pRoot = ParseNode(*pScene->mRootNode);
@@ -226,7 +226,7 @@ InstancedMesh::InstancedMesh(Graphics& gfx, std::vector<std::shared_ptr<Bindable
 void InstancedMesh::Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const noexcept
 {
 	DirectX::XMStoreFloat4x4(&transform, accumulatedTransform);
-	Drawable::DrawInstanced(gfx, 5);
+	Drawable::DrawInstanced(gfx, 50000);
 }
 
 DirectX::XMMATRIX InstancedMesh::GetTransformXM() const noexcept
@@ -237,7 +237,7 @@ DirectX::XMMATRIX InstancedMesh::GetTransformXM() const noexcept
 //_____________________BASE MODEL IMPLEMENTATION________________________________//
 
 template <typename T>
-std::unique_ptr<T> BaseModel::ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMats, const std::filesystem::path& path, float scale)
+std::unique_ptr<T> BaseModel::ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMats, const std::filesystem::path& path, float scale, const std::string& vertexShaderPath)
 {
 	namespace dx = DirectX;
 	struct Vertex
@@ -280,7 +280,7 @@ std::unique_ptr<T> BaseModel::ParseMesh(Graphics& gfx, const aiMesh& mesh, const
 	bindablePtrs.push_back(std::make_shared<VertexBuffer>(gfx, vertices));
 	bindablePtrs.push_back(std::make_shared<IndexBuffer>(gfx, indices));
 
-	auto pvs = VertexShader::Resolve(gfx, "Shaders\\VertexShader.cso");
+	auto pvs = VertexShader::Resolve(gfx, std::move(vertexShaderPath));
 	auto pvsbc = std::static_pointer_cast<VertexShader>(pvs)->GetBytecode();
 
 	bindablePtrs.push_back(std::move(pvs));

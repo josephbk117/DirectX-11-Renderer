@@ -10,7 +10,7 @@ cbuffer CBuf
 
 struct VS_Out
 {
-	float2 tex : TexCoord;
+    float2 tex : TexCoord;
     
     float3 viewNorm : Normal;
     float3 viewTan : Tangent;
@@ -21,14 +21,14 @@ struct VS_Out
     float3 tViewPos : Position2;
     float3 lightPos : Position3;
     
-	float4 pos : SV_Position;
+    float4 pos : SV_Position;
 };
 
 VS_Out main(float3 pos : Position, float3 norm : Normal, float3 tan : Tangent, float3 biTan : BiTangent, float2 tex : TexCoord, uint instanceID : SV_InstanceID)
 {
     VS_Out vso;
     
-    vso.pos = mul(float4(pos, 1.0f), modelViewProj);
+    vso.pos = mul(float4(pos + float3((instanceID % 50) * 15.0f, (instanceID / 50) * 15.0f, 0), 1.0f), modelViewProj);
     vso.tex = tex;
 
     vso.viewPos = (float3) mul(float4(pos, 1.0f), modelView);
@@ -48,5 +48,5 @@ VS_Out main(float3 pos : Position, float3 norm : Normal, float3 tan : Tangent, f
     vso.tViewPos = mul(camPos.xyz, TBN);
     vso.lightPos = mul(float3(0.0f, 10.0f, 0.0f), TBN);
 
-	return vso;
+    return vso;
 }

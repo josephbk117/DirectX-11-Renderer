@@ -68,7 +68,7 @@ class BaseModel
 {
 public:
 	template <typename T>
-	static std::unique_ptr<T> ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMats, const std::filesystem::path& path, float scale);
+	static std::unique_ptr<T> ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMats, const std::filesystem::path& path, float scale, const std::string& vertexShaderPath);
 	std::unique_ptr<Node> ParseNode(const aiNode& node);
 	Node* GetSelectedNode() const noexcept;
 

@@ -370,6 +370,7 @@
     <FxCompile Include="Shaders\TerrainPixelShader.hlsl" />
     <FxCompile Include="Shaders\TerrainHullShader.hlsl" />
     <FxCompile Include="Shaders\TerrainDomainShader.hlsl" />
+    <FxCompile Include="Shaders\InstancedFoliageVertexShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\LightVectorData.hlsli">
