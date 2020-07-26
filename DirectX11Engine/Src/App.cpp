@@ -12,15 +12,16 @@ App::App()
 {
 	//drawables.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\TestScene.fbx"));
 	//drawables.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\nanosuit.obj"));
-	models.push_back(std::make_unique<InstanceModel>(wnd.Gfx(), "Resources\\Models\\BaseBrickCube.obj", 5.0f));
 	//drawables.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\Plane.obj"));
-	models.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\sponza.obj", 0.05f));
 
 	Terrain::TerrainInitInfo terrainInfo;
 	terrainInfo.baseMeshResolution = 32;
 	terrainInfo.heightScale = 100.0f;
 	terrainInfo.terrainUnitScale = 1000.0f;
-	terrains.push_back(std::make_unique<Terrain>(wnd.Gfx(), "Resources\\Images\\testHeightMap3.png", terrainInfo));
+	terrains.push_back(std::make_unique<Terrain>(wnd.Gfx(), "Resources\\Images\\testHeightMap2.png", terrainInfo));
+	models.push_back(std::make_unique<InstanceModel>(wnd.Gfx(), "Resources\\Models\\Grass.obj", 1.0f, terrains[0]->GetTerrainTexture()));
+	models.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\sponza.obj", 0.05f));
+
 	drawables.push_back(std::make_unique<PhysicalSkybox>(wnd.Gfx(), "Resources\\Models\\skyboxSphere.fbx"));
 
 	wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 720.0f / 1280.0f, 0.5f, 50000.0f));
@@ -54,7 +55,7 @@ int App::Start()
 
 		if (!wnd.GetIsCursorEnabled())
 		{
-			const float moveInc = 0.03f;
+			const float moveInc = 0.13f;
 
 			if (wnd.kbd.KeyIsPressed('W'))
 			{

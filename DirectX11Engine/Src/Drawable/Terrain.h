@@ -41,6 +41,7 @@ public:
 	DirectX::XMMATRIX GetTransformXM() const noexcept override;
 	void Draw(Graphics& gfx) const noexcept override;
 	void ShowWindow(const char* windowName) noexcept;
+	ImageHDR* GetTerrainTexture() noexcept;
 private:
 	struct Vertex
 	{
@@ -62,6 +63,7 @@ private:
 	TerrainInitInfo terrainInitInfo;
 	TerrainInfo terrainInfo;
 	DetailInfo detailInfo;
+	ImageHDR imgHdr;
 	std::shared_ptr<PixelConstantBuffer<TerrainInfo>> pTerrainInfoBuffer = nullptr;
 	std::shared_ptr<VertexConstantBuffer<DetailInfo>> pDetailInfoBufferVertex = nullptr;
 	std::shared_ptr<HullConstantBuffer<DetailInfo>> pDetailInfoBufferHull = nullptr;

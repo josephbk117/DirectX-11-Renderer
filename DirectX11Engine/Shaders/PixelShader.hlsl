@@ -115,16 +115,16 @@ float4 main(PS_IN psIn) : SV_Target
     normal = normalize(normal * 2.0 - 1.0);
    
     // get diffuse color
-    float3 color = tex.Sample(splr, texCoords);
+    float4 color = tex.Sample(splr, texCoords);
     // ambient
-    float3 ambient = 0.1 * color;
+    float3 ambient = 0.1 * color.rgb;
     // diffuse
     
     const LightVectorData lv = CalculateLightVectorData(psIn.lightPos, psIn.tPos); 
     const float att = Attenuate(attConst, attLin, attQuad, lv.distToL);
     
     float diff = max(dot(lv.dirToL, normal), 0.0);
-    float3 diffuse = diff * att * color;
+    float3 diffuse = diff * att * color.rgb;
     // specular    
     float3 reflectDir = reflect(-lv.dirToL, normal);
     float3 halfwayDir = normalize(lv.dirToL + viewDir);
@@ -137,5 +137,5 @@ float4 main(PS_IN psIn) : SV_Target
     float spec = pow(max(dot(normal, halfwayDir), 0.0), specularPower) * att;
 
     float3 specular = specularReflectionColor * spec;
-    return float4(ambient + diffuse + specular, 1.0);
+    return float4(ambient + diffuse + specular, color.a);
 }

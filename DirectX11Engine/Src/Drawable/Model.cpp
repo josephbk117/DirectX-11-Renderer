@@ -74,6 +74,22 @@ InstanceModel::InstanceModel(Graphics& gfx, const std::string& fileName, float s
 	pRoot = ParseNode(*pScene->mRootNode);
 }
 
+InstanceModel::InstanceModel(Graphics& gfx, const std::string& fileName, float scale, ImageHDR* transformTexture)
+{
+	Assimp::Importer imp;
+	const auto pScene = imp.ReadFile(fileName, aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast);
+
+	TexturePipelineBind textureOverride;
+	textureOverride.vertexShader.push_back(transformTexture);
+
+	for (size_t i = 0; i < pScene->mNumMeshes; ++i)
+	{
+		meshPtrs.push_back(ParseMesh<InstancedMesh>(gfx, *pScene->mMeshes[i], pScene->mMaterials, fileName, scale, "Shaders\\InstancedFoliageVertexShader.cso", textureOverride));
+	}
+
+	pRoot = ParseNode(*pScene->mRootNode);
+}
+
 DirectX::XMMATRIX InstanceModel::GetTransform() const noexcept
 {
 	const auto& transform = transforms.at(*selectedIndex);
@@ -223,10 +239,15 @@ InstancedMesh::InstancedMesh(Graphics& gfx, std::vector<std::shared_ptr<Bindable
 	AddBind(std::make_shared<TransformCBufferEx>(gfx, *this, 0));
 }
 
+InstancedMesh::InstancedMesh(Graphics& gfx, std::vector<std::shared_ptr<Bindable>> bindPtrs, ImageHDR* transformTexture) : InstancedMesh(gfx, bindPtrs)
+{
+	AddBind(std::make_shared<Texture>(gfx, *transformTexture, 0, PipelineStage::VertexShader));
+}
+
 void InstancedMesh::Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const noexcept
 {
 	DirectX::XMStoreFloat4x4(&transform, accumulatedTransform);
-	Drawable::DrawInstanced(gfx, 50000);
+	Drawable::DrawInstanced(gfx, 512*512);
 }
 
 DirectX::XMMATRIX InstancedMesh::GetTransformXM() const noexcept
@@ -366,6 +387,144 @@ std::unique_ptr<T> BaseModel::ParseMesh(Graphics& gfx, const aiMesh& mesh, const
 
 	return std::make_unique<T>(gfx, std::move(bindablePtrs));
 }
+
+template <typename T>
+static std::unique_ptr<T> BaseModel::ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMats, const std::filesystem::path& path, float scale, const std::string& vertexShaderPath, TexturePipelineBind& pipelineTextureOverrides)
+{
+	namespace dx = DirectX;
+	struct Vertex
+	{
+		dx::XMFLOAT3 pos;
+		dx::XMFLOAT3 norm;
+		dx::XMFLOAT3 tan;
+		dx::XMFLOAT3 biTan;
+		dx::XMFLOAT2 uv;
+	};
+
+	std::vector<Vertex> vertices;
+	vertices.reserve(mesh.mNumVertices);
+
+	for (unsigned int i = 0; i < mesh.mNumVertices; ++i)
+	{
+		vertices.push_back({ { mesh.mVertices[i].x * scale, mesh.mVertices[i].y * scale, mesh.mVertices[i].z * scale },
+			{ mesh.mNormals[i].x,  mesh.mNormals[i].y, mesh.mNormals[i].z},
+			{ mesh.mTangents[i].x, mesh.mTangents[i].y, mesh.mTangents[i].z },
+			{ mesh.mBitangents[i].x, mesh.mBitangents[i].y, mesh.mBitangents[i].z },
+			{ mesh.mTextureCoords[0][i].x, mesh.mTextureCoords[0][i].y} });
+	}
+
+	std::vector<unsigned int> indices;
+	indices.reserve(static_cast<size_t>(mesh.mNumFaces) * 3);
+
+	for (unsigned int i = 0; i < mesh.mNumFaces; ++i)
+	{
+		const auto& face = mesh.mFaces[i];
+
+		assert(face.mNumIndices == 3);
+
+		indices.push_back(face.mIndices[0]);
+		indices.push_back(face.mIndices[1]);
+		indices.push_back(face.mIndices[2]);
+	}
+
+	std::vector<std::shared_ptr<Bindable>> bindablePtrs;
+
+	bindablePtrs.push_back(std::make_shared<VertexBuffer>(gfx, vertices));
+	bindablePtrs.push_back(std::make_shared<IndexBuffer>(gfx, indices));
+
+	auto pvs = VertexShader::Resolve(gfx, std::move(vertexShaderPath));
+	auto pvsbc = std::static_pointer_cast<VertexShader>(pvs)->GetBytecode();
+
+	bindablePtrs.push_back(std::move(pvs));
+	bindablePtrs.push_back(Sampler::Resolve(gfx));
+
+	namespace dx = DirectX;
+
+	bindablePtrs.push_back(PixelShader::Resolve(gfx, "Shaders\\PixelShader.cso"));
+	const std::vector< D3D11_INPUT_ELEMENT_DESC >ied =
+	{
+		{ "Position",0,DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 },
+		{ "Normal",0,DXGI_FORMAT_R32G32B32_FLOAT,0,12u,D3D11_INPUT_PER_VERTEX_DATA,0 },
+		{ "Tangent",0,DXGI_FORMAT_R32G32B32_FLOAT,0,24u,D3D11_INPUT_PER_VERTEX_DATA,0 },
+		{ "BiTangent",0,DXGI_FORMAT_R32G32B32_FLOAT,0,36u,D3D11_INPUT_PER_VERTEX_DATA,0 },
+		{ "TexCoord",0,DXGI_FORMAT_R32G32_FLOAT,0,48u,D3D11_INPUT_PER_VERTEX_DATA,0 },
+	};
+	bindablePtrs.push_back(std::make_shared<InputLayout>(gfx, ied, pvsbc));
+
+
+	bindablePtrs.push_back(Rasterizer::Resolve(gfx, Rasterizer::RasterizerMode{ true, false }));
+	bindablePtrs.push_back(BlendOperation::Resolve(gfx, true));
+
+
+	for (int vertexShaderTextureIndex = 0; vertexShaderTextureIndex < pipelineTextureOverrides.vertexShader.size(); ++vertexShaderTextureIndex)
+	{
+		bindablePtrs.push_back(std::make_shared<Texture>(gfx, *pipelineTextureOverrides.vertexShader[vertexShaderTextureIndex], vertexShaderTextureIndex, PipelineStage::VertexShader));
+	}
+
+	if (mesh.mMaterialIndex >= 0)
+	{
+		using namespace std::string_literals;
+
+		const std::string IMG_PATH = path.parent_path().string() + "\\"s + path.filename().string() + " Textures\\";
+
+		const aiMaterial& material = *pMats[mesh.mMaterialIndex];
+		aiString textFileName;
+
+
+		if (material.GetTexture(aiTextureType_DIFFUSE, 0, &textFileName) == aiReturn_SUCCESS)
+		{
+			bindablePtrs.push_back(Texture::Resolve(gfx, IMG_PATH + textFileName.C_Str(), 0));
+		}
+		else
+		{
+			Image img(1, 1);
+			img.ClearData(Image::Color(255, 0, 255));
+			bindablePtrs.push_back(std::make_shared<Texture>(gfx, img));
+		}
+
+		if (material.GetTexture(aiTextureType_SPECULAR, 0, &textFileName) == aiReturn_SUCCESS)
+		{
+			bindablePtrs.push_back(Texture::Resolve(gfx, IMG_PATH + textFileName.C_Str(), 1));
+		}
+		else
+		{
+			Image img(1, 1);
+			img.ClearData(Image::Color(100, 100, 100, 100));
+			bindablePtrs.push_back(std::make_shared<Texture>(gfx, img, 1));
+		}
+
+		if (material.GetTexture(aiTextureType_NORMALS, 0, &textFileName) == aiReturn_SUCCESS)
+		{
+			bindablePtrs.push_back(Texture::Resolve(gfx, IMG_PATH + textFileName.C_Str(), 2));
+		}
+		else
+		{
+			if (material.GetTexture(aiTextureType_HEIGHT, 0, &textFileName) == aiReturn_SUCCESS)
+			{
+				bindablePtrs.push_back(Texture::Resolve(gfx, IMG_PATH + textFileName.C_Str(), 2));
+			}
+			else
+			{
+				Image img(1, 1);
+				img.ClearData(Image::Color(128, 128, 255));
+				bindablePtrs.push_back(std::make_shared<Texture>(gfx, img, 2));
+			}
+		}
+		if (material.GetTexture(aiTextureType_DISPLACEMENT, 0, &textFileName) == aiReturn_SUCCESS)
+		{
+			bindablePtrs.push_back(Texture::Resolve(gfx, IMG_PATH + textFileName.C_Str(), 3));
+		}
+		else
+		{
+			Image img(1, 1);
+			img.ClearData(Image::Color(0, 0, 0));
+			bindablePtrs.push_back(std::make_shared<Texture>(gfx, img, 3));
+		}
+	}
+
+	return std::make_unique<T>(gfx, std::move(bindablePtrs));
+}
+
 
 std::unique_ptr<Node> BaseModel::ParseNode(const aiNode& node)
 {

@@ -59,11 +59,11 @@ DS_OUTPUT main(
 
     const float2 texDim = dim(terrainTex);
     const uint3 texIndex = { Output.tex * texDim, 0 };
-    
+
     float yPos = 0.0f;
-    
+
     const int kernelSize = min(8, smoothing);
-    
+
     float3 outNorm;
 
     for (int i = -kernelSize; i < kernelSize; i++)
@@ -77,7 +77,7 @@ DS_OUTPUT main(
     }
 
    float kernelSizeDivide = 1.0f / ((kernelSize * 2.0f) * (kernelSize * 2.0f));
-    
+
     yPos = yPos * kernelSizeDivide;
     Output.worldPos.y = yPos;
     Output.normal = normalize(outNorm * kernelSizeDivide);

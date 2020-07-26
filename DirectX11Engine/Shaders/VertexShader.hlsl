@@ -24,7 +24,7 @@ struct VS_Out
 	float4 pos : SV_Position;
 };
 
-VS_Out main(float3 pos : Position, float3 norm : Normal, float3 tan : Tangent, float3 biTan : BiTangent, float2 tex : TexCoord, uint instanceID : SV_InstanceID)
+VS_Out main(float3 pos : Position, float3 norm : Normal, float3 tan : Tangent, float3 biTan : BiTangent, float2 tex : TexCoord)
 {
     VS_Out vso;
     

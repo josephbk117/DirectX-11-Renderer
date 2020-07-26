@@ -94,7 +94,7 @@ Terrain::Terrain(Graphics& gfx, const std::string& heightMap, const TerrainInitI
 
 	AddBind(TextureArray::Resolve(gfx, paths, 3));
 
-	ImageHDR imgHdr = ImageHDR::FromData(terraintexture, terrainTextureDimenion, terrainTextureDimenion);
+	imgHdr = ImageHDR::FromData(terraintexture, terrainTextureDimenion, terrainTextureDimenion);
 	AddBind(std::make_shared<Texture>(gfx, imgHdr, 6, PipelineStage::PixelShader));
 	AddBind(std::make_shared<Texture>(gfx, imgHdr, 0, PipelineStage::DomainShader));
 
@@ -175,6 +175,11 @@ void Terrain::ShowWindow(const char* windowName) noexcept
 		ImGui::SliderInt("Smoothing", &detailInfo.smoothing, 1, 8);
 	}
 	ImGui::End();
+}
+
+ImageHDR* Terrain::GetTerrainTexture() noexcept
+{
+	return &imgHdr;
 }
 
 void Terrain::CalculateNormals() noexcept

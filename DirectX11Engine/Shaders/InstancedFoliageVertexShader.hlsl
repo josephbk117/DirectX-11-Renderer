@@ -1,3 +1,5 @@
+Texture2D terrainTex : register(t0);
+
 cbuffer CBuf
 {
     matrix model;
@@ -24,11 +26,23 @@ struct VS_Out
     float4 pos : SV_Position;
 };
 
+uint2 dim(Texture2D textureObj)
+{
+    uint width;
+    uint height;
+    textureObj.GetDimensions(width, height);
+    return uint2(width, height);
+}
+
 VS_Out main(float3 pos : Position, float3 norm : Normal, float3 tan : Tangent, float3 biTan : BiTangent, float2 tex : TexCoord, uint instanceID : SV_InstanceID)
 {
     VS_Out vso;
+
+    const uint3 tempIndex = { ((instanceID) % 512), ((instanceID) / 512), 0 };
+    float mulp = 1000.0f / 512.0f;
+    float3 disp = float3((instanceID % 512) * mulp, terrainTex.Load(tempIndex).a, (instanceID / 512.0f) * mulp);
     
-    vso.pos = mul(float4(pos + float3((instanceID % 50) * 15.0f, (instanceID / 50) * 15.0f, 0), 1.0f), modelViewProj);
+    vso.pos = mul(float4(pos + disp, 1.0f), modelViewProj);
     vso.tex = tex;
 
     vso.viewPos = (float3) mul(float4(pos, 1.0f), modelView);
