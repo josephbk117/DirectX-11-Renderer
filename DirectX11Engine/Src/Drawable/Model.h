@@ -27,6 +27,14 @@ struct TexturePipelineBind
 	std::vector<ImageHDR*> pixelShader;
 };
 
+struct ShaderSetPath
+{
+	std::string vertexShader;
+	std::string hullShader;
+	std::string domainShader;
+	std::string pixelShader;
+};
+
 class BaseMesh : public Drawable
 {
 public:
@@ -77,9 +85,9 @@ class BaseModel
 {
 public:
 	template <typename T>
-	static std::unique_ptr<T> ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMats, const std::filesystem::path& path, float scale, const std::string& vertexShaderPath);
+	static std::unique_ptr<T> ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMats, const std::filesystem::path& path, float scale, const ShaderSetPath& shaderSetPath);
 	template <typename T>
-	static std::unique_ptr<T> ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMats, const std::filesystem::path& path, float scale, const std::string& vertexShaderPath, TexturePipelineBind& pipelineTextureOverrides);
+	static std::unique_ptr<T> ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMats, const std::filesystem::path& path, float scale, const ShaderSetPath& shaderSetPath, const TexturePipelineBind& pipelineTextureOverrides);
 	std::unique_ptr<Node> ParseNode(const aiNode& node);
 	Node* GetSelectedNode() const noexcept;
 
@@ -104,7 +112,7 @@ protected:
 class Model : public BaseModel
 {
 public:
-	Model(Graphics& gfx, const std::string& fileName, float scale = 1.0f);
+	Model(Graphics& gfx, const std::string& fileName, const ShaderSetPath& shaderSet, float scale = 1.0f);
 	DirectX::XMMATRIX GetTransform() const noexcept;
 	virtual void Draw(Graphics& gfx);
 	virtual void ShowWindow(const char* windowName) noexcept;
@@ -113,8 +121,7 @@ public:
 class InstanceModel : public BaseModel
 {
 public:
-	InstanceModel(Graphics& gfx, const std::string& fileName, float scale = 1.0f);
-	InstanceModel(Graphics& gfx, const std::string& fileName, float scale, ImageHDR* transformTexture);
+	InstanceModel(Graphics& gfx, const std::string& fileName, const ShaderSetPath& shaderSet, float scale = 1.0f, ImageHDR * const transformTexture = nullptr);
 	DirectX::XMMATRIX GetTransform() const noexcept;
 	virtual void Draw(Graphics& gfx);
 	virtual void ShowWindow(const char* windowName) noexcept;

@@ -1,13 +1,13 @@
 #include "Model.h"
 
-Model::Model(Graphics& gfx, const std::string& fileName, float scale /*= 1.0f*/)
+Model::Model(Graphics& gfx, const std::string& fileName, const ShaderSetPath& shaderSet, float scale /*= 1.0f*/)
 {
 	Assimp::Importer imp;
 	const auto pScene = imp.ReadFile(fileName, aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast);
 
 	for (size_t i = 0; i < pScene->mNumMeshes; ++i)
 	{
-		meshPtrs.push_back(ParseMesh<Mesh>(gfx, *pScene->mMeshes[i], pScene->mMaterials, fileName, scale, "Shaders\\VertexShader.cso"));
+		meshPtrs.push_back(ParseMesh<Mesh>(gfx, *pScene->mMeshes[i], pScene->mMaterials, fileName, scale, std::move(shaderSet)));
 	}
 
 	pRoot = ParseNode(*pScene->mRootNode);
@@ -61,20 +61,7 @@ void Model::ShowWindow(const char* windowName) noexcept
 
 //____________________INSTANCE MODEL___________________//
 
-InstanceModel::InstanceModel(Graphics& gfx, const std::string& fileName, float scale /*= 1.0f*/)
-{
-	Assimp::Importer imp;
-	const auto pScene = imp.ReadFile(fileName, aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast);
-
-	for (size_t i = 0; i < pScene->mNumMeshes; ++i)
-	{
-		meshPtrs.push_back(ParseMesh<InstancedMesh>(gfx, *pScene->mMeshes[i], pScene->mMaterials, fileName, scale, "Shaders\\InstancedFoliageVertexShader.cso"));
-	}
-
-	pRoot = ParseNode(*pScene->mRootNode);
-}
-
-InstanceModel::InstanceModel(Graphics& gfx, const std::string& fileName, float scale, ImageHDR* transformTexture)
+InstanceModel::InstanceModel(Graphics& gfx, const std::string& fileName, const ShaderSetPath& shaderSet, float scale /*= 1.0f*/, ImageHDR* const transformTexture /*= nullptr*/)
 {
 	Assimp::Importer imp;
 	const auto pScene = imp.ReadFile(fileName, aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast);
@@ -82,9 +69,13 @@ InstanceModel::InstanceModel(Graphics& gfx, const std::string& fileName, float s
 	TexturePipelineBind textureOverride;
 	textureOverride.vertexShader.push_back(transformTexture);
 
+	//ShaderSetPath shaderSetPath;
+	//shaderSetPath.vertexShader = "Shaders\\InstancedFoliageVertexShader.cso";
+	//shaderSetPath.pixelShader = "Shaders\\InstancedFoliagePixelShader.cso";
+
 	for (size_t i = 0; i < pScene->mNumMeshes; ++i)
 	{
-		meshPtrs.push_back(ParseMesh<InstancedMesh>(gfx, *pScene->mMeshes[i], pScene->mMaterials, fileName, scale, "Shaders\\InstancedFoliageVertexShader.cso", textureOverride));
+		meshPtrs.push_back(ParseMesh<InstancedMesh>(gfx, *pScene->mMeshes[i], pScene->mMaterials, fileName, scale, std::move(shaderSet), textureOverride));
 	}
 
 	pRoot = ParseNode(*pScene->mRootNode);
@@ -258,7 +249,7 @@ DirectX::XMMATRIX InstancedMesh::GetTransformXM() const noexcept
 //_____________________BASE MODEL IMPLEMENTATION________________________________//
 
 template <typename T>
-std::unique_ptr<T> BaseModel::ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMats, const std::filesystem::path& path, float scale, const std::string& vertexShaderPath)
+std::unique_ptr<T> BaseModel::ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMats, const std::filesystem::path& path, float scale, const ShaderSetPath& shaderSetPath)
 {
 	namespace dx = DirectX;
 	struct Vertex
@@ -301,7 +292,7 @@ std::unique_ptr<T> BaseModel::ParseMesh(Graphics& gfx, const aiMesh& mesh, const
 	bindablePtrs.push_back(std::make_shared<VertexBuffer>(gfx, vertices));
 	bindablePtrs.push_back(std::make_shared<IndexBuffer>(gfx, indices));
 
-	auto pvs = VertexShader::Resolve(gfx, std::move(vertexShaderPath));
+	auto pvs = VertexShader::Resolve(gfx, std::move(shaderSetPath.vertexShader));
 	auto pvsbc = std::static_pointer_cast<VertexShader>(pvs)->GetBytecode();
 
 	bindablePtrs.push_back(std::move(pvs));
@@ -309,7 +300,7 @@ std::unique_ptr<T> BaseModel::ParseMesh(Graphics& gfx, const aiMesh& mesh, const
 
 	namespace dx = DirectX;
 
-	bindablePtrs.push_back(PixelShader::Resolve(gfx, "Shaders\\PixelShader.cso"));
+	bindablePtrs.push_back(PixelShader::Resolve(gfx, std::move(shaderSetPath.pixelShader)));
 	const std::vector< D3D11_INPUT_ELEMENT_DESC >ied =
 	{
 		{ "Position",0,DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 },
@@ -389,7 +380,7 @@ std::unique_ptr<T> BaseModel::ParseMesh(Graphics& gfx, const aiMesh& mesh, const
 }
 
 template <typename T>
-static std::unique_ptr<T> BaseModel::ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMats, const std::filesystem::path& path, float scale, const std::string& vertexShaderPath, TexturePipelineBind& pipelineTextureOverrides)
+static std::unique_ptr<T> BaseModel::ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMats, const std::filesystem::path& path, float scale, const ShaderSetPath& shaderSetPath, const TexturePipelineBind& pipelineTextureOverrides)
 {
 	namespace dx = DirectX;
 	struct Vertex
@@ -432,7 +423,7 @@ static std::unique_ptr<T> BaseModel::ParseMesh(Graphics& gfx, const aiMesh& mesh
 	bindablePtrs.push_back(std::make_shared<VertexBuffer>(gfx, vertices));
 	bindablePtrs.push_back(std::make_shared<IndexBuffer>(gfx, indices));
 
-	auto pvs = VertexShader::Resolve(gfx, std::move(vertexShaderPath));
+	auto pvs = VertexShader::Resolve(gfx, std::move(shaderSetPath.vertexShader));
 	auto pvsbc = std::static_pointer_cast<VertexShader>(pvs)->GetBytecode();
 
 	bindablePtrs.push_back(std::move(pvs));
@@ -440,7 +431,7 @@ static std::unique_ptr<T> BaseModel::ParseMesh(Graphics& gfx, const aiMesh& mesh
 
 	namespace dx = DirectX;
 
-	bindablePtrs.push_back(PixelShader::Resolve(gfx, "Shaders\\PixelShader.cso"));
+	bindablePtrs.push_back(PixelShader::Resolve(gfx, std::move(shaderSetPath.pixelShader)));
 	const std::vector< D3D11_INPUT_ELEMENT_DESC >ied =
 	{
 		{ "Position",0,DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 },

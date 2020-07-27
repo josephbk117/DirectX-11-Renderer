@@ -10,17 +10,23 @@ App::App()
 	:
 	wnd(1536, 864, "Dx11 Engine Test")
 {
-	//drawables.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\TestScene.fbx"));
-	//drawables.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\nanosuit.obj"));
-	//drawables.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\Plane.obj"));
-
 	Terrain::TerrainInitInfo terrainInfo;
 	terrainInfo.baseMeshResolution = 32;
 	terrainInfo.heightScale = 100.0f;
 	terrainInfo.terrainUnitScale = 1000.0f;
 	terrains.push_back(std::make_unique<Terrain>(wnd.Gfx(), "Resources\\Images\\testHeightMap2.png", terrainInfo));
-	models.push_back(std::make_unique<InstanceModel>(wnd.Gfx(), "Resources\\Models\\Grass.obj", 1.0f, terrains[0]->GetTerrainTexture()));
-	models.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\sponza.obj", 0.05f));
+
+	ShaderSetPath instancedGrassShaderSet;
+	instancedGrassShaderSet.vertexShader = "Shaders\\InstancedFoliageVertexShader.cso";
+	instancedGrassShaderSet.pixelShader = "Shaders\\InstancedFoliagePixelShader.cso";
+
+	models.push_back(std::make_unique<InstanceModel>(wnd.Gfx(), "Resources\\Models\\Grass.obj", instancedGrassShaderSet, 1.0f, terrains[0]->GetTerrainTexture()));
+
+	ShaderSetPath phongShaderSet;
+	phongShaderSet.vertexShader = "Shaders\\VertexShader.cso";
+	phongShaderSet.pixelShader = "Shaders\\PixelShader.cso";
+
+	models.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\sponza.obj", phongShaderSet, 0.05f));
 
 	drawables.push_back(std::make_unique<PhysicalSkybox>(wnd.Gfx(), "Resources\\Models\\skyboxSphere.fbx"));
 

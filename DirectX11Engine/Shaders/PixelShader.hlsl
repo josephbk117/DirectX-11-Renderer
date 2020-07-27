@@ -125,7 +125,7 @@ float4 main(PS_IN psIn) : SV_Target
     
     float diff = max(dot(lv.dirToL, normal), 0.0);
     float3 diffuse = diff * att * color.rgb;
-    // specular    
+    // specular
     float3 reflectDir = reflect(-lv.dirToL, normal);
     float3 halfwayDir = normalize(lv.dirToL + viewDir);
     
