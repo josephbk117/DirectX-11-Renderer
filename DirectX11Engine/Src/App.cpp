@@ -27,7 +27,6 @@ App::App()
 	phongShaderSet.pixelShader = "Shaders\\PixelShader.cso";
 
 	models.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\sponza.obj", phongShaderSet, 0.05f));
-
 	drawables.push_back(std::make_unique<PhysicalSkybox>(wnd.Gfx(), "Resources\\Models\\skyboxSphere.fbx"));
 
 	wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 720.0f / 1280.0f, 0.5f, 50000.0f));
@@ -138,11 +137,7 @@ void App::DoFrame()
 
 	models[0]->ShowWindow("DEBUG INFO");
 
-	/*drawables[0]->ShowWindow("DEBUG INFO");
-	drawables[1]->ShowWindow("DEBUG INFO 2");*/
-
 	static_cast<Terrain*>(terrains[0].get())->ShowWindow("TERRAIN INFO");
-
 	static_cast<PhysicalSkybox*>(drawables[0].get())->ShowWindow("SKY INFO");
 	static_cast<PhysicalSkybox*>(drawables[0].get())->Update(wnd.Gfx());
 

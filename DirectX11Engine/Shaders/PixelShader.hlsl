@@ -116,6 +116,12 @@ float4 main(PS_IN psIn) : SV_Target
    
     // get diffuse color
     float4 color = tex.Sample(splr, texCoords);
+    if(color.a < 0.9f)
+    {
+        discard;
+        return float4(0, 0, 0, 0);
+    }
+    
     // ambient
     float3 ambient = 0.1 * color.rgb;
     // diffuse
@@ -137,5 +143,5 @@ float4 main(PS_IN psIn) : SV_Target
     float spec = pow(max(dot(normal, halfwayDir), 0.0), specularPower) * att;
 
     float3 specular = specularReflectionColor * spec;
-    return float4(ambient + diffuse + specular, color.a);
+    return float4(ambient + diffuse + specular, 1.0f);
 }
