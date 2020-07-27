@@ -54,9 +54,10 @@ public:
 
 	UINT GetAdapterCount() const noexcept;
 	AdapterInfo GetAdapterInfo(int index) const noexcept;
+	IDXGIAdapter* GetSuitableDevice() const noexcept;
 
 private:
-	void EnumerateAdapters();
+	void EnumerateAdapters() const;
 
 	DirectX::XMMATRIX projection = DirectX::XMMatrixIdentity();
 	DirectX::XMMATRIX view = DirectX::XMMatrixIdentity();
@@ -68,6 +69,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pTarget = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDSV = nullptr;
 
-	std::vector<AdapterInfo> adapterInfos;
+	mutable std::vector<AdapterInfo> adapterInfos;
 };
 

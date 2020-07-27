@@ -36,11 +36,10 @@ Graphics::Graphics(HWND hWnd, int width, int height)
 
 	HRESULT hr;
 
-	GFX_THROW_FAILED(D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE,
+	GFX_THROW_FAILED(D3D11CreateDeviceAndSwapChain(GetSuitableDevice(), D3D_DRIVER_TYPE_UNKNOWN,
 		nullptr, D3D11_CREATE_DEVICE_DEBUG, nullptr, 0, D3D11_SDK_VERSION,
 		&sd, &pSawp, &pDevice, nullptr, &pContext));
 
-	EnumerateAdapters();
 
 	wrl::ComPtr<ID3D11Resource> pBackBuffer = nullptr;
 	pSawp->GetBuffer(0, _uuidof(ID3D11Resource), &pBackBuffer);
@@ -155,7 +154,46 @@ Graphics::AdapterInfo Graphics::GetAdapterInfo(int index) const noexcept
 	return adapterInfos.at(index);
 }
 
-void Graphics::EnumerateAdapters()
+IDXGIAdapter* Graphics::GetSuitableDevice() const noexcept
+{
+	if (adapterInfos.size() == 0)
+	{
+		EnumerateAdapters();
+	}
+
+	IDXGIAdapter* chosenAdapter = nullptr;
+	IDXGIFactory* pFactory = nullptr;
+
+	// Create a DXGIFactory object.
+	if (FAILED(CreateDXGIFactory1(__uuidof(IDXGIFactory), (void**)& pFactory)))
+	{
+		return nullptr;
+	}
+
+	size_t largestDedicatedMemory = 0;
+
+	for (size_t adapterInfoIndex = 0; adapterInfoIndex < adapterInfos.size(); ++adapterInfoIndex)
+	{
+		if (adapterInfos[adapterInfoIndex].dedicatedVideoMemory > largestDedicatedMemory)
+		{
+			largestDedicatedMemory = adapterInfos[adapterInfoIndex].dedicatedVideoMemory;
+			if (chosenAdapter)
+			{
+				chosenAdapter->Release();
+			}
+			pFactory->EnumAdapters(adapterInfoIndex, &chosenAdapter);
+		}
+	}
+
+	if (pFactory)
+	{
+		pFactory->Release();
+	}
+
+	return chosenAdapter;
+}
+
+void Graphics::EnumerateAdapters() const
 {
 	IDXGIAdapter* pAdapter;
 	IDXGIFactory* pFactory = nullptr;
