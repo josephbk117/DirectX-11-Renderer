@@ -165,6 +165,9 @@ void Texture::Bind(Graphics& gfx) noexcept
 	case PipelineStage::PixelShader:
 		GetContext(gfx)->PSSetShaderResources(slot, 1, pTextureView.GetAddressOf());
 		break;
+	case PipelineStage::ComputeShader:
+		GetContext(gfx)->CSSetShaderResources(slot, 1, pTextureView.GetAddressOf());
+		break;
 	default:
 		GetContext(gfx)->PSSetShaderResources(slot, 1, pTextureView.GetAddressOf());
 		break;

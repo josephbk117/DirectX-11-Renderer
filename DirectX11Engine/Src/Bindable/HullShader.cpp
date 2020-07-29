@@ -2,7 +2,7 @@
 #include "BindableCodex.h"
 #include "../Utilities/EngineUtilities.h"
 
-HullShader::HullShader(Graphics& gfx, const std::string& path)
+HullShader::HullShader(Graphics& gfx, const std::string& path) : path(path)
 {
 	using namespace Utility;
 	Microsoft::WRL::ComPtr<ID3DBlob> pBlob;

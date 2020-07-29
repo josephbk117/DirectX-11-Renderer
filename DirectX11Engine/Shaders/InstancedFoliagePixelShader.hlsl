@@ -47,7 +47,10 @@ struct PS_IN
 
 float4 main(PS_IN psIn) : SV_Target
 {
+    float diff = max(dot(psIn.viewNorm, normalize(float3(1, 1, 0))), 0.0f);
+    
     float4 outCol = tex.Sample(splr, psIn.tc);
+    outCol.rgb *= diff;
     
     if(outCol.a < 0.5f)
     {

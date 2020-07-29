@@ -66,21 +66,21 @@ DS_OUTPUT main(
 
     float3 outNorm;
 
-    for (int i = -kernelSize; i < kernelSize; i++)
-    {
-        for (int j = -kernelSize; j < kernelSize; j++)
-        {
-            const uint3 tempIndex = { texIndex.x + i, texIndex.y + j, 0 };
-            yPos += terrainTex.Load(tempIndex).a;
-            outNorm.rgb += terrainTex.Load(tempIndex).rgb;
-        }
-    }
+    //for (int i = -kernelSize; i < kernelSize; i++)
+    //{
+    //    for (int j = -kernelSize; j < kernelSize; j++)
+    //    {
+    //        const uint3 tempIndex = { texIndex.x + i, texIndex.y + j, 0 };
+    //        yPos += terrainTex.Load(tempIndex).a;
+    //        outNorm.rgb += terrainTex.Load(tempIndex).rgb;
+    //    }
+    //}
 
    float kernelSizeDivide = 1.0f / ((kernelSize * 2.0f) * (kernelSize * 2.0f));
-
+    const uint3 tempIndex = { texIndex.x, texIndex.y, 0 };
     yPos = yPos * kernelSizeDivide;
-    Output.worldPos.y = yPos;
-    Output.normal = normalize(outNorm * kernelSizeDivide);
+    Output.worldPos.y = terrainTex.Load(tempIndex).a;
+    Output.normal = terrainTex.Load(tempIndex).rgb; //normalize(outNorm * kernelSizeDivide);
 
     Output.vPosition = mul(float4(Output.worldPos, 1), patch[0].modelViewProj);
     Output.tan = (patch[0].tan * domain.x + patch[1].tan * domain.y + patch[2].tan * domain.z);

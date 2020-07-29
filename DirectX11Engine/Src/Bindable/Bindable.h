@@ -8,7 +8,8 @@ enum class PipelineStage
 	VertexShader,
 	HullShader,
 	DomainShader,
-	PixelShader
+	PixelShader,
+	ComputeShader
 };
 
 class Bindable

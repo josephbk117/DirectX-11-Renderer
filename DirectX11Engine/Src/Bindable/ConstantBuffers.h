@@ -97,3 +97,17 @@ public:
 		GetContext(gfx)->DSSetConstantBuffers(slot, 1u, pConstantBuffer.GetAddressOf());
 	}
 };
+
+template<typename C>
+class ComputeConstantBuffer : public ConstantBuffer<C>
+{
+	using ConstantBuffer<C>::pConstantBuffer;
+	using ConstantBuffer<C>::slot;
+	using Bindable::GetContext;
+public:
+	using ConstantBuffer<C>::ConstantBuffer;
+	void Bind(Graphics& gfx) noexcept override
+	{
+		GetContext(gfx)->CSSetConstantBuffers(slot, 1u, pConstantBuffer.GetAddressOf());
+	}
+};

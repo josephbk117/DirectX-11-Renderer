@@ -2,7 +2,7 @@
 #include "BindableCodex.h"
 #include "../Utilities/EngineUtilities.h"
 
-DomainShader::DomainShader(Graphics& gfx, const std::string& path)
+DomainShader::DomainShader(Graphics& gfx, const std::string& path) : path(path)
 {
 	using namespace Utility;
 	Microsoft::WRL::ComPtr<ID3DBlob> pBlob;
