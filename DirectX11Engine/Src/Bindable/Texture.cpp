@@ -2,7 +2,7 @@
 #include "../Image.h"
 #include "BindableCodex.h"
 
-Texture::Texture(Graphics& gfx, Image& img, unsigned int slot, PipelineStage stage /*= PipelineStage::PixelShader*/) : slot(slot), stage(stage)
+Texture::Texture(Graphics& gfx, Image& img, const std::vector<PipelineStageSlotInfo>& pipelineStageInfos) : pipelineStageInfos(pipelineStageInfos)
 {
 	const bool MIPMAP_ENABLED = true;
 
@@ -50,7 +50,7 @@ Texture::Texture(Graphics& gfx, Image& img, unsigned int slot, PipelineStage sta
 	}
 }
 
-Texture::Texture(Graphics& gfx, ImageHDR& img, unsigned int slot /*= 0*/, PipelineStage stage /*= PipelineStage::PixelShader*/) : slot(slot), stage(stage)
+Texture::Texture(Graphics& gfx, ImageHDR& img, const std::vector<PipelineStageSlotInfo>& pipelineStageInfos) : pipelineStageInfos(pipelineStageInfos)
 {
 	const bool MIPMAP_ENABLED = true;
 
@@ -98,7 +98,7 @@ Texture::Texture(Graphics& gfx, ImageHDR& img, unsigned int slot /*= 0*/, Pipeli
 	}
 }
 
-Texture::Texture(Graphics& gfx, const std::string& path, unsigned int slot /*= 0*/, PipelineStage stage /*= PipelineStage::PixelShader*/) : path(path), slot(slot), stage(stage)
+Texture::Texture(Graphics& gfx, const std::string& path, const std::vector<PipelineStageSlotInfo>& pipelineStageInfos) : path(path), pipelineStageInfos(pipelineStageInfos)
 {
 	const auto img = Image::FromFile(path);
 
@@ -151,41 +151,49 @@ Texture::Texture(Graphics& gfx, const std::string& path, unsigned int slot /*= 0
 
 void Texture::Bind(Graphics& gfx) noexcept
 {
-	switch (stage)
+	for (PipelineStageSlotInfo psi : pipelineStageInfos)
 	{
-	case PipelineStage::VertexShader:
-		GetContext(gfx)->VSSetShaderResources(slot, 1, pTextureView.GetAddressOf());
-		break;
-	case PipelineStage::HullShader:
-		GetContext(gfx)->HSSetShaderResources(slot, 1, pTextureView.GetAddressOf());
-		break;
-	case PipelineStage::DomainShader:
-		GetContext(gfx)->DSSetShaderResources(slot, 1, pTextureView.GetAddressOf());
-		break;
-	case PipelineStage::PixelShader:
-		GetContext(gfx)->PSSetShaderResources(slot, 1, pTextureView.GetAddressOf());
-		break;
-	case PipelineStage::ComputeShader:
-		GetContext(gfx)->CSSetShaderResources(slot, 1, pTextureView.GetAddressOf());
-		break;
-	default:
-		GetContext(gfx)->PSSetShaderResources(slot, 1, pTextureView.GetAddressOf());
-		break;
+		switch (psi.stage)
+		{
+		case PipelineStage::VertexShader:
+			GetContext(gfx)->VSSetShaderResources(psi.slot, 1, pTextureView.GetAddressOf());
+			break;
+		case PipelineStage::HullShader:
+			GetContext(gfx)->HSSetShaderResources(psi.slot, 1, pTextureView.GetAddressOf());
+			break;
+		case PipelineStage::DomainShader:
+			GetContext(gfx)->DSSetShaderResources(psi.slot, 1, pTextureView.GetAddressOf());
+			break;
+		case PipelineStage::PixelShader:
+			GetContext(gfx)->PSSetShaderResources(psi.slot, 1, pTextureView.GetAddressOf());
+			break;
+		case PipelineStage::ComputeShader:
+			GetContext(gfx)->CSSetShaderResources(psi.slot, 1, pTextureView.GetAddressOf());
+			break;
+		default:
+			GetContext(gfx)->PSSetShaderResources(psi.slot, 1, pTextureView.GetAddressOf());
+			break;
+		}
 	}
 }
 
-std::shared_ptr<Bindable> Texture::Resolve(Graphics& gfx, const std::string& path, UINT slot, PipelineStage pipelineStage /*= PipelineStage::PixelShader*/)
+std::shared_ptr<Bindable> Texture::Resolve(Graphics& gfx, const std::string& path, const std::vector<PipelineStageSlotInfo>& pipelineStageInfos)
 {
-	return BindableCodex::Resolve<Texture>(gfx, path, slot, pipelineStage);
+	return BindableCodex::Resolve<Texture>(gfx, path, pipelineStageInfos);
 }
 
-std::string Texture::GenerateUID(const std::string& path, UINT slot, PipelineStage pipelineStage /*= PipelineStage::PixelShader*/)
+std::string Texture::GenerateUID(const std::string& path, const std::vector<PipelineStageSlotInfo>& pipelineStageInfos)
 {
 	using namespace std::string_literals;
-	return typeid(Texture).name() + "#"s + path + std::to_string(slot) + "#"s + std::to_string(static_cast<int>(pipelineStage));
+	std::string completeStr = path;
+	for(PipelineStageSlotInfo psi : pipelineStageInfos)
+	{
+		completeStr += std::to_string(psi.slot) + "#"s + std::to_string(static_cast<int>(psi.stage));
+	}
+	return typeid(Texture).name() + "#"s + completeStr;
 }
 
 std::string Texture::GetUID() const noexcept
 {
-	return GenerateUID(path, slot);
+	return GenerateUID(path, pipelineStageInfos);
 }

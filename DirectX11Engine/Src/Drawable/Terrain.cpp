@@ -17,6 +17,7 @@
 #include "../Bindable/TextureArray.h"
 #include "../Bindable/HullShader.h"
 #include "../Bindable/DomainShader.h"
+#include "../Bindable/ComputeShader.h"
 
 Terrain::Terrain(Graphics& gfx, const std::string& heightMap, const TerrainInitInfo& initInfo) noexcept : terrainInitInfo(initInfo)
 {
@@ -95,8 +96,17 @@ Terrain::Terrain(Graphics& gfx, const std::string& heightMap, const TerrainInitI
 	AddBind(TextureArray::Resolve(gfx, paths, 3));
 
 	imgHdr = ImageHDR::FromData(terraintexture, terrainTextureDimenion, terrainTextureDimenion);
-	AddBind(std::make_shared<Texture>(gfx, imgHdr, 6, PipelineStage::PixelShader));
+
+	std::vector<PipelineStageSlotInfo> pipelineStageInfos;
+	pipelineStageInfos.push_back({ PipelineStage::PixelShader , 6 });
+	pipelineStageInfos.push_back({ PipelineStage::DomainShader , 0 });
+	pipelineStageInfos.push_back({ PipelineStage::ComputeShader , 0 });
+
+	AddBind(std::make_shared<Texture>(gfx, imgHdr, pipelineStageInfos));
+
+	/*AddBind(std::make_shared<Texture>(gfx, imgHdr, 6, PipelineStage::PixelShader));
 	AddBind(std::make_shared<Texture>(gfx, imgHdr, 0, PipelineStage::DomainShader));
+	AddBind(std::make_shared<Texture>(gfx, imgHdr, 0, PipelineStage::ComputeShader));*/
 
 	auto pvs = VertexShader::Resolve(gfx, "Shaders\\TerrainVertexShader.cso");
 	auto pvsbc = std::static_pointer_cast<VertexShader>(pvs)->GetBytecode();
@@ -106,6 +116,7 @@ Terrain::Terrain(Graphics& gfx, const std::string& heightMap, const TerrainInitI
 	AddBind(PixelShader::Resolve(gfx, "Shaders\\TerrainPixelShader.cso"));
 	AddBind(HullShader::Resolve(gfx, "Shaders\\TerrainHullShader.cso"));
 	AddBind(DomainShader::Resolve(gfx, "Shaders\\TerrainDomainShader.cso"));
+	AddBind(ComputeShader::Resolve(gfx, "Shaders\\TerrainComputeShader.cso"));
 
 	const std::vector< D3D11_INPUT_ELEMENT_DESC >ied =
 	{
@@ -140,6 +151,7 @@ DirectX::XMMATRIX Terrain::GetTransformXM() const noexcept
 
 void Terrain::Draw(Graphics& gfx) const noexcept
 {
+	gfx.Dispatch(1, 1, 1);
 	pTerrainInfoBuffer->Update(gfx, terrainInfo);
 	pDetailInfoBufferVertex->Update(gfx, detailInfo);
 	pDetailInfoBufferHull->Update(gfx, detailInfo);
@@ -172,7 +184,6 @@ void Terrain::ShowWindow(const char* windowName) noexcept
 		ImGui::Separator();
 		ImGui::SliderFloat("Tessellation Factor", &detailInfo.maxTessellationAmount, 1.0f, 64.0f);
 		ImGui::SliderFloat("Max Tessellation Distance", &detailInfo.maxDistance, 50.0f, 2500.0f);
-		ImGui::SliderInt("Smoothing", &detailInfo.smoothing, 1, 8);
 	}
 	ImGui::End();
 }

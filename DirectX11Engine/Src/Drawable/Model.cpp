@@ -232,7 +232,9 @@ InstancedMesh::InstancedMesh(Graphics& gfx, std::vector<std::shared_ptr<Bindable
 
 InstancedMesh::InstancedMesh(Graphics& gfx, std::vector<std::shared_ptr<Bindable>> bindPtrs, ImageHDR* transformTexture) : InstancedMesh(gfx, bindPtrs)
 {
-	AddBind(std::make_shared<Texture>(gfx, *transformTexture, 0, PipelineStage::VertexShader));
+	std::vector<PipelineStageSlotInfo> pipelineStageInfos;
+	pipelineStageInfos.push_back({ PipelineStage::VertexShader , 0 });
+	AddBind(std::make_shared<Texture>(gfx, *transformTexture, pipelineStageInfos));
 }
 
 void InstancedMesh::Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const noexcept
@@ -325,18 +327,24 @@ std::unique_ptr<T> BaseModel::ParseMesh(Graphics& gfx, const aiMesh& mesh, const
 
 		if (material.GetTexture(aiTextureType_DIFFUSE, 0, &textFileName) == aiReturn_SUCCESS)
 		{
-			bindablePtrs.push_back(Texture::Resolve(gfx, IMG_PATH + textFileName.C_Str(), 0));
+			std::vector<PipelineStageSlotInfo> pipelineStageSlotInfo;
+			pipelineStageSlotInfo.push_back({PipelineStage::PixelShader, 0});
+			bindablePtrs.push_back(Texture::Resolve(gfx, IMG_PATH + textFileName.C_Str(), pipelineStageSlotInfo));
 		}
 		else
 		{
 			Image img(1, 1);
 			img.ClearData(Image::Color(255, 0, 255));
-			bindablePtrs.push_back(std::make_shared<Texture>(gfx, img));
+			std::vector<PipelineStageSlotInfo> pipelineStageSlotInfo;
+			pipelineStageSlotInfo.push_back({ PipelineStage::PixelShader, 0 });
+			bindablePtrs.push_back(std::make_shared<Texture>(gfx, img, pipelineStageSlotInfo));
 		}
 
 		if (material.GetTexture(aiTextureType_SPECULAR, 0, &textFileName) == aiReturn_SUCCESS)
 		{
-			bindablePtrs.push_back(Texture::Resolve(gfx, IMG_PATH + textFileName.C_Str(), 1));
+			std::vector<PipelineStageSlotInfo> pipelineStageSlotInfo;
+			pipelineStageSlotInfo.push_back({ PipelineStage::PixelShader, 1 });
+			bindablePtrs.push_back(Texture::Resolve(gfx, IMG_PATH + textFileName.C_Str(), pipelineStageSlotInfo));
 		}
 		else
 		{
@@ -344,35 +352,47 @@ std::unique_ptr<T> BaseModel::ParseMesh(Graphics& gfx, const aiMesh& mesh, const
 			//material.Get(AI_MATKEY_SHININESS, shininess);
 			Image img(1, 1);
 			img.ClearData(Image::Color(100, 100, 100, 100));
-			bindablePtrs.push_back(std::make_shared<Texture>(gfx, img, 1));
+			std::vector<PipelineStageSlotInfo> pipelineStageSlotInfo;
+			pipelineStageSlotInfo.push_back({ PipelineStage::PixelShader, 1 });
+			bindablePtrs.push_back(std::make_shared<Texture>(gfx, img, pipelineStageSlotInfo));
 		}
 
 		if (material.GetTexture(aiTextureType_NORMALS, 0, &textFileName) == aiReturn_SUCCESS)
 		{
-			bindablePtrs.push_back(Texture::Resolve(gfx, IMG_PATH + textFileName.C_Str(), 2));
+			std::vector<PipelineStageSlotInfo> pipelineStageSlotInfo;
+			pipelineStageSlotInfo.push_back({ PipelineStage::PixelShader, 2 });
+			bindablePtrs.push_back(Texture::Resolve(gfx, IMG_PATH + textFileName.C_Str(), pipelineStageSlotInfo));
 		}
 		else
 		{
 			if (material.GetTexture(aiTextureType_HEIGHT, 0, &textFileName) == aiReturn_SUCCESS)
 			{
-				bindablePtrs.push_back(Texture::Resolve(gfx, IMG_PATH + textFileName.C_Str(), 2));
+				std::vector<PipelineStageSlotInfo> pipelineStageSlotInfo;
+				pipelineStageSlotInfo.push_back({ PipelineStage::PixelShader, 2 });
+				bindablePtrs.push_back(Texture::Resolve(gfx, IMG_PATH + textFileName.C_Str(), pipelineStageSlotInfo));
 			}
 			else
 			{
 				Image img(1, 1);
 				img.ClearData(Image::Color(128, 128, 255));
-				bindablePtrs.push_back(std::make_shared<Texture>(gfx, img, 2));
+				std::vector<PipelineStageSlotInfo> pipelineStageSlotInfo;
+				pipelineStageSlotInfo.push_back({ PipelineStage::PixelShader, 2 });
+				bindablePtrs.push_back(std::make_shared<Texture>(gfx, img, pipelineStageSlotInfo));
 			}
 		}
 		if (material.GetTexture(aiTextureType_DISPLACEMENT, 0, &textFileName) == aiReturn_SUCCESS)
 		{
-			bindablePtrs.push_back(Texture::Resolve(gfx, IMG_PATH + textFileName.C_Str(), 3));
+			std::vector<PipelineStageSlotInfo> pipelineStageSlotInfo;
+			pipelineStageSlotInfo.push_back({ PipelineStage::PixelShader, 3 });
+			bindablePtrs.push_back(Texture::Resolve(gfx, IMG_PATH + textFileName.C_Str(), pipelineStageSlotInfo));
 		}
 		else
 		{
 			Image img(1, 1);
 			img.ClearData(Image::Color(0, 0, 0));
-			bindablePtrs.push_back(std::make_shared<Texture>(gfx, img, 3));
+			std::vector<PipelineStageSlotInfo> pipelineStageSlotInfo;
+			pipelineStageSlotInfo.push_back({ PipelineStage::PixelShader, 3 });
+			bindablePtrs.push_back(std::make_shared<Texture>(gfx, img, pipelineStageSlotInfo));
 		}
 	}
 
@@ -447,9 +467,11 @@ static std::unique_ptr<T> BaseModel::ParseMesh(Graphics& gfx, const aiMesh& mesh
 	bindablePtrs.push_back(BlendOperation::Resolve(gfx, true));
 
 
-	for (int vertexShaderTextureIndex = 0; vertexShaderTextureIndex < pipelineTextureOverrides.vertexShader.size(); ++vertexShaderTextureIndex)
+	for (UINT vertexShaderTextureIndex = 0; vertexShaderTextureIndex < pipelineTextureOverrides.vertexShader.size(); ++vertexShaderTextureIndex)
 	{
-		bindablePtrs.push_back(std::make_shared<Texture>(gfx, *pipelineTextureOverrides.vertexShader[vertexShaderTextureIndex], vertexShaderTextureIndex, PipelineStage::VertexShader));
+		std::vector<PipelineStageSlotInfo> pipelineStageSlotInfo;
+		pipelineStageSlotInfo.push_back({ PipelineStage::VertexShader, vertexShaderTextureIndex });
+		bindablePtrs.push_back(std::make_shared<Texture>(gfx, *pipelineTextureOverrides.vertexShader[vertexShaderTextureIndex], pipelineStageSlotInfo));
 	}
 
 	if (mesh.mMaterialIndex >= 0)
@@ -464,52 +486,70 @@ static std::unique_ptr<T> BaseModel::ParseMesh(Graphics& gfx, const aiMesh& mesh
 
 		if (material.GetTexture(aiTextureType_DIFFUSE, 0, &textFileName) == aiReturn_SUCCESS)
 		{
-			bindablePtrs.push_back(Texture::Resolve(gfx, IMG_PATH + textFileName.C_Str(), 0));
+			std::vector<PipelineStageSlotInfo> pipelineStageSlotInfo;
+			pipelineStageSlotInfo.push_back({ PipelineStage::PixelShader, 0 });
+			bindablePtrs.push_back(Texture::Resolve(gfx, IMG_PATH + textFileName.C_Str(), pipelineStageSlotInfo));
 		}
 		else
 		{
 			Image img(1, 1);
 			img.ClearData(Image::Color(255, 0, 255));
-			bindablePtrs.push_back(std::make_shared<Texture>(gfx, img));
+			std::vector<PipelineStageSlotInfo> pipelineStageSlotInfo;
+			pipelineStageSlotInfo.push_back({ PipelineStage::PixelShader, 0 });
+			bindablePtrs.push_back(std::make_shared<Texture>(gfx, img, pipelineStageSlotInfo));
 		}
 
 		if (material.GetTexture(aiTextureType_SPECULAR, 0, &textFileName) == aiReturn_SUCCESS)
 		{
-			bindablePtrs.push_back(Texture::Resolve(gfx, IMG_PATH + textFileName.C_Str(), 1));
+			std::vector<PipelineStageSlotInfo> pipelineStageSlotInfo;
+			pipelineStageSlotInfo.push_back({ PipelineStage::PixelShader, 1 });
+			bindablePtrs.push_back(Texture::Resolve(gfx, IMG_PATH + textFileName.C_Str(), pipelineStageSlotInfo));
 		}
 		else
 		{
 			Image img(1, 1);
 			img.ClearData(Image::Color(100, 100, 100, 100));
-			bindablePtrs.push_back(std::make_shared<Texture>(gfx, img, 1));
+			std::vector<PipelineStageSlotInfo> pipelineStageSlotInfo;
+			pipelineStageSlotInfo.push_back({ PipelineStage::PixelShader, 1 });
+			bindablePtrs.push_back(std::make_shared<Texture>(gfx, img, pipelineStageSlotInfo));
 		}
 
 		if (material.GetTexture(aiTextureType_NORMALS, 0, &textFileName) == aiReturn_SUCCESS)
 		{
-			bindablePtrs.push_back(Texture::Resolve(gfx, IMG_PATH + textFileName.C_Str(), 2));
+			std::vector<PipelineStageSlotInfo> pipelineStageSlotInfo;
+			pipelineStageSlotInfo.push_back({ PipelineStage::PixelShader, 2 });
+			bindablePtrs.push_back(Texture::Resolve(gfx, IMG_PATH + textFileName.C_Str(), pipelineStageSlotInfo));
 		}
 		else
 		{
 			if (material.GetTexture(aiTextureType_HEIGHT, 0, &textFileName) == aiReturn_SUCCESS)
 			{
-				bindablePtrs.push_back(Texture::Resolve(gfx, IMG_PATH + textFileName.C_Str(), 2));
+				std::vector<PipelineStageSlotInfo> pipelineStageSlotInfo;
+				pipelineStageSlotInfo.push_back({ PipelineStage::PixelShader, 2 });
+				bindablePtrs.push_back(Texture::Resolve(gfx, IMG_PATH + textFileName.C_Str(), pipelineStageSlotInfo));
 			}
 			else
 			{
 				Image img(1, 1);
 				img.ClearData(Image::Color(128, 128, 255));
-				bindablePtrs.push_back(std::make_shared<Texture>(gfx, img, 2));
+				std::vector<PipelineStageSlotInfo> pipelineStageSlotInfo;
+				pipelineStageSlotInfo.push_back({ PipelineStage::PixelShader, 2 });
+				bindablePtrs.push_back(std::make_shared<Texture>(gfx, img, pipelineStageSlotInfo));
 			}
 		}
 		if (material.GetTexture(aiTextureType_DISPLACEMENT, 0, &textFileName) == aiReturn_SUCCESS)
 		{
-			bindablePtrs.push_back(Texture::Resolve(gfx, IMG_PATH + textFileName.C_Str(), 3));
+			std::vector<PipelineStageSlotInfo> pipelineStageSlotInfo;
+			pipelineStageSlotInfo.push_back({ PipelineStage::PixelShader, 3 });
+			bindablePtrs.push_back(Texture::Resolve(gfx, IMG_PATH + textFileName.C_Str(), pipelineStageSlotInfo));
 		}
 		else
 		{
 			Image img(1, 1);
 			img.ClearData(Image::Color(0, 0, 0));
-			bindablePtrs.push_back(std::make_shared<Texture>(gfx, img, 3));
+			std::vector<PipelineStageSlotInfo> pipelineStageSlotInfo;
+			pipelineStageSlotInfo.push_back({ PipelineStage::PixelShader, 3 });
+			bindablePtrs.push_back(std::make_shared<Texture>(gfx, img, pipelineStageSlotInfo));
 		}
 	}
 

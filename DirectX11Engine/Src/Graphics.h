@@ -45,6 +45,7 @@ public:
 	void ClearBuffer(float r, float g, float b) noexcept;
 	void DrawIndexed(UINT indexCount)noexcept;
 	void DrawIndexedInstanced(UINT indexCount, UINT instanceCount)noexcept;
+	void Dispatch(UINT x, UINT y, UINT z) noexcept;
 	void SetProjection(DirectX::FXMMATRIX proj) noexcept;
 	DirectX::XMMATRIX GetProjection() const noexcept;
 	void SetCamera(DirectX::FXMMATRIX cam) noexcept;
