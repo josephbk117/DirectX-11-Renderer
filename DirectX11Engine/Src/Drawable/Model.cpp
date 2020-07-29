@@ -69,10 +69,6 @@ InstanceModel::InstanceModel(Graphics& gfx, const std::string& fileName, const S
 	TexturePipelineBind textureOverride;
 	textureOverride.vertexShader.push_back(transformTexture);
 
-	//ShaderSetPath shaderSetPath;
-	//shaderSetPath.vertexShader = "Shaders\\InstancedFoliageVertexShader.cso";
-	//shaderSetPath.pixelShader = "Shaders\\InstancedFoliagePixelShader.cso";
-
 	for (size_t i = 0; i < pScene->mNumMeshes; ++i)
 	{
 		meshPtrs.push_back(ParseMesh<InstancedMesh>(gfx, *pScene->mMeshes[i], pScene->mMaterials, fileName, scale, std::move(shaderSet), textureOverride));
@@ -348,8 +344,6 @@ std::unique_ptr<T> BaseModel::ParseMesh(Graphics& gfx, const aiMesh& mesh, const
 		}
 		else
 		{
-			//float shininess = 60.0f;
-			//material.Get(AI_MATKEY_SHININESS, shininess);
 			Image img(1, 1);
 			img.ClearData(Image::Color(100, 100, 100, 100));
 			std::vector<PipelineStageSlotInfo> pipelineStageSlotInfo;
