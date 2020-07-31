@@ -102,7 +102,7 @@ Terrain::Terrain(Graphics& gfx, const std::string& heightMap, const TerrainInitI
 	pipelineStageInfos.push_back({ PipelineStage::DomainShader , 0 });
 	pipelineStageInfos.push_back({ PipelineStage::ComputeShader , 0 });
 
-	AddBind(std::make_shared<Texture>(gfx, imgHdr, pipelineStageInfos));
+	AddBind(std::make_shared<Texture>(gfx, imgHdr, pipelineStageInfos, false));
 
 	auto pvs = VertexShader::Resolve(gfx, "Shaders\\TerrainVertexShader.cso");
 	auto pvsbc = std::static_pointer_cast<VertexShader>(pvs)->GetBytecode();

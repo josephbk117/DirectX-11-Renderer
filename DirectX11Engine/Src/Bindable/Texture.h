@@ -11,9 +11,9 @@ struct  PipelineStageSlotInfo
 class Texture : public Bindable
 {
 public:
-	Texture(Graphics& gfx, Image& img, const std::vector<PipelineStageSlotInfo>& pipelineStageInfos);
-	Texture(Graphics& gfx, ImageHDR& img, const std::vector<PipelineStageSlotInfo>& pipelineStageInfos);
-	Texture(Graphics& gfx, const std::string& path, const std::vector<PipelineStageSlotInfo>& pipelineStageInfos);
+	Texture(Graphics& gfx, Image& img, const std::vector<PipelineStageSlotInfo>& pipelineStageInfos, bool genMipMap = true);
+	Texture(Graphics& gfx, ImageHDR& img, const std::vector<PipelineStageSlotInfo>& pipelineStageInfos, bool genMipMap = true);
+	Texture(Graphics& gfx, const std::string& path, const std::vector<PipelineStageSlotInfo>& pipelineStageInfos, bool genMipMap = true);
 	void Bind(Graphics& gfx) noexcept override;
 	static std::shared_ptr<Bindable> Resolve(Graphics& gfx, const std::string& path, const std::vector<PipelineStageSlotInfo>& pipelineStageInfos);
 	static std::string GenerateUID(const std::string& path, const std::vector<PipelineStageSlotInfo>& pipelineStageInfos);
