@@ -2,6 +2,7 @@
 #include "Drawable.h"
 #include "../Bindable/ConstantBuffers.h"
 #include "../Image.h"
+#include "../Bindable/Texture.h"
 
 
 class Terrain : public Drawable
@@ -68,4 +69,5 @@ private:
 	std::shared_ptr<VertexConstantBuffer<DetailInfo>> pDetailInfoBufferVertex = nullptr;
 	std::shared_ptr<HullConstantBuffer<DetailInfo>> pDetailInfoBufferHull = nullptr;
 	std::shared_ptr<DomainConstantBuffer<DetailInfo>> pDetailInfoBufferDomain = nullptr;
+	std::shared_ptr<Texture> pTerrainTexture = nullptr;
 };

@@ -59,7 +59,7 @@ Texture::Texture(Graphics& gfx, ImageHDR& img, const std::vector<PipelineStageSl
 	td.SampleDesc.Count = 1;
 	td.SampleDesc.Quality = 0;
 	td.Usage = D3D11_USAGE_DEFAULT;
-	td.BindFlags = (genMipMap) ? D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET : D3D11_BIND_SHADER_RESOURCE; // D3D11_BIND_RENDER_TARGET to allow for creating mips
+	td.BindFlags = (genMipMap) ? D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET : D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS; // D3D11_BIND_RENDER_TARGET to allow for creating mips
 	td.CPUAccessFlags = 0;
 	td.MiscFlags = (genMipMap) ? D3D11_RESOURCE_MISC_GENERATE_MIPS : 0; // If no need for mips can be set null
 
@@ -67,7 +67,7 @@ Texture::Texture(Graphics& gfx, ImageHDR& img, const std::vector<PipelineStageSl
 
 	if (!genMipMap)
 	{
-		D3D11_SUBRESOURCE_DATA sd {};
+		D3D11_SUBRESOURCE_DATA sd{};
 		sd.pSysMem = img.GetData();
 		sd.SysMemPitch = img.GetWidth() * sizeof(ImageHDR::ColorFloat);
 		GetDevice(gfx)->CreateTexture2D(&td, &sd, &pTexture);
@@ -91,6 +91,16 @@ Texture::Texture(Graphics& gfx, ImageHDR& img, const std::vector<PipelineStageSl
 	if (genMipMap)
 	{
 		GetContext(gfx)->GenerateMips(pTextureView.Get());
+	}
+
+	if (genMipMap == false)
+	{
+		D3D11_UNORDERED_ACCESS_VIEW_DESC descUAV;
+		ZeroMemory(&descUAV, sizeof(descUAV));
+		descUAV.Format = DXGI_FORMAT_UNKNOWN;
+		descUAV.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
+		descUAV.Texture2D.MipSlice = 0;
+		GetDevice(gfx)->CreateUnorderedAccessView(pTexture.Get(), &descUAV, &pUAV);
 	}
 }
 
@@ -135,6 +145,7 @@ Texture::Texture(Graphics& gfx, const std::string& path, const std::vector<Pipel
 
 	GetDevice(gfx)->CreateShaderResourceView(pTexture.Get(), &srv, &pTextureView);
 
+
 	//generate mip chain on GPU
 	if (genMipMap)
 	{
@@ -162,12 +173,74 @@ void Texture::Bind(Graphics& gfx) noexcept
 			GetContext(gfx)->PSSetShaderResources(psi.slot, 1, pTextureView.GetAddressOf());
 			break;
 		case PipelineStage::ComputeShader:
-			GetContext(gfx)->CSSetShaderResources(psi.slot, 1, pTextureView.GetAddressOf());
+			GetContext(gfx)->CSSetUnorderedAccessViews(psi.slot, 1, pUAV.GetAddressOf(), 0);
 			break;
 		default:
 			GetContext(gfx)->PSSetShaderResources(psi.slot, 1, pTextureView.GetAddressOf());
 			break;
 		}
+	}
+}
+
+void Texture::CustomBind(Graphics& gfx, PipelineStageSlotInfo customStageInfo) noexcept
+{
+	switch (customStageInfo.stage)
+	{
+	case PipelineStage::VertexShader:
+		GetContext(gfx)->VSSetShaderResources(customStageInfo.slot, 1, pTextureView.GetAddressOf());
+		break;
+	case PipelineStage::HullShader:
+		GetContext(gfx)->HSSetShaderResources(customStageInfo.slot, 1, pTextureView.GetAddressOf());
+		break;
+	case PipelineStage::DomainShader:
+		GetContext(gfx)->DSSetShaderResources(customStageInfo.slot, 1, pTextureView.GetAddressOf());
+		break;
+	case PipelineStage::PixelShader:
+		GetContext(gfx)->PSSetShaderResources(customStageInfo.slot, 1, pTextureView.GetAddressOf());
+		break;
+	case PipelineStage::ComputeShader:
+		GetContext(gfx)->CSSetUnorderedAccessViews(customStageInfo.slot, 1, pUAV.GetAddressOf(), 0);
+		break;
+	default:
+		GetContext(gfx)->PSSetShaderResources(customStageInfo.slot, 1, pTextureView.GetAddressOf());
+		break;
+	}
+}
+
+void Texture::UnBind(Graphics& gfx) noexcept
+{
+	for (PipelineStageSlotInfo psi : pipelineStageInfos)
+	{
+		CustomUnBind(gfx, psi);
+	}
+}
+
+void Texture::CustomUnBind(Graphics& gfx, PipelineStageSlotInfo customStageInfo) noexcept
+{
+	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
+	switch (customStageInfo.stage)
+	{
+	case PipelineStage::VertexShader:
+		GetContext(gfx)->VSSetShaderResources(customStageInfo.slot, 1, nullSRV);
+		break;
+	case PipelineStage::HullShader:
+		GetContext(gfx)->HSSetShaderResources(customStageInfo.slot, 1, nullSRV);
+		break;
+	case PipelineStage::DomainShader:
+		GetContext(gfx)->DSSetShaderResources(customStageInfo.slot, 1, nullSRV);
+		break;
+	case PipelineStage::PixelShader:
+		GetContext(gfx)->PSSetShaderResources(customStageInfo.slot, 1, nullSRV);
+		break;
+	case PipelineStage::ComputeShader:
+	{
+		ID3D11UnorderedAccessView* nullUAV[1] = { nullptr };
+		GetContext(gfx)->CSSetUnorderedAccessViews(customStageInfo.slot, 1, nullUAV, 0);
+	}
+	break;
+	default:
+		GetContext(gfx)->PSSetShaderResources(customStageInfo.slot, 1, nullSRV);
+		break;
 	}
 }
 
@@ -180,7 +253,7 @@ std::string Texture::GenerateUID(const std::string& path, const std::vector<Pipe
 {
 	using namespace std::string_literals;
 	std::string completeStr = path;
-	for(PipelineStageSlotInfo psi : pipelineStageInfos)
+	for (PipelineStageSlotInfo psi : pipelineStageInfos)
 	{
 		completeStr += std::to_string(psi.slot) + "#"s + std::to_string(static_cast<int>(psi.stage));
 	}

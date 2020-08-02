@@ -100,9 +100,9 @@ Terrain::Terrain(Graphics& gfx, const std::string& heightMap, const TerrainInitI
 	std::vector<PipelineStageSlotInfo> pipelineStageInfos;
 	pipelineStageInfos.push_back({ PipelineStage::PixelShader , 6 });
 	pipelineStageInfos.push_back({ PipelineStage::DomainShader , 0 });
-	pipelineStageInfos.push_back({ PipelineStage::ComputeShader , 0 });
 
-	AddBind(std::make_shared<Texture>(gfx, imgHdr, pipelineStageInfos, false));
+	pTerrainTexture = std::make_shared<Texture>(gfx, imgHdr, pipelineStageInfos, false);
+	AddBind(pTerrainTexture);
 
 	auto pvs = VertexShader::Resolve(gfx, "Shaders\\TerrainVertexShader.cso");
 	auto pvsbc = std::static_pointer_cast<VertexShader>(pvs)->GetBytecode();
@@ -147,12 +147,15 @@ DirectX::XMMATRIX Terrain::GetTransformXM() const noexcept
 
 void Terrain::Draw(Graphics& gfx) const noexcept
 {
-	gfx.Dispatch(1, 1, 1);
 	pTerrainInfoBuffer->Update(gfx, terrainInfo);
 	pDetailInfoBufferVertex->Update(gfx, detailInfo);
 	pDetailInfoBufferHull->Update(gfx, detailInfo);
 	pDetailInfoBufferDomain->Update(gfx, detailInfo);
 	Drawable::Draw(gfx);
+	pTerrainTexture->UnBind(gfx);
+	pTerrainTexture->CustomBind(gfx, { PipelineStage::ComputeShader, 0 });
+	gfx.Dispatch(64, 64, 1);
+	pTerrainTexture->CustomUnBind(gfx, { PipelineStage::ComputeShader, 0 });
 }
 
 void Terrain::ShowWindow(const char* windowName) noexcept
