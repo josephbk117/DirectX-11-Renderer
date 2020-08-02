@@ -56,7 +56,7 @@ class InstancedMesh : public BaseMesh
 {
 public:
 	InstancedMesh(Graphics& gfx, std::vector<std::shared_ptr<Bindable>> bindPtrs);
-	InstancedMesh(Graphics& gfx, std::vector<std::shared_ptr<Bindable>> bindPtrs, ImageHDR* transformTexture);
+	InstancedMesh(Graphics& gfx, std::vector<std::shared_ptr<Bindable>> bindPtrs, std::shared_ptr<Texture> tarnsformTex);
 	virtual void Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const noexcept;
 	DirectX::XMMATRIX GetTransformXM() const noexcept;
 };
@@ -87,7 +87,7 @@ public:
 	template <typename T>
 	static std::unique_ptr<T> ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMats, const std::filesystem::path& path, float scale, const ShaderSetPath& shaderSetPath);
 	template <typename T>
-	static std::unique_ptr<T> ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMats, const std::filesystem::path& path, float scale, const ShaderSetPath& shaderSetPath, const TexturePipelineBind& pipelineTextureOverrides);
+	static std::unique_ptr<T> ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMats, const std::filesystem::path& path, float scale, const ShaderSetPath& shaderSetPath, std::shared_ptr<Texture> transformTexture);
 	std::unique_ptr<Node> ParseNode(const aiNode& node);
 	Node* GetSelectedNode() const noexcept;
 
@@ -121,7 +121,7 @@ public:
 class InstanceModel : public BaseModel
 {
 public:
-	InstanceModel(Graphics& gfx, const std::string& fileName, const ShaderSetPath& shaderSet, float scale = 1.0f, ImageHDR * const transformTexture = nullptr);
+	InstanceModel(Graphics& gfx, const std::string& fileName, const ShaderSetPath& shaderSet, float scale = 1.0f, std::shared_ptr<Texture> tarnsformTex = nullptr);
 	DirectX::XMMATRIX GetTransform() const noexcept;
 	virtual void Draw(Graphics& gfx);
 	virtual void ShowWindow(const char* windowName) noexcept;

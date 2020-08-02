@@ -42,7 +42,7 @@ public:
 	DirectX::XMMATRIX GetTransformXM() const noexcept override;
 	void Draw(Graphics& gfx) const noexcept override;
 	void ShowWindow(const char* windowName) noexcept;
-	ImageHDR* GetTerrainTexture() noexcept;
+	std::shared_ptr<Texture> GetTerrainTexture() noexcept;
 private:
 	struct Vertex
 	{
@@ -58,6 +58,7 @@ private:
 	void CalculateTangentBinormal(Vertex vertex1, Vertex vertex2, Vertex vertex3, DirectX::XMVECTOR& tangent, DirectX::XMVECTOR& binormal) noexcept;
 
 	unsigned int terrainTextureDimenion = 0;
+	mutable bool smoothingRequiresCalc = false;
 
 	TerrainInitInfo terrainInitInfo;
 	TerrainInfo terrainInfo;

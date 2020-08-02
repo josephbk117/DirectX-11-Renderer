@@ -95,52 +95,53 @@ Terrain::Terrain(Graphics& gfx, const std::string& heightMap, const TerrainInitI
 
 	paths[1] = "Resources\\Images\\Triplanar set\\ompjR_4K_Normal.jpg";
 	paths[0] = "Resources\\Images\\Triplanar set\\tefndhwq_4K_Normal.jpg";
-	paths[2] = "Resources\\Images\\Triplanar set\\ueumdayn_2K_Normal.jpg";
+paths[2] = "Resources\\Images\\Triplanar set\\ueumdayn_2K_Normal.jpg";
 
-	AddBind(TextureArray::Resolve(gfx, paths, 3));
+AddBind(TextureArray::Resolve(gfx, paths, 3));
 
-	imgHdr = ImageHDR::FromData(terraintexture, terrainTextureDimenion, terrainTextureDimenion);
+imgHdr = ImageHDR::FromData(terraintexture, terrainTextureDimenion, terrainTextureDimenion);
 
-	std::vector<PipelineStageSlotInfo> pipelineStageInfos;
-	pipelineStageInfos.push_back({ PipelineStage::PixelShader , 6 });
-	pipelineStageInfos.push_back({ PipelineStage::DomainShader , 0 });
+std::vector<PipelineStageSlotInfo> pipelineStageInfos;
+pipelineStageInfos.push_back({ PipelineStage::VertexShader , 0 });
+pipelineStageInfos.push_back({ PipelineStage::PixelShader , 6 });
+pipelineStageInfos.push_back({ PipelineStage::DomainShader , 0 });
 
-	pTerrainTexture = std::make_shared<Texture>(gfx, imgHdr, pipelineStageInfos, false);
-	AddBind(pTerrainTexture);
+pTerrainTexture = std::make_shared<Texture>(gfx, imgHdr, pipelineStageInfos, false);
+AddBind(pTerrainTexture);
 
-	auto pvs = VertexShader::Resolve(gfx, "Shaders\\TerrainVertexShader.cso");
-	auto pvsbc = std::static_pointer_cast<VertexShader>(pvs)->GetBytecode();
+auto pvs = VertexShader::Resolve(gfx, "Shaders\\TerrainVertexShader.cso");
+auto pvsbc = std::static_pointer_cast<VertexShader>(pvs)->GetBytecode();
 
-	AddBind(std::move(pvs));
-	AddBind(Sampler::Resolve(gfx));
-	AddBind(PixelShader::Resolve(gfx, "Shaders\\TerrainPixelShader.cso"));
-	AddBind(HullShader::Resolve(gfx, "Shaders\\TerrainHullShader.cso"));
-	AddBind(DomainShader::Resolve(gfx, "Shaders\\TerrainDomainShader.cso"));
-	AddBind(ComputeShader::Resolve(gfx, "Shaders\\TerrainComputeShader.cso"));
+AddBind(std::move(pvs));
+AddBind(Sampler::Resolve(gfx));
+AddBind(PixelShader::Resolve(gfx, "Shaders\\TerrainPixelShader.cso"));
+AddBind(HullShader::Resolve(gfx, "Shaders\\TerrainHullShader.cso"));
+AddBind(DomainShader::Resolve(gfx, "Shaders\\TerrainDomainShader.cso"));
+AddBind(ComputeShader::Resolve(gfx, "Shaders\\TerrainComputeShader.cso"));
 
-	const std::vector< D3D11_INPUT_ELEMENT_DESC >ied =
-	{
-		{ "Position",0,DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 },
-		{ "TexCoord", 0, DXGI_FORMAT_R32G32_FLOAT,0,12u,D3D11_INPUT_PER_VERTEX_DATA,0 },
-		{ "Normal",0,DXGI_FORMAT_R32G32B32_FLOAT,0,20u,D3D11_INPUT_PER_VERTEX_DATA,0 },
-		{ "Tangent",0,DXGI_FORMAT_R32G32B32_FLOAT,0,32u,D3D11_INPUT_PER_VERTEX_DATA,0 },
-		{ "BiTangent",0,DXGI_FORMAT_R32G32B32_FLOAT,0,44u,D3D11_INPUT_PER_VERTEX_DATA,0 }
-	};
+const std::vector< D3D11_INPUT_ELEMENT_DESC >ied =
+{
+	{ "Position",0,DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 },
+	{ "TexCoord", 0, DXGI_FORMAT_R32G32_FLOAT,0,12u,D3D11_INPUT_PER_VERTEX_DATA,0 },
+	{ "Normal",0,DXGI_FORMAT_R32G32B32_FLOAT,0,20u,D3D11_INPUT_PER_VERTEX_DATA,0 },
+	{ "Tangent",0,DXGI_FORMAT_R32G32B32_FLOAT,0,32u,D3D11_INPUT_PER_VERTEX_DATA,0 },
+	{ "BiTangent",0,DXGI_FORMAT_R32G32B32_FLOAT,0,44u,D3D11_INPUT_PER_VERTEX_DATA,0 }
+};
 
-	AddBind(std::make_shared<InputLayout>(gfx, ied, pvsbc));
-	AddBind(Topology::Resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST));
-	AddBind(std::make_shared<TransformCbuffer>(gfx, *this, 0));
+AddBind(std::make_shared<InputLayout>(gfx, ied, pvsbc));
+AddBind(Topology::Resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST));
+AddBind(std::make_shared<TransformCbuffer>(gfx, *this, 0));
 
 
-	pTerrainInfoBuffer = std::make_shared<PixelConstantBuffer<TerrainInfo>>(gfx, terrainInfo, 0);
-	pDetailInfoBufferVertex = std::make_shared<VertexConstantBuffer<DetailInfo>>(gfx, detailInfo, 1);
-	pDetailInfoBufferHull = std::make_shared<HullConstantBuffer<DetailInfo>>(gfx, detailInfo, 0);
-	pDetailInfoBufferDomain = std::make_shared<DomainConstantBuffer<DetailInfo>>(gfx, detailInfo, 0);
+pTerrainInfoBuffer = std::make_shared<PixelConstantBuffer<TerrainInfo>>(gfx, terrainInfo, 0);
+pDetailInfoBufferVertex = std::make_shared<VertexConstantBuffer<DetailInfo>>(gfx, detailInfo, 1);
+pDetailInfoBufferHull = std::make_shared<HullConstantBuffer<DetailInfo>>(gfx, detailInfo, 0);
+pDetailInfoBufferDomain = std::make_shared<DomainConstantBuffer<DetailInfo>>(gfx, detailInfo, 0);
 
-	AddBind(pTerrainInfoBuffer);
-	AddBind(pDetailInfoBufferVertex);
-	AddBind(pDetailInfoBufferHull);
-	AddBind(pDetailInfoBufferDomain);
+AddBind(pTerrainInfoBuffer);
+AddBind(pDetailInfoBufferVertex);
+AddBind(pDetailInfoBufferHull);
+AddBind(pDetailInfoBufferDomain);
 
 }
 
@@ -156,10 +157,16 @@ void Terrain::Draw(Graphics& gfx) const noexcept
 	pDetailInfoBufferHull->Update(gfx, detailInfo);
 	pDetailInfoBufferDomain->Update(gfx, detailInfo);
 	Drawable::Draw(gfx);
-	pTerrainTexture->UnBind(gfx);
-	pTerrainTexture->CustomBind(gfx, { PipelineStage::ComputeShader, 0 });
-	gfx.Dispatch(64, 64, 1);
-	pTerrainTexture->CustomUnBind(gfx, { PipelineStage::ComputeShader, 0 });
+
+	if (smoothingRequiresCalc)
+	{
+		pTerrainTexture->UnBind(gfx);
+		pTerrainTexture->CustomBind(gfx, { PipelineStage::ComputeShader, 0 });
+		gfx.Dispatch(64, 64, 1);
+		pTerrainTexture->CustomUnBind(gfx, { PipelineStage::ComputeShader, 0 });
+		smoothingRequiresCalc = false;
+	}
+
 }
 
 void Terrain::ShowWindow(const char* windowName) noexcept
@@ -187,13 +194,18 @@ void Terrain::ShowWindow(const char* windowName) noexcept
 		ImGui::Separator();
 		ImGui::SliderFloat("Tessellation Factor", &detailInfo.maxTessellationAmount, 1.0f, 64.0f);
 		ImGui::SliderFloat("Max Tessellation Distance", &detailInfo.maxDistance, 50.0f, 2500.0f);
+		if (ImGui::SliderInt("Smoothing", &detailInfo.smoothing, 0, 16))
+		{
+			smoothingRequiresCalc = true;
+		}
+
 	}
 	ImGui::End();
 }
 
-ImageHDR* Terrain::GetTerrainTexture() noexcept
+std::shared_ptr<Texture> Terrain::GetTerrainTexture() noexcept
 {
-	return &imgHdr;
+	return pTerrainTexture;
 }
 
 void Terrain::CalculateNormals(std::vector<ImageHDR::ColorFloat>& terraintexture, std::vector<Vertex>& vertices) noexcept

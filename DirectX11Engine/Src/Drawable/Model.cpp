@@ -61,17 +61,17 @@ void Model::ShowWindow(const char* windowName) noexcept
 
 //____________________INSTANCE MODEL___________________//
 
-InstanceModel::InstanceModel(Graphics& gfx, const std::string& fileName, const ShaderSetPath& shaderSet, float scale /*= 1.0f*/, ImageHDR* const transformTexture /*= nullptr*/)
+InstanceModel::InstanceModel(Graphics& gfx, const std::string& fileName, const ShaderSetPath& shaderSet, float scale /*= 1.0f*/, std::shared_ptr<Texture> tarnsformTex /*= nullptr*/)
 {
 	Assimp::Importer imp;
 	const auto pScene = imp.ReadFile(fileName, aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast);
 
-	TexturePipelineBind textureOverride;
-	textureOverride.vertexShader.push_back(transformTexture);
+	//TexturePipelineBind textureOverride;
+	//textureOverride.vertexShader.push_back(transformTexture);
 
 	for (size_t i = 0; i < pScene->mNumMeshes; ++i)
 	{
-		meshPtrs.push_back(ParseMesh<InstancedMesh>(gfx, *pScene->mMeshes[i], pScene->mMaterials, fileName, scale, std::move(shaderSet), textureOverride));
+		meshPtrs.push_back(ParseMesh<InstancedMesh>(gfx, *pScene->mMeshes[i], pScene->mMaterials, fileName, scale, std::move(shaderSet), tarnsformTex));
 	}
 
 	pRoot = ParseNode(*pScene->mRootNode);
@@ -226,11 +226,11 @@ InstancedMesh::InstancedMesh(Graphics& gfx, std::vector<std::shared_ptr<Bindable
 	AddBind(std::make_shared<TransformCBufferEx>(gfx, *this, 0));
 }
 
-InstancedMesh::InstancedMesh(Graphics& gfx, std::vector<std::shared_ptr<Bindable>> bindPtrs, ImageHDR* transformTexture) : InstancedMesh(gfx, bindPtrs)
+InstancedMesh::InstancedMesh(Graphics& gfx, std::vector<std::shared_ptr<Bindable>> bindPtrs, std::shared_ptr<Texture> tarnsformTex) : InstancedMesh(gfx, bindPtrs)
 {
-	std::vector<PipelineStageSlotInfo> pipelineStageInfos;
-	pipelineStageInfos.push_back({ PipelineStage::VertexShader , 0 });
-	AddBind(std::make_shared<Texture>(gfx, *transformTexture, pipelineStageInfos));
+	//std::vector<PipelineStageSlotInfo> pipelineStageInfos;
+	//pipelineStageInfos.push_back({ PipelineStage::VertexShader , 0 });
+	AddBind(tarnsformTex);
 }
 
 void InstancedMesh::Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const noexcept
@@ -394,7 +394,7 @@ std::unique_ptr<T> BaseModel::ParseMesh(Graphics& gfx, const aiMesh& mesh, const
 }
 
 template <typename T>
-static std::unique_ptr<T> BaseModel::ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMats, const std::filesystem::path& path, float scale, const ShaderSetPath& shaderSetPath, const TexturePipelineBind& pipelineTextureOverrides)
+static std::unique_ptr<T> BaseModel::ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMats, const std::filesystem::path& path, float scale, const ShaderSetPath& shaderSetPath, std::shared_ptr<Texture> transformTexture)
 {
 	namespace dx = DirectX;
 	struct Vertex
@@ -459,14 +459,7 @@ static std::unique_ptr<T> BaseModel::ParseMesh(Graphics& gfx, const aiMesh& mesh
 
 	bindablePtrs.push_back(Rasterizer::Resolve(gfx, Rasterizer::RasterizerMode{ true, false }));
 	bindablePtrs.push_back(BlendOperation::Resolve(gfx, true));
-
-
-	for (UINT vertexShaderTextureIndex = 0; vertexShaderTextureIndex < pipelineTextureOverrides.vertexShader.size(); ++vertexShaderTextureIndex)
-	{
-		std::vector<PipelineStageSlotInfo> pipelineStageSlotInfo;
-		pipelineStageSlotInfo.push_back({ PipelineStage::VertexShader, vertexShaderTextureIndex });
-		bindablePtrs.push_back(std::make_shared<Texture>(gfx, *pipelineTextureOverrides.vertexShader[vertexShaderTextureIndex], pipelineStageSlotInfo));
-	}
+	bindablePtrs.push_back(transformTexture);
 
 	if (mesh.mMaterialIndex >= 0)
 	{
