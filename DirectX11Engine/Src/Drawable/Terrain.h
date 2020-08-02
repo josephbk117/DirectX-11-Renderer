@@ -53,14 +53,12 @@ private:
 		DirectX::XMFLOAT3 binormal;
 	};
 
-	void CalculateNormals() noexcept;
-	void CalculateTerrainVectors() noexcept;
+	void CalculateNormals(std::vector<ImageHDR::ColorFloat>& terraintexture, std::vector<Vertex>& vertices) noexcept;
+	void CalculateTerrainVectors(std::vector<ImageHDR::ColorFloat>& terraintexture, std::vector<Vertex>& vertices) noexcept;
 	void CalculateTangentBinormal(Vertex vertex1, Vertex vertex2, Vertex vertex3, DirectX::XMVECTOR& tangent, DirectX::XMVECTOR& binormal) noexcept;
 
-	std::vector<ImageHDR::ColorFloat> terraintexture;
 	unsigned int terrainTextureDimenion = 0;
 
-	std::vector<Vertex> vertices;
 	TerrainInitInfo terrainInitInfo;
 	TerrainInfo terrainInfo;
 	DetailInfo detailInfo;

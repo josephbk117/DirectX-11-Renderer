@@ -21,6 +21,8 @@
 
 Terrain::Terrain(Graphics& gfx, const std::string& heightMap, const TerrainInitInfo& initInfo) noexcept : terrainInitInfo(initInfo)
 {
+	std::vector<ImageHDR::ColorFloat> terraintexture;
+
 	{
 		terrainInfo.heightScale = initInfo.heightScale;
 
@@ -38,8 +40,10 @@ Terrain::Terrain(Graphics& gfx, const std::string& heightMap, const TerrainInitI
 			const float height = ((heightMapData[i].GetR() / 255.0f) * 2.0f - 1.0f) * initInfo.heightScale;
 			terraintexture.push_back({ height });
 		}
+		
 	}
 
+	std::vector<Vertex> vertices;
 	vertices.reserve(initInfo.baseMeshResolution);
 
 	const unsigned int indexCount = (initInfo.baseMeshResolution - 1) * (initInfo.baseMeshResolution - 1) * 4;
@@ -76,7 +80,7 @@ Terrain::Terrain(Graphics& gfx, const std::string& heightMap, const TerrainInitI
 		indices.push_back(i + initInfo.baseMeshResolution + 1);
 	}
 
-	CalculateNormals();
+	CalculateNormals(terraintexture, vertices);
 
 	AddBind(std::make_shared<VertexBuffer>(gfx, vertices));
 	AddBind(std::make_shared<IndexBuffer>(gfx, indices));
@@ -192,7 +196,7 @@ ImageHDR* Terrain::GetTerrainTexture() noexcept
 	return &imgHdr;
 }
 
-void Terrain::CalculateNormals() noexcept
+void Terrain::CalculateNormals(std::vector<ImageHDR::ColorFloat>& terraintexture, std::vector<Vertex>& vertices) noexcept
 {
 
 	{
@@ -439,7 +443,7 @@ void Terrain::CalculateNormals() noexcept
 	}
 }
 
-void Terrain::CalculateTerrainVectors() noexcept
+void Terrain::CalculateTerrainVectors(std::vector<ImageHDR::ColorFloat>& terraintexture, std::vector<Vertex>& vertices) noexcept
 {
 	unsigned int faceCount, i, index;
 	Vertex vertex1, vertex2, vertex3;
