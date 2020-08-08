@@ -106,6 +106,8 @@ VS_Out main(float3 pos : Position, float3 norm : Normal, float3 tan : Tangent, f
     pos = rotateVector(rotationTo(terrainNormal, float3(0, 1, 0)), pos).rgb;
     pos += terrainNormal * 1.0f;
     
+    norm = rotateVector(rotationTo(terrainNormal, float3(0, 1, 0)), norm).rgb;
+    
     vso.pos = mul(float4(pos + disp, 1.0f), modelViewProj);
     vso.tex = tex;
 

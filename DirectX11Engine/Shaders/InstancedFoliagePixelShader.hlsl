@@ -47,10 +47,11 @@ struct PS_IN
 
 float4 main(PS_IN psIn) : SV_Target
 {
-    float diff = max(dot(psIn.viewNorm, normalize(float3(1, 1, 0))), 0.0f);
-    
+    float3 viewSpaceLightDir = mul(normalize(float3(0, 1, 1)), (float3x3) modelView);
+    const float vdot = max(dot(viewSpaceLightDir, normalize(psIn.viewNorm)), 0.0f);
+
     float4 outCol = tex.Sample(splr, psIn.tc);
-    outCol.rgb *= diff;
+    outCol.rgb *= vdot;
     
     if(outCol.a < 0.5f)
     {
