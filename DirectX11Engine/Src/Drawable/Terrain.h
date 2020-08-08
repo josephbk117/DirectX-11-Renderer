@@ -33,9 +33,9 @@ public:
 	struct DetailInfo
 	{
 		float maxTessellationAmount = 32.0f; // Can go up to 64
+		float minDistance = 150.0f;
 		float maxDistance = 500.0f;
 		int smoothing = 4; // Can go up to 8
-		float padding;
 	};
 
 	Terrain(Graphics& gfx, const std::string& heightMap, const TerrainInitInfo& initInfo) noexcept;

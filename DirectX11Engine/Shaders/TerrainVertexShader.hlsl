@@ -10,6 +10,7 @@ cbuffer CBuf
 cbuffer DetailInfo
 {
     float maxTessellationAmount;
+    float minDistance;
     float maxDistance;
     int smoothing;
 };
@@ -35,6 +36,8 @@ VS_Out main(float3 pos : Position, float2 tex : TexCoord, float3 norm : Normal, 
     vso.tan = tan;
     vso.biTan = biTan;
     vso.tex = tex;
-    vso.tessFactor = max((1.0f - (min(floor(distance(pos, camPos.xyz)), maxDistance) / maxDistance)) * maxTessellationAmount, 1.0f);
+    float distanceVal = distance(pos, camPos.xyz);
+    vso.tessFactor = distanceVal < minDistance ? maxTessellationAmount : (1.0f - min(distanceVal, maxDistance) / maxDistance) * maxTessellationAmount;
+    vso.tessFactor = max(vso.tessFactor, 1.0f);
     return vso;
 }

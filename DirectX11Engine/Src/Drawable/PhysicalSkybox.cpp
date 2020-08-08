@@ -71,7 +71,16 @@ PhysicalSkybox::PhysicalSkybox(Graphics& gfx, const std::string& fileName)
 	auto pvsbc = std::static_pointer_cast<VertexShader>(pvs)->GetBytecode();
 
 	AddBind(std::move(pvs));
-	AddBind(Sampler::Resolve(gfx));
+	SamplerSettings samplerSettings
+	{
+		D3D11_FILTER::D3D11_FILTER_ANISOTROPIC,
+		D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_CLAMP,
+		D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_CLAMP,
+		D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_CLAMP
+	};
+	std::vector<PipelineStageSlotInfo> samplerPipelineInfo;
+	samplerPipelineInfo.push_back({ PipelineStage::PixelShader, 0 });
+	AddBind(Sampler::Resolve(gfx, samplerSettings, samplerPipelineInfo));
 	AddBind(PixelShader::Resolve(gfx, "Shaders\\SkyboxPixelShader.cso"));
 
 	AddBind(NullHullShader::Resolve(gfx));

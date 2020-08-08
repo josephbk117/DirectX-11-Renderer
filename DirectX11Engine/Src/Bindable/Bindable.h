@@ -12,6 +12,12 @@ enum class PipelineStage
 	ComputeShader
 };
 
+struct  PipelineStageSlotInfo
+{
+	PipelineStage stage = PipelineStage::PixelShader;
+	UINT slot = 0;
+};
+
 class Bindable
 {
 public:

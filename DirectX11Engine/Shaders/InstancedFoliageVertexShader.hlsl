@@ -1,5 +1,7 @@
 Texture2D terrainTex : register(t0);
 
+SamplerState terrainSplr;
+
 cbuffer CBuf
 {
     matrix model;
@@ -83,14 +85,11 @@ float4 multQuat(float4 q1, float4 q2)
               );
 }
 
-
 float3 rotateVector(float4 quat, float3 vec)
 {
     float4 qv = multQuat(quat, float4(vec, 0.0));
     return multQuat(qv, float4(-quat.x, -quat.y, -quat.z, quat.w)).xyz;
 }
-
-
 
 VS_Out main(float3 pos : Position, float3 norm : Normal, float3 tan : Tangent, float3 biTan : BiTangent, float2 tex : TexCoord, uint instanceID : SV_InstanceID)
 {
@@ -99,8 +98,9 @@ VS_Out main(float3 pos : Position, float3 norm : Normal, float3 tan : Tangent, f
     const uint3 tempIndex = { ((instanceID) % 512), ((instanceID) / 512), 0 };
     float mulp = 1000.0f / 512.0f;
     
-    float4 terrainData = terrainTex.Load(tempIndex);
+    float4 terrainData = terrainTex.SampleLevel(terrainSplr, float2(tempIndex.x / 512.0f, tempIndex.y / 512.0f), 0);
     float3 terrainNormal = normalize(terrainData.rgb);
+    
     float3 disp = float3((instanceID % 512) * mulp, terrainData.a, (instanceID / 512.0f) * mulp);
     
     pos = rotateVector(rotationTo(terrainNormal, float3(0, 1, 0)), pos).rgb;

@@ -2,12 +2,6 @@
 #include "Bindable.h"
 #include "..\Image.h"
 
-struct  PipelineStageSlotInfo
-{
-	PipelineStage stage = PipelineStage::PixelShader;
-	UINT slot = 0;
-};
-
 class Texture : public Bindable
 {
 public:

@@ -1,5 +1,7 @@
 Texture2D terrainTex : register(t0);
 
+SamplerState terrainSplr;
+
 struct DS_OUTPUT
 {
     float2 tex : TexCoord;
@@ -57,30 +59,10 @@ DS_OUTPUT main(
     Output.tex = patch[0].tex * domain.x + patch[1].tex * domain.y + patch[2].tex * domain.z;
     Output.worldPos = (patch[0].worldPos * domain.x + patch[1].worldPos * domain.y + patch[2].worldPos * domain.z);
 
-    const float2 texDim = dim(terrainTex);
-    const uint3 texIndex = { Output.tex * texDim, 0 };
-
-    float yPos = 0.0f;
-
-    const int kernelSize = min(8, smoothing);
-
-    float3 outNorm;
-
-    //for (int i = -kernelSize; i < kernelSize; i++)
-    //{
-    //    for (int j = -kernelSize; j < kernelSize; j++)
-    //    {
-    //        const uint3 tempIndex = { texIndex.x + i, texIndex.y + j, 0 };
-    //        yPos += terrainTex.Load(tempIndex).a;
-    //        outNorm.rgb += terrainTex.Load(tempIndex).rgb;
-    //    }
-    //}
-
-   float kernelSizeDivide = 1.0f / ((kernelSize * 2.0f) * (kernelSize * 2.0f));
-    const uint3 tempIndex = { texIndex.x, texIndex.y, 0 };
-    yPos = yPos * kernelSizeDivide;
-    Output.worldPos.y = terrainTex.Load(tempIndex).a;
-    Output.normal = terrainTex.Load(tempIndex).rgb; //normalize(outNorm * kernelSizeDivide);
+    const float4 terrainSample = terrainTex.SampleLevel(terrainSplr, Output.tex, 0);
+    
+    Output.worldPos.y = terrainSample.a;
+    Output.normal = terrainSample.rgb;
 
     Output.vPosition = mul(float4(Output.worldPos, 1), patch[0].modelViewProj);
     Output.tan = (patch[0].tan * domain.x + patch[1].tan * domain.y + patch[2].tan * domain.z);

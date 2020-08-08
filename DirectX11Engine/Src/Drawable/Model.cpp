@@ -294,7 +294,17 @@ std::unique_ptr<T> BaseModel::ParseMesh(Graphics& gfx, const aiMesh& mesh, const
 	auto pvsbc = std::static_pointer_cast<VertexShader>(pvs)->GetBytecode();
 
 	bindablePtrs.push_back(std::move(pvs));
-	bindablePtrs.push_back(Sampler::Resolve(gfx));
+
+	SamplerSettings pixelSamplerSettings
+	{
+		D3D11_FILTER::D3D11_FILTER_MIN_MAG_MIP_LINEAR,
+		D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP,
+		D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP,
+		D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP
+	};
+	std::vector<PipelineStageSlotInfo> samplerPipelinePixelInfo;
+	samplerPipelinePixelInfo.push_back({ PipelineStage::PixelShader, 0 });
+	bindablePtrs.push_back(Sampler::Resolve(gfx, pixelSamplerSettings, samplerPipelinePixelInfo));
 
 	namespace dx = DirectX;
 
@@ -441,7 +451,16 @@ static std::unique_ptr<T> BaseModel::ParseMesh(Graphics& gfx, const aiMesh& mesh
 	auto pvsbc = std::static_pointer_cast<VertexShader>(pvs)->GetBytecode();
 
 	bindablePtrs.push_back(std::move(pvs));
-	bindablePtrs.push_back(Sampler::Resolve(gfx));
+	SamplerSettings pixelSamplerSettings
+	{
+		D3D11_FILTER::D3D11_FILTER_MIN_MAG_MIP_LINEAR,
+		D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP,
+		D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP,
+		D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP
+	};
+	std::vector<PipelineStageSlotInfo> samplerPipelinePixelInfo;
+	samplerPipelinePixelInfo.push_back({ PipelineStage::PixelShader, 0 });
+	bindablePtrs.push_back(Sampler::Resolve(gfx, pixelSamplerSettings, samplerPipelinePixelInfo));
 
 	namespace dx = DirectX;
 

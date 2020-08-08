@@ -92,8 +92,7 @@ Texture::Texture(Graphics& gfx, ImageHDR& img, const std::vector<PipelineStageSl
 	{
 		GetContext(gfx)->GenerateMips(pTextureView.Get());
 	}
-
-	if (genMipMap == false)
+	else
 	{
 		D3D11_UNORDERED_ACCESS_VIEW_DESC descUAV;
 		ZeroMemory(&descUAV, sizeof(descUAV));
@@ -156,7 +155,7 @@ Texture::Texture(Graphics& gfx, const std::string& path, const std::vector<Pipel
 
 void Texture::Bind(Graphics& gfx) noexcept
 {
-	for (PipelineStageSlotInfo psi : pipelineStageInfos)
+	for (const PipelineStageSlotInfo& psi : pipelineStageInfos)
 	{
 		switch (psi.stage)
 		{
@@ -253,7 +252,7 @@ std::string Texture::GenerateUID(const std::string& path, const std::vector<Pipe
 {
 	using namespace std::string_literals;
 	std::string completeStr = path;
-	for (PipelineStageSlotInfo psi : pipelineStageInfos)
+	for (const PipelineStageSlotInfo& psi : pipelineStageInfos)
 	{
 		completeStr += std::to_string(psi.slot) + "#"s + std::to_string(static_cast<int>(psi.stage));
 	}

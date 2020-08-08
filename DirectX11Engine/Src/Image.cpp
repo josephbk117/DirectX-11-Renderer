@@ -16,7 +16,8 @@ Image::Image(int width, int height) noexcept
 Image Image::FromFile(const std::string& imagePath)
 {
 	DirectX::ScratchImage scratch;
-	HRESULT hr = DirectX::LoadFromWICFile(Utility::StringToWString(imagePath).c_str(), DirectX::WIC_FLAGS_FORCE_RGB, nullptr, scratch);
+	HRESULT hr = DirectX::LoadFromWICFile(Utility::StringToWString(imagePath).c_str(), 
+		DirectX::WIC_FLAGS_FORCE_RGB | DirectX::WIC_FLAGS_FORCE_LINEAR | DirectX::WIC_FLAGS_FILTER_LINEAR, nullptr, scratch);
 
 	if (FAILED(hr))
 	{
