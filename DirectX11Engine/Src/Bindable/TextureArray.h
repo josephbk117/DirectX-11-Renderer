@@ -4,7 +4,7 @@
 class TextureArray : public Bindable
 {
 public:
-	TextureArray(Graphics& gfx, const std::vector<std::string>& paths, unsigned int slot = 0);
+	TextureArray(Graphics& gfx, const std::vector<std::string>& paths, unsigned int slot = 0, bool genMips = true);
 	void Bind(Graphics& gfx) noexcept override;
 	static std::shared_ptr<Bindable> Resolve(Graphics& gfx, const std::vector<std::string>& paths, UINT slot);
 	static std::string GenerateUID(const std::vector<std::string>& paths, UINT slot);

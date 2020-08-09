@@ -81,6 +81,8 @@ float4 main(PS_In psIn, uint tid : SV_PrimitiveID) : SV_Target
         layerCol = (layerCol * (1.0f - drawStr)) + texCol * colourBlendInfo[i].rgb * drawStr;
         normCol = (normCol * (1.0f - drawStr)) + nCol * drawStr;
     }
+    
+    layerCol = pow(layerCol, float3((1.0f / 2.2f).rrr));
 
      // build the tranform (rotation) into same space as tan/bitan/normal (target space)
     const float3x3 tanToTarget = float3x3(normalize(psIn.tan), normalize(psIn.biTan), texNormal);

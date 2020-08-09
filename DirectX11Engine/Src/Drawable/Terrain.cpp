@@ -87,15 +87,15 @@ Terrain::Terrain(Graphics& gfx, const std::string& heightMap, const TerrainInitI
 	AddBind(Rasterizer::Resolve(gfx, Rasterizer::RasterizerMode{ false, false }));
 
 	std::vector<std::string> paths(3);
-	paths[1] = "Resources\\Images\\Triplanar set\\ompjR_4K_Albedo.jpg";
-	paths[0] = "Resources\\Images\\Triplanar set\\tefndhwq_4K_Albedo.jpg";
-	paths[2] = "Resources\\Images\\Triplanar set\\ueumdayn_2K_Albedo.jpg";
+	paths[1] = "Resources\\Images\\Triplanar set\\ompjR_4K_Albedo.dds";
+	paths[0] = "Resources\\Images\\Triplanar set\\tefndhwq_4K_Albedo.dds";
+	paths[2] = "Resources\\Images\\Triplanar set\\ueumdayn_2K_Albedo.dds";
 
 	AddBind(TextureArray::Resolve(gfx, paths, 0));
 
-	paths[1] = "Resources\\Images\\Triplanar set\\ompjR_4K_Normal.jpg";
-	paths[0] = "Resources\\Images\\Triplanar set\\tefndhwq_4K_Normal.jpg";
-	paths[2] = "Resources\\Images\\Triplanar set\\ueumdayn_2K_Normal.jpg";
+	paths[1] = "Resources\\Images\\Triplanar set\\ompjR_4K_Normal.dds";
+	paths[0] = "Resources\\Images\\Triplanar set\\tefndhwq_4K_Normal.dds";
+	paths[2] = "Resources\\Images\\Triplanar set\\ueumdayn_2K_Normal.dds";
 
 	AddBind(TextureArray::Resolve(gfx, paths, 3));
 
