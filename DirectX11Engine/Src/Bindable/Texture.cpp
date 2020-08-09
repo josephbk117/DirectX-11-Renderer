@@ -14,7 +14,7 @@ Texture::Texture(Graphics& gfx, Image& img, const std::vector<PipelineStageSlotI
 	td.SampleDesc.Quality = 0;
 	td.Usage = D3D11_USAGE_DEFAULT;
 	td.BindFlags = (genMipMap) ? D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET : D3D11_BIND_SHADER_RESOURCE; // D3D11_BIND_RENDER_TARGET to allow for creating mips
-	td.CPUAccessFlags = 0;
+	td.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
 	td.MiscFlags = (genMipMap) ? D3D11_RESOURCE_MISC_GENERATE_MIPS : 0; // If no need for mips can be set null
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pTexture;
@@ -60,7 +60,7 @@ Texture::Texture(Graphics& gfx, ImageHDR& img, const std::vector<PipelineStageSl
 	td.SampleDesc.Quality = 0;
 	td.Usage = D3D11_USAGE_DEFAULT;
 	td.BindFlags = (genMipMap) ? D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET : D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS; // D3D11_BIND_RENDER_TARGET to allow for creating mips
-	td.CPUAccessFlags = 0;
+	td.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
 	td.MiscFlags = (genMipMap) ? D3D11_RESOURCE_MISC_GENERATE_MIPS : 0; // If no need for mips can be set null
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pTexture;
@@ -117,7 +117,7 @@ Texture::Texture(Graphics& gfx, const std::string& path, const std::vector<Pipel
 	td.SampleDesc.Quality = 0;
 	td.Usage = D3D11_USAGE_DEFAULT;
 	td.BindFlags = (genMipMap) ? D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET : D3D11_BIND_SHADER_RESOURCE; // D3D11_BIND_RENDER_TARGET to allow for creating mips
-	td.CPUAccessFlags = 0;
+	td.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
 	td.MiscFlags = (genMipMap) ? D3D11_RESOURCE_MISC_GENERATE_MIPS : 0; // If no need for mips can be set null
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pTexture;
