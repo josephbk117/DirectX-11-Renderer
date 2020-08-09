@@ -66,9 +66,6 @@ InstanceModel::InstanceModel(Graphics& gfx, const std::string& fileName, const S
 	Assimp::Importer imp;
 	const auto pScene = imp.ReadFile(fileName, aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast);
 
-	//TexturePipelineBind textureOverride;
-	//textureOverride.vertexShader.push_back(transformTexture);
-
 	for (size_t i = 0; i < pScene->mNumMeshes; ++i)
 	{
 		meshPtrs.push_back(ParseMesh<InstancedMesh>(gfx, *pScene->mMeshes[i], pScene->mMaterials, fileName, scale, std::move(shaderSet), tarnsformTex));
@@ -228,8 +225,6 @@ InstancedMesh::InstancedMesh(Graphics& gfx, std::vector<std::shared_ptr<Bindable
 
 InstancedMesh::InstancedMesh(Graphics& gfx, std::vector<std::shared_ptr<Bindable>> bindPtrs, std::shared_ptr<Texture> tarnsformTex) : InstancedMesh(gfx, bindPtrs)
 {
-	//std::vector<PipelineStageSlotInfo> pipelineStageInfos;
-	//pipelineStageInfos.push_back({ PipelineStage::VertexShader , 0 });
 	AddBind(tarnsformTex);
 }
 
