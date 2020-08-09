@@ -1,8 +1,10 @@
 #include "Texture.h"
 #include "../Image.h"
-#include <DDSTextureLoader\DDSTextureLoader.h>
 #include "BindableCodex.h"
 #include "../Utilities/EngineUtilities.h"
+#include "../Utilities/DDSTextureLoader/DDSTextureLoader.h"
+#include "../Utilities/WICTextureLoader/WICTextureLoader.h"
+#include <stdexcept>
 
 Texture::Texture(Graphics& gfx, Image& img, const std::vector<PipelineStageSlotInfo>& pipelineStageInfos, bool genMipMap /*= true*/) : pipelineStageInfos(pipelineStageInfos)
 {
@@ -107,54 +109,28 @@ Texture::Texture(Graphics& gfx, ImageHDR& img, const std::vector<PipelineStageSl
 
 Texture::Texture(Graphics& gfx, const std::string& path, const std::vector<PipelineStageSlotInfo>& pipelineStageInfos, bool genMipMap /*= true*/) : path(path), pipelineStageInfos(pipelineStageInfos)
 {
-	//HRESULT hr = DirectX::CreateDDSTextureFromFile(GetDevice(gfx), Utility::StringToWString(path).c_str(), nullptr, pTextureView.GetAddressOf());
-	/*ComPtr<ID3D11ShaderResourceView> srv;
-	HRESULT hr = CreateDDSTextureFromFile(d3dDevice.Get(), L"SEAFLOOR.DDS",
-		nullptr, srv.GetAddressOf());*/
-	const auto img = Image::FromFile(path);
+	HRESULT hr;
 
-	D3D11_TEXTURE2D_DESC td = {};
-	td.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	td.Width = img.GetWidth();
-	td.Height = img.GetHeight();
-	td.MipLevels = (genMipMap) ? 0 : 1; // Max number of mip levels of mipmap mode selected
-	td.ArraySize = 1;
-	td.SampleDesc.Count = 1;
-	td.SampleDesc.Quality = 0;
-	td.Usage = D3D11_USAGE_DEFAULT;
-	td.BindFlags = (genMipMap) ? D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET : D3D11_BIND_SHADER_RESOURCE; // D3D11_BIND_RENDER_TARGET to allow for creating mips
-	td.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
-	td.MiscFlags = (genMipMap) ? D3D11_RESOURCE_MISC_GENERATE_MIPS : 0; // If no need for mips can be set null
-
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> pTexture;
-
-	if (!genMipMap)
+	if (path.substr(path.size() - 4, 4) == ".dds")
 	{
-		D3D11_SUBRESOURCE_DATA sd;
-		sd.pSysMem = img.GetData();
-		sd.SysMemPitch = img.GetWidth() * sizeof(Image::Color);
-		GetDevice(gfx)->CreateTexture2D(&td, &sd, &pTexture);
+		hr = DirectX::CreateDDSTextureFromFile(GetDevice(gfx), Utility::StringToWString(path).c_str(), nullptr, pTextureView.GetAddressOf());
 	}
 	else
 	{
-		GetDevice(gfx)->CreateTexture2D(&td, nullptr, &pTexture);
-		GetContext(gfx)->UpdateSubresource(pTexture.Get(), 0, nullptr, img.GetData(), img.GetWidth() * sizeof(Image::Color), 0);
+		if (genMipMap)
+		{
+			hr = DirectX::CreateWICTextureFromFile(GetDevice(gfx), GetContext(gfx), Utility::StringToWString(path).c_str(), nullptr, pTextureView.GetAddressOf());
+		}
+		else
+		{
+			hr = DirectX::CreateWICTextureFromFile(GetDevice(gfx), Utility::StringToWString(path).c_str(), nullptr, pTextureView.GetAddressOf());
+		}
 	}
 
-
-	D3D11_SHADER_RESOURCE_VIEW_DESC srv = {};
-	srv.Format = td.Format;
-	srv.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	srv.Texture2D.MostDetailedMip = 0;
-	srv.Texture2D.MipLevels = (genMipMap) ? -1 : 1; // Can set to 1 if not using mip mapping
-
-	GetDevice(gfx)->CreateShaderResourceView(pTexture.Get(), &srv, &pTextureView);
-
-
-	//generate mip chain on GPU
-	if (genMipMap)
+	if (FAILED(hr))
 	{
-		GetContext(gfx)->GenerateMips(pTextureView.Get());
+		using namespace std::string_literals;
+		OutputDebugString(("File load failed, image : "s + path + "\n").c_str());
 	}
 }
 

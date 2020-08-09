@@ -56,6 +56,8 @@
     <ClCompile Include="Src\Keyboard.cpp" />
     <ClCompile Include="Src\MainApp.cpp" />
     <ClCompile Include="Src\Mouse.cpp" />
+    <ClCompile Include="Src\Utilities\DDSTextureLoader\DDSTextureLoader.cpp" />
+    <ClCompile Include="Src\Utilities\WICTextureLoader\WICTextureLoader.cpp" />
     <ClCompile Include="Src\Window.cpp" />
     <ClCompile Include="Src\Bindable\Topology.cpp" />
     <ClCompile Include="Src\Bindable\VertexBuffer.cpp" />
@@ -88,6 +90,7 @@
     <ClInclude Include="Src\Camera.h" />
     <ClInclude Include="Src\Drawable\Model.h" />
     <ClInclude Include="Src\RenderJob\FrameCommander.h" />
+    <ClInclude Include="Src\Utilities\DDSTextureLoader\DDSTextureLoader.h" />
     <ClInclude Include="Src\Utilities\EngineUtilities.h" />
     <ClInclude Include="Src\Imgui\ImguiManager.h" />
     <ClInclude Include="Src\Bindable\Sampler.h" />
@@ -113,6 +116,7 @@
     <ClInclude Include="Src\Imgui\imstb_truetype.h" />
     <ClInclude Include="Src\Keyboard.h" />
     <ClInclude Include="Src\Mouse.h" />
+    <ClInclude Include="Src\Utilities\WICTextureLoader\WICTextureLoader.h" />
     <ClInclude Include="Src\Window.h" />
     <ClInclude Include="Src\Bindable\Topology.h" />
     <ClInclude Include="Src\Bindable\VertexBuffer.h" />
