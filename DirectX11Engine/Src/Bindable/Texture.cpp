@@ -1,6 +1,8 @@
 #include "Texture.h"
 #include "../Image.h"
+#include <DDSTextureLoader\DDSTextureLoader.h>
 #include "BindableCodex.h"
+#include "../Utilities/EngineUtilities.h"
 
 Texture::Texture(Graphics& gfx, Image& img, const std::vector<PipelineStageSlotInfo>& pipelineStageInfos, bool genMipMap /*= true*/) : pipelineStageInfos(pipelineStageInfos)
 {
@@ -105,6 +107,10 @@ Texture::Texture(Graphics& gfx, ImageHDR& img, const std::vector<PipelineStageSl
 
 Texture::Texture(Graphics& gfx, const std::string& path, const std::vector<PipelineStageSlotInfo>& pipelineStageInfos, bool genMipMap /*= true*/) : path(path), pipelineStageInfos(pipelineStageInfos)
 {
+	//HRESULT hr = DirectX::CreateDDSTextureFromFile(GetDevice(gfx), Utility::StringToWString(path).c_str(), nullptr, pTextureView.GetAddressOf());
+	/*ComPtr<ID3D11ShaderResourceView> srv;
+	HRESULT hr = CreateDDSTextureFromFile(d3dDevice.Get(), L"SEAFLOOR.DDS",
+		nullptr, srv.GetAddressOf());*/
 	const auto img = Image::FromFile(path);
 
 	D3D11_TEXTURE2D_DESC td = {};
