@@ -1,4 +1,6 @@
 exclude:
 - /DirectX11Engine/Src/Imgui/.*
+- /DirectX11Engine/Src/Utilities/DDSTextureLoader.*
+- /DirectX11Engine/Src/Utilities/WICTextureLoader.*
 - /Includes/assimp/.*
 - /Includes/DirectXTex/.*
