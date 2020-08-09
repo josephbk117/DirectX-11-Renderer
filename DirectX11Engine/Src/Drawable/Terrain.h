@@ -1,9 +1,7 @@
 #pragma once
 #include "Drawable.h"
-#include "../Bindable/ConstantBuffers.h"
+#include "../Bindable/BindableCommon.h"
 #include "../Image.h"
-#include "../Bindable/Texture.h"
-
 
 class Terrain : public Drawable
 {

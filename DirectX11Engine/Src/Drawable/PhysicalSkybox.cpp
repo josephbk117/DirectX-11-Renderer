@@ -1,23 +1,14 @@
 #include "PhysicalSkybox.h"
-#include "../Bindable/Bindable.h"
-#include "../Bindable/Topology.h"
+#include "../Bindable/BindableCommon.h"
+#include "../Bindable/NullHullShader.h"
+#include "../Bindable/NullDomainShader.h"
 #include "../Bindable/TransformCBuffer.h"
 #include "../Bindable/TransformCBufferEx.h"
-#include "../Bindable/VertexBuffer.h"
-#include "../Bindable/VertexShader.h"
-#include "../Bindable/Sampler.h"
-#include "../Bindable/PixelShader.h"
-#include "../Bindable/InputLayout.h"
-#include "../Bindable/Texture.h"
-#include "../Bindable/IndexBuffer.h"
-#include "../Bindable/BlendOperation.h"
-#include "../Bindable/Rasterizer.h"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include "../Imgui/imgui.h"
-#include "../Bindable/NullHullShader.h"
-#include "../Bindable/NullDomainShader.h"
+
 
 PhysicalSkybox::PhysicalSkybox(Graphics& gfx, const std::string& fileName)
 {

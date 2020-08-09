@@ -72,6 +72,7 @@
     <ClCompile Include="Src\Bindable\TextureArray.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Bindable\BindableCommon.h" />
     <ClInclude Include="Src\Bindable\ComputeShader.h" />
     <ClInclude Include="Src\Bindable\NullDomainShader.h" />
     <ClInclude Include="Src\Bindable\NullHullShader.h" />
