@@ -39,6 +39,12 @@
     <Filter Include="Header Files\Render Job">
       <UniqueIdentifier>{bb979be8-f9a2-41da-b0c3-4105726433a8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Utilities">
+      <UniqueIdentifier>{97fc1f07-09b9-43d7-baf3-cccba6ab7154}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utilities">
+      <UniqueIdentifier>{df9fb7e7-624c-4d6e-a9e3-c44951b06e42}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\App.cpp">
@@ -158,41 +164,41 @@
     <ClCompile Include="Src\Bindable\Texture.cpp">
       <Filter>Source Files\Bindable</Filter>
     </ClCompile>
-    <ClCompile Include="Src\RenderJob\TechniqueProbe.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\DynamicConstantBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Src\LayoutCodex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Drawable\Terrain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Bindable\TextureArray.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Src\Bindable\ComputeShader.cpp">
+      <Filter>Source Files\Bindable</Filter>
     </ClCompile>
     <ClCompile Include="Src\Bindable\DomainShader.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Bindable</Filter>
     </ClCompile>
     <ClCompile Include="Src\Bindable\HullShader.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Bindable</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Bindable\NullHullShader.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Src\DynamicConstantBuffer.cpp">
+      <Filter>Source Files\Bindable</Filter>
     </ClCompile>
     <ClCompile Include="Src\Bindable\NullDomainShader.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Bindable</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Bindable\ComputeShader.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Src\Bindable\NullHullShader.cpp">
+      <Filter>Source Files\Bindable</Filter>
     </ClCompile>
     <ClCompile Include="Src\Utilities\DDSTextureLoader\DDSTextureLoader.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Utilities</Filter>
     </ClCompile>
     <ClCompile Include="Src\Utilities\WICTextureLoader\WICTextureLoader.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RenderJob\TechniqueProbe.cpp">
+      <Filter>Source Files\Render Job</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Bindable\TextureArray.cpp">
+      <Filter>Source Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Drawable\Terrain.cpp">
+      <Filter>Source Files\Drawable</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -280,9 +286,6 @@
     <ClInclude Include="Src\Imgui\ImguiManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Utilities\EngineUtilities.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -331,44 +334,47 @@
     <ClInclude Include="Src\Drawable\Model.h">
       <Filter>Header Files\Drawable</Filter>
     </ClInclude>
-    <ClInclude Include="Src\RenderJob\TechniqueProbe.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\DynamicConstantBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Src\LayoutCodex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Drawable\Terrain.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Bindable\TextureArray.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Bindable\DomainShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Bindable\HullShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Bindable\NullHullShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Bindable\NullDomainShader.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Src\Bindable\BindableCommon.h">
+      <Filter>Header Files\Bindable</Filter>
     </ClInclude>
     <ClInclude Include="Src\Bindable\ComputeShader.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Bindable\DomainShader.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Bindable\NullDomainShader.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Bindable\NullHullShader.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Bindable\HullShader.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Drawable\Terrain.h">
+      <Filter>Header Files\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Bindable\TextureArray.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\DynamicConstantBuffer.h">
+      <Filter>Header Files\Bindable</Filter>
     </ClInclude>
     <ClInclude Include="Src\Utilities\DDSTextureLoader\DDSTextureLoader.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Utilities\EngineUtilities.h">
+      <Filter>Header Files\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="Src\Utilities\WICTextureLoader\WICTextureLoader.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Bindable\BindableCommon.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Src\RenderJob\TechniqueProbe.h">
+      <Filter>Header Files\Render Job</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -387,13 +393,27 @@
     <FxCompile Include="Shaders\SkyboxVertexShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shaders\TerrainVertexShader.hlsl" />
-    <FxCompile Include="Shaders\TerrainPixelShader.hlsl" />
-    <FxCompile Include="Shaders\TerrainHullShader.hlsl" />
-    <FxCompile Include="Shaders\TerrainDomainShader.hlsl" />
-    <FxCompile Include="Shaders\InstancedFoliageVertexShader.hlsl" />
-    <FxCompile Include="Shaders\InstancedFoliagePixelShader.hlsl" />
-    <FxCompile Include="Shaders\TerrainComputeShader.hlsl" />
+    <FxCompile Include="Shaders\InstancedFoliagePixelShader.hlsl">
+      <Filter>Resources</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\InstancedFoliageVertexShader.hlsl">
+      <Filter>Resources</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\TerrainComputeShader.hlsl">
+      <Filter>Resources</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\TerrainDomainShader.hlsl">
+      <Filter>Resources</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\TerrainHullShader.hlsl">
+      <Filter>Resources</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\TerrainPixelShader.hlsl">
+      <Filter>Resources</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\TerrainVertexShader.hlsl">
+      <Filter>Resources</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\LightVectorData.hlsli">
@@ -695,8 +715,14 @@
     <Image Include="Resources\Models\sponza.obj Textures\vase_round_spec.png">
       <Filter>Resources</Filter>
     </Image>
-    <Image Include="Resources\Images\Seamless ground sand texture.jpg" />
-    <Image Include="Resources\Images\Kbsd_Heightmap.jpg" />
-    <Image Include="Resources\Images\testHeightMap.png" />
+    <Image Include="Resources\Images\Kbsd_Heightmap.jpg">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\Images\Seamless ground sand texture.jpg">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\Images\testHeightMap.png">
+      <Filter>Resources</Filter>
+    </Image>
   </ItemGroup>
 </Project>
