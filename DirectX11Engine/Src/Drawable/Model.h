@@ -1,6 +1,7 @@
 #pragma once
 #include "../Bindable/BindableCommon.h"
 #include "../Bindable/TransformCBufferEx.h"
+#include "../Utilities/BoundingVolume/BoundingBox.h"
 #include "../Imgui/imgui.h"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -24,11 +25,18 @@ struct ShaderSetPath
 	std::string pixelShader;
 };
 
+struct MeshInfo
+{
+	std::vector<std::shared_ptr<Bindable>> bindPtrs;
+	MinMaxVertexPair minMaxVertexPair;
+};
+
 class BaseMesh : public Drawable
 {
 public:
 	virtual void Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const noexcept = 0;
 	virtual DirectX::XMMATRIX GetTransformXM() const noexcept = 0;
+	MinMaxVertexPair boundingBoxData;
 protected:
 	mutable DirectX::XMFLOAT4X4 transform;
 };
@@ -36,9 +44,10 @@ protected:
 class Mesh : public BaseMesh
 {
 public:
-	Mesh(Graphics& gfx, std::vector<std::shared_ptr<Bindable>> bindPtrs);
+	Mesh(Graphics& gfx, const MeshInfo& meshInfo);
 	virtual void Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const noexcept;
 	DirectX::XMMATRIX GetTransformXM() const noexcept;
+	void DrawDebug(Graphics& gfx) const noexcept override;
 };
 
 class InstancedMesh : public BaseMesh
@@ -81,6 +90,7 @@ public:
 	Node* GetSelectedNode() const noexcept;
 
 	virtual void Draw(Graphics& gfx) = 0;
+	virtual void DrawDebug(Graphics& gfx) {};
 	virtual void ShowWindow(const char* windowName) noexcept = 0;
 	virtual ~BaseModel() {}
 
@@ -104,6 +114,7 @@ public:
 	Model(Graphics& gfx, const std::string& fileName, const ShaderSetPath& shaderSet, float scale = 1.0f);
 	DirectX::XMMATRIX GetTransform() const noexcept;
 	virtual void Draw(Graphics& gfx);
+	virtual void DrawDebug(Graphics& gfx) override;
 	virtual void ShowWindow(const char* windowName) noexcept;
 };
 

@@ -24,3 +24,20 @@ UINT IndexBuffer::GetCount() const noexcept
 {
 	return indexCount;
 }
+
+
+//___________ NUllIndexBuffer____________//
+
+NullIndexBuffer::NullIndexBuffer(Graphics& gfx)
+{
+}
+
+void NullIndexBuffer::Bind(Graphics& gfx) noexcept
+{
+	GetContext(gfx)->IASetIndexBuffer(nullptr, DXGI_FORMAT_R32_UINT, 0);
+}
+
+UINT NullIndexBuffer::GetCount() const noexcept
+{
+	return 0;
+}

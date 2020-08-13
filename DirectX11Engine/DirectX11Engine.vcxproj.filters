@@ -376,6 +376,9 @@
     <ClInclude Include="Src\RenderJob\TechniqueProbe.h">
       <Filter>Header Files\Render Job</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Utilities\BoundingVolume\BoundingBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\PixelShader.hlsl">
@@ -414,6 +417,8 @@
     <FxCompile Include="Shaders\TerrainVertexShader.hlsl">
       <Filter>Resources</Filter>
     </FxCompile>
+    <FxCompile Include="Shaders\DebugLineVertexShader.hlsl" />
+    <FxCompile Include="Shaders\DebugLinePixelShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\LightVectorData.hlsli">

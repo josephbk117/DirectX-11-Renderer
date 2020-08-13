@@ -28,6 +28,14 @@ void Model::Draw(Graphics& gfx)
 	pRoot->Draw(gfx, DirectX::XMMatrixIdentity());
 }
 
+void Model::DrawDebug(Graphics& gfx)
+{
+	for (const auto& mesh : meshPtrs)
+	{
+		mesh->DrawDebug(gfx);
+	}
+}
+
 void Model::ShowWindow(const char* windowName) noexcept
 {
 	windowName = windowName ? windowName : "Model";
@@ -186,11 +194,13 @@ void Node::AddChild(std::unique_ptr<Node> pChild) noexcept
 
 //_______________________MESH IMPLEMENTATION_____________________________//
 
-Mesh::Mesh(Graphics& gfx, std::vector<std::shared_ptr<Bindable>> bindPtrs)
+Mesh::Mesh(Graphics& gfx, const MeshInfo& meshInfo)
 {
+	boundingBoxData = meshInfo.minMaxVertexPair;
+
 	AddBind(Topology::Resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 
-	for (auto& pb : bindPtrs)
+	for (auto& pb : meshInfo.bindPtrs)
 	{
 		AddBind(std::move(pb));
 	}
@@ -209,6 +219,31 @@ DirectX::XMMATRIX Mesh::GetTransformXM() const noexcept
 	return DirectX::XMLoadFloat4x4(&transform);
 }
 
+void Mesh::DrawDebug(Graphics& gfx) const noexcept
+{
+	DirectX::XMFLOAT3 top1 = boundingBoxData.GetMax();
+	DirectX::XMFLOAT3 top2 = { boundingBoxData.GetMin().x, top1.y, top1.z };
+	DirectX::XMFLOAT3 top3 = { top1.x, top1.y,  boundingBoxData.GetMin().z };
+	DirectX::XMFLOAT3 top4 = { boundingBoxData.GetMin().x, top1.y, boundingBoxData.GetMin().z };
+
+	DirectX::XMFLOAT3 btm1 = boundingBoxData.GetMin();
+	DirectX::XMFLOAT3 btm2 = { boundingBoxData.GetMax().x, btm1.y, btm1.z };
+	DirectX::XMFLOAT3 btm3 = { btm1.x, btm1.y,  boundingBoxData.GetMax().z };
+	DirectX::XMFLOAT3 btm4 = { boundingBoxData.GetMax().x, btm1.y, boundingBoxData.GetMax().z };
+
+
+	DirectX::XMFLOAT3 midTop = boundingBoxData.GetMid();
+	midTop.y = boundingBoxData.GetMax().y + 0.1f;
+
+	DirectX::XMFLOAT3 upVec = midTop;
+	upVec.y += 0.5f;
+
+	static std::vector<DirectX::XMFLOAT3> linePoints = { midTop, upVec, top1, top2, top2, top4, top4, top3, top3, top1,
+														btm1, btm2, btm2, btm4, btm4, btm3, btm3, btm1,
+														top1, btm4, top2, btm3, top3, btm2, top4, btm1 };
+	gfx.DrawDebugLines(linePoints, GetTransformXM());
+
+}
 //_______________________INSTANCEMESH IMPLEMENTATION_____________________________//
 
 InstancedMesh::InstancedMesh(Graphics& gfx, std::vector<std::shared_ptr<Bindable>> bindPtrs)
@@ -231,7 +266,7 @@ InstancedMesh::InstancedMesh(Graphics& gfx, std::vector<std::shared_ptr<Bindable
 void InstancedMesh::Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const noexcept
 {
 	DirectX::XMStoreFloat4x4(&transform, accumulatedTransform);
-	Drawable::DrawInstanced(gfx, 512*512);
+	Drawable::DrawInstanced(gfx, 512 * 512);
 }
 
 DirectX::XMMATRIX InstancedMesh::GetTransformXM() const noexcept
@@ -257,14 +292,25 @@ std::unique_ptr<T> BaseModel::ParseMesh(Graphics& gfx, const aiMesh& mesh, const
 	std::vector<Vertex> vertices;
 	vertices.reserve(mesh.mNumVertices);
 
+	dx::XMFLOAT3 maxExtent = { -1e10f, -1e10f, -1e10f };
+	dx::XMFLOAT3 minExtent = { 1e10f, 1e10f, 1e10f };
+
 	for (unsigned int i = 0; i < mesh.mNumVertices; ++i)
 	{
-		vertices.push_back({ { mesh.mVertices[i].x * scale, mesh.mVertices[i].y * scale, mesh.mVertices[i].z * scale },
+		dx::XMFLOAT3 pos = { mesh.mVertices[i].x * scale, mesh.mVertices[i].y * scale, mesh.mVertices[i].z * scale };
+
+		dx::XMStoreFloat3(&minExtent, dx::XMVectorMin(dx::XMLoadFloat3(&pos), dx::XMLoadFloat3(&minExtent)));
+		dx::XMStoreFloat3(&maxExtent, dx::XMVectorMax(dx::XMLoadFloat3(&pos), dx::XMLoadFloat3(&maxExtent)));
+
+		vertices.push_back({ pos,
 			{ mesh.mNormals[i].x,  mesh.mNormals[i].y, mesh.mNormals[i].z},
 			{ mesh.mTangents[i].x, mesh.mTangents[i].y, mesh.mTangents[i].z },
 			{ mesh.mBitangents[i].x, mesh.mBitangents[i].y, mesh.mBitangents[i].z },
 			{ mesh.mTextureCoords[0][i].x, mesh.mTextureCoords[0][i].y} });
 	}
+
+	MeshInfo meshInfo;
+	meshInfo.minMaxVertexPair.SetMinMax(minExtent, maxExtent);
 
 	std::vector<unsigned int> indices;
 	indices.reserve(static_cast<size_t>(mesh.mNumFaces) * 3);
@@ -329,7 +375,7 @@ std::unique_ptr<T> BaseModel::ParseMesh(Graphics& gfx, const aiMesh& mesh, const
 		if (material.GetTexture(aiTextureType_DIFFUSE, 0, &textFileName) == aiReturn_SUCCESS)
 		{
 			std::vector<PipelineStageSlotInfo> pipelineStageSlotInfo;
-			pipelineStageSlotInfo.push_back({PipelineStage::PixelShader, 0});
+			pipelineStageSlotInfo.push_back({ PipelineStage::PixelShader, 0 });
 			bindablePtrs.push_back(Texture::Resolve(gfx, IMG_PATH + textFileName.C_Str(), pipelineStageSlotInfo));
 		}
 		else
@@ -395,7 +441,9 @@ std::unique_ptr<T> BaseModel::ParseMesh(Graphics& gfx, const aiMesh& mesh, const
 		}
 	}
 
-	return std::make_unique<T>(gfx, std::move(bindablePtrs));
+	meshInfo.bindPtrs = std::move(bindablePtrs);
+
+	return std::make_unique<T>(gfx, meshInfo);
 }
 
 template <typename T>
@@ -469,8 +517,6 @@ static std::unique_ptr<T> BaseModel::ParseMesh(Graphics& gfx, const aiMesh& mesh
 		{ "TexCoord",0,DXGI_FORMAT_R32G32_FLOAT,0,48u,D3D11_INPUT_PER_VERTEX_DATA,0 },
 	};
 	bindablePtrs.push_back(std::make_shared<InputLayout>(gfx, ied, pvsbc));
-
-
 	bindablePtrs.push_back(Rasterizer::Resolve(gfx, Rasterizer::RasterizerMode{ true, false }));
 	bindablePtrs.push_back(BlendOperation::Resolve(gfx, true));
 	bindablePtrs.push_back(transformTexture);

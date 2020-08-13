@@ -6,6 +6,12 @@
 #include "Imgui/imgui_impl_dx11.h"
 #include "Utilities/EngineUtilities.h"
 #include <dxgi.h>
+#include "Bindable/IndexBuffer.h"
+#include "Bindable/VertexShader.h"
+#include "Bindable/PixelShader.h"
+#include "Bindable/InputLayout.h"
+#include "Bindable/Topology.h"
+#include "Bindable/ConstantBuffers.h"
 
 namespace wrl = Microsoft::WRL;
 namespace dx = DirectX;
@@ -104,6 +110,11 @@ void Graphics::ClearBuffer(float r, float g, float b) noexcept
 	pContext->ClearDepthStencilView(pDSV.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
+void Graphics::Draw(UINT vertexCount) noexcept
+{
+	pContext->Draw(vertexCount, 0);
+}
+
 void Graphics::DrawIndexed(UINT indexCount) noexcept
 {
 	pContext->DrawIndexed(indexCount, 0, 0);
@@ -112,6 +123,38 @@ void Graphics::DrawIndexed(UINT indexCount) noexcept
 void Graphics::DrawIndexedInstanced(UINT indexCount, UINT instanceCount) noexcept
 {
 	pContext->DrawIndexedInstanced(indexCount, instanceCount, 0, 0, 0);
+}
+
+void Graphics::DrawDebugLines(std::vector<DirectX::XMFLOAT3> linePoints, DirectX::XMMATRIX objectTransform) noexcept
+{
+	static NullIndexBuffer nullIndexBuf(*this);
+	nullIndexBuf.Bind(*this);
+	static VertexBuffer vertexBuf(*this, linePoints);
+	vertexBuf.Bind(*this);
+	static VertexShader vertShader(*this, "Shaders\\DebugLineVertexShader.cso");
+	vertShader.Bind(*this);
+	static PixelShader pixShader(*this, "Shaders\\DebugLinePixelShader.cso");
+	pixShader.Bind(*this);
+	static Topology topology(*this, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINELIST);
+	topology.Bind(*this);
+
+	const std::vector< D3D11_INPUT_ELEMENT_DESC >ied =
+	{
+		{ "Position",0,DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 }
+	};
+
+	static auto pvsbc = vertShader.GetBytecode();
+	static InputLayout inputLayout(*this, ied, pvsbc);
+	inputLayout.Bind(*this);
+	
+	static DirectX::XMMATRIX modelViewProj;
+	modelViewProj =	DirectX::XMMatrixTranspose(objectTransform * GetCamera() * GetProjection());
+
+	static VertexConstantBuffer<DirectX::XMMATRIX> vcBuf(*this);
+	vcBuf.Update(*this, modelViewProj);
+	vcBuf.Bind(*this);
+
+	Draw(linePoints.size());
 }
 
 void Graphics::Dispatch(UINT x, UINT y, UINT z) noexcept

@@ -14,20 +14,20 @@ App::App()
 	terrainInfo.baseMeshResolution = 32;
 	terrainInfo.heightScale = 100.0f;
 	terrainInfo.terrainUnitScale = 1000.0f;
-	terrains.push_back(std::make_unique<Terrain>(wnd.Gfx(), "Resources\\Images\\testHeightMap2.png", terrainInfo));
+	//terrains.push_back(std::make_unique<Terrain>(wnd.Gfx(), "Resources\\Images\\testHeightMap2.png", terrainInfo));
 
 	ShaderSetPath instancedGrassShaderSet;
 	instancedGrassShaderSet.vertexShader = "Shaders\\InstancedFoliageVertexShader.cso";
 	instancedGrassShaderSet.pixelShader = "Shaders\\InstancedFoliagePixelShader.cso";
 
-	models.push_back(std::make_unique<InstanceModel>(wnd.Gfx(), "Resources\\Models\\Grass.obj", instancedGrassShaderSet, 1.0f, terrains[0]->GetTerrainTexture()));
+	//models.push_back(std::make_unique<InstanceModel>(wnd.Gfx(), "Resources\\Models\\Grass.obj", instancedGrassShaderSet, 1.0f, terrains[0]->GetTerrainTexture()));
 
 	ShaderSetPath phongShaderSet;
 	phongShaderSet.vertexShader = "Shaders\\VertexShader.cso";
 	phongShaderSet.pixelShader = "Shaders\\PixelShader.cso";
 
 	models.push_back(std::make_unique<Model>(wnd.Gfx(), "Resources\\Models\\sponza.obj", phongShaderSet, 0.05f));
-	drawables.push_back(std::make_unique<PhysicalSkybox>(wnd.Gfx(), "Resources\\Models\\skyboxSphere.fbx"));
+	//drawables.push_back(std::make_unique<PhysicalSkybox>(wnd.Gfx(), "Resources\\Models\\skyboxSphere.fbx"));
 
 	wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 720.0f / 1280.0f, 0.5f, 50000.0f));
 }
@@ -60,7 +60,7 @@ int App::Start()
 
 		if (!wnd.GetIsCursorEnabled())
 		{
-			const float moveInc = 0.13f;
+			const float moveInc = 0.013f;
 
 			if (wnd.kbd.KeyIsPressed('W'))
 			{
@@ -123,6 +123,7 @@ void App::DoFrame()
 		m->Draw(wnd.Gfx());
 	}
 
+	models[0]->DrawDebug(wnd.Gfx());
 
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
@@ -137,9 +138,9 @@ void App::DoFrame()
 
 	models[0]->ShowWindow("DEBUG INFO");
 
-	static_cast<Terrain*>(terrains[0].get())->ShowWindow("TERRAIN INFO");
-	static_cast<PhysicalSkybox*>(drawables[0].get())->ShowWindow("SKY INFO");
-	static_cast<PhysicalSkybox*>(drawables[0].get())->Update(wnd.Gfx());
+	//static_cast<Terrain*>(terrains[0].get())->ShowWindow("TERRAIN INFO");
+	//static_cast<PhysicalSkybox*>(drawables[0].get())->ShowWindow("SKY INFO");
+	//static_cast<PhysicalSkybox*>(drawables[0].get())->Update(wnd.Gfx());
 
 	if (ImGui::Begin("INFO"))
 	{

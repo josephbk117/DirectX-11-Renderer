@@ -34,21 +34,13 @@ UINT Drawable::GetIndexCount() const noexcept
 
 void Drawable::Draw(Graphics& gfx) const noexcept
 {
-	for (auto& b : binds)
-	{
-		b->Bind(gfx);
-	}
-
+	BindAll(gfx);
 	gfx.DrawIndexed(pIndexBuffer->GetCount());
 }
 
 void Drawable::DrawInstanced(Graphics& gfx, UINT instanceCount) const noexcept
 {
-	for (auto& b : binds)
-	{
-		b->Bind(gfx);
-	}
-
+	BindAll(gfx);
 	gfx.DrawIndexedInstanced(pIndexBuffer->GetCount(), instanceCount);
 }
 
@@ -61,4 +53,12 @@ void Drawable::AddBind(std::shared_ptr<Bindable> bind) noexcept
 	}
 
 	binds.push_back(std::move(bind));
+}
+
+void Drawable::BindAll(Graphics& gfx) const noexcept
+{
+	for (auto& b : binds)
+	{
+		b->Bind(gfx);
+	}
 }

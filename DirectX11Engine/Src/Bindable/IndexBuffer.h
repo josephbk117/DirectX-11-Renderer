@@ -13,3 +13,12 @@ private:
 	UINT indexCount = 0;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> pIndexBuffer;
 };
+
+class NullIndexBuffer : public Bindable
+{
+
+public:
+	NullIndexBuffer(Graphics& gfx);
+	void Bind(Graphics& gfx) noexcept override;
+	UINT GetCount() const noexcept;
+};

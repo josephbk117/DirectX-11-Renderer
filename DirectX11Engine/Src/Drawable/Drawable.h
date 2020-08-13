@@ -20,9 +20,11 @@ public:
 	UINT GetIndexCount() const noexcept;
 	virtual void Draw(Graphics& gfx) const noexcept; // Mark for delete
 	virtual void DrawInstanced(Graphics& gfx, UINT instanceCount) const noexcept; // Mark for delete
+	virtual void DrawDebug(Graphics& gfx) const noexcept {};
 	virtual ~Drawable() = default;
 protected:
 	void AddBind(std::shared_ptr<Bindable> bind) noexcept;
+	void BindAll(Graphics& gfx) const noexcept;
 private:
 	const class IndexBuffer* pIndexBuffer = nullptr;
 	std::vector<std::shared_ptr<Bindable>> binds; // Mark for delete
