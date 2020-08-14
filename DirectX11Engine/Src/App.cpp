@@ -105,6 +105,8 @@ App::~App()
 
 void App::DoFrame()
 {
+	static bool displayMeshBounds = false;
+
 	auto dt = timer.Mark();
 	wnd.Gfx().ClearBuffer(0.07f, 0.2f, 0.42f);
 
@@ -123,7 +125,10 @@ void App::DoFrame()
 		m->Draw(wnd.Gfx());
 	}
 
-	models[1]->DrawDebug(wnd.Gfx());
+	if (displayMeshBounds)
+	{
+		models[1]->DrawDebug(wnd.Gfx());
+	}
 
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
@@ -163,6 +168,11 @@ void App::DoFrame()
 
 		auto delta = *wnd.mouse.ReadRawDelta();
 		ImGui::Text("Raw mouse input x : %d y : %d", delta.x, delta.y);
+
+		ImGui::Separator();
+		ImGui::Text("Debug Visualization");
+		ImGui::Checkbox("Display Mesh Bounds", &displayMeshBounds);
+
 	}
 	ImGui::End();
 
