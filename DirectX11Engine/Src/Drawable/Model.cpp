@@ -221,24 +221,22 @@ DirectX::XMMATRIX Mesh::GetTransformXM() const noexcept
 
 void Mesh::DrawDebug(Graphics& gfx) const noexcept
 {
-	DirectX::XMFLOAT3 top1 = boundingBoxData.GetMax();
-	DirectX::XMFLOAT3 top2 = { boundingBoxData.GetMin().x, top1.y, top1.z };
-	DirectX::XMFLOAT3 top3 = { top1.x, top1.y,  boundingBoxData.GetMin().z };
-	DirectX::XMFLOAT3 top4 = { boundingBoxData.GetMin().x, top1.y, boundingBoxData.GetMin().z };
+	const DirectX::XMFLOAT3 top1 = boundingBoxData.GetMax();
+	const DirectX::XMFLOAT3 top2 = { boundingBoxData.GetMin().x, top1.y, top1.z };
+	const DirectX::XMFLOAT3 top3 = { top1.x, top1.y,  boundingBoxData.GetMin().z };
+	const DirectX::XMFLOAT3 top4 = { boundingBoxData.GetMin().x, top1.y, boundingBoxData.GetMin().z };
 
-	DirectX::XMFLOAT3 btm1 = boundingBoxData.GetMin();
-	DirectX::XMFLOAT3 btm2 = { boundingBoxData.GetMax().x, btm1.y, btm1.z };
-	DirectX::XMFLOAT3 btm3 = { btm1.x, btm1.y,  boundingBoxData.GetMax().z };
-	DirectX::XMFLOAT3 btm4 = { boundingBoxData.GetMax().x, btm1.y, boundingBoxData.GetMax().z };
-
+	const DirectX::XMFLOAT3 btm1 = boundingBoxData.GetMin();
+	const DirectX::XMFLOAT3 btm2 = { boundingBoxData.GetMax().x, btm1.y, btm1.z };
+	const DirectX::XMFLOAT3 btm3 = { btm1.x, btm1.y,  boundingBoxData.GetMax().z };
+	const DirectX::XMFLOAT3 btm4 = { boundingBoxData.GetMax().x, btm1.y, boundingBoxData.GetMax().z };
 
 	DirectX::XMFLOAT3 midTop = boundingBoxData.GetMid();
 	midTop.y = boundingBoxData.GetMax().y + 0.1f;
-
 	DirectX::XMFLOAT3 upVec = midTop;
 	upVec.y += 0.5f;
 
-	static std::vector<DirectX::XMFLOAT3> linePoints = { midTop, upVec, top1, top2, top2, top4, top4, top3, top3, top1,
+	std::vector<DirectX::XMFLOAT3> linePoints = { midTop, upVec, top1, top2, top2, top4, top4, top3, top3, top1,
 														btm1, btm2, btm2, btm4, btm4, btm3, btm3, btm1,
 														top1, btm4, top2, btm3, top3, btm2, top4, btm1 };
 	gfx.DrawDebugLines(linePoints, GetTransformXM());

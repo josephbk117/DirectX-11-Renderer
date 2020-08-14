@@ -46,7 +46,7 @@ public:
 	void Draw(UINT vertexCount)noexcept;
 	void DrawIndexed(UINT indexCount)noexcept;
 	void DrawIndexedInstanced(UINT indexCount, UINT instanceCount)noexcept;
-	void DrawDebugLines(std::vector<DirectX::XMFLOAT3> linePoints, DirectX::XMMATRIX objectTransform)noexcept;
+	void DrawDebugLines(const std::vector<DirectX::XMFLOAT3>& linePoints, DirectX::XMMATRIX objectTransform)noexcept;
 	void Dispatch(UINT x, UINT y, UINT z) noexcept;
 	void SetProjection(DirectX::FXMMATRIX proj) noexcept;
 	DirectX::XMMATRIX GetProjection() const noexcept;

@@ -125,12 +125,10 @@ void Graphics::DrawIndexedInstanced(UINT indexCount, UINT instanceCount) noexcep
 	pContext->DrawIndexedInstanced(indexCount, instanceCount, 0, 0, 0);
 }
 
-void Graphics::DrawDebugLines(std::vector<DirectX::XMFLOAT3> linePoints, DirectX::XMMATRIX objectTransform) noexcept
+void Graphics::DrawDebugLines(const std::vector<DirectX::XMFLOAT3>& linePoints, DirectX::XMMATRIX objectTransform) noexcept
 {
 	static NullIndexBuffer nullIndexBuf(*this);
 	nullIndexBuf.Bind(*this);
-	static VertexBuffer vertexBuf(*this, linePoints);
-	vertexBuf.Bind(*this);
 	static VertexShader vertShader(*this, "Shaders\\DebugLineVertexShader.cso");
 	vertShader.Bind(*this);
 	static PixelShader pixShader(*this, "Shaders\\DebugLinePixelShader.cso");
@@ -147,12 +145,14 @@ void Graphics::DrawDebugLines(std::vector<DirectX::XMFLOAT3> linePoints, DirectX
 	static InputLayout inputLayout(*this, ied, pvsbc);
 	inputLayout.Bind(*this);
 	
-	static DirectX::XMMATRIX modelViewProj;
-	modelViewProj =	DirectX::XMMatrixTranspose(objectTransform * GetCamera() * GetProjection());
+	const DirectX::XMMATRIX modelViewProj = DirectX::XMMatrixTranspose(objectTransform * GetCamera() * GetProjection());
 
 	static VertexConstantBuffer<DirectX::XMMATRIX> vcBuf(*this);
 	vcBuf.Update(*this, modelViewProj);
 	vcBuf.Bind(*this);
+
+	VertexBuffer vertexBuf(*this, linePoints);
+	vertexBuf.Bind(*this);
 
 	Draw(linePoints.size());
 }
