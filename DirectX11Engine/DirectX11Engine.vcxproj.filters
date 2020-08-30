@@ -200,6 +200,9 @@
     <ClCompile Include="Src\Drawable\Terrain.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Utilities\BoundingVolume\Octree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\App.h">
@@ -377,6 +380,9 @@
       <Filter>Header Files\Render Job</Filter>
     </ClInclude>
     <ClInclude Include="Src\Utilities\BoundingVolume\BoundingBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Utilities\BoundingVolume\Octree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
