@@ -152,6 +152,10 @@ Terrain::Terrain(Graphics& gfx, const std::string& heightMap, const TerrainInitI
 	AddBind(pDetailInfoBufferHull);
 	AddBind(pDetailInfoBufferDomain);
 
+	ShaderSetPath instancedGrassShaderSet;
+	instancedGrassShaderSet.vertexShader = "Shaders\\InstancedFoliageVertexShader.cso";
+	instancedGrassShaderSet.pixelShader = "Shaders\\InstancedFoliagePixelShader.cso";
+	instancedFoliage = std::make_unique<InstanceModel>(gfx, "Resources\\Models\\Grass.obj", instancedGrassShaderSet, 1.0f, pTerrainTexture);
 }
 
 DirectX::XMMATRIX Terrain::GetTransformXM() const noexcept
@@ -166,6 +170,8 @@ void Terrain::Draw(Graphics& gfx) const noexcept
 	pDetailInfoBufferHull->Update(gfx, detailInfo);
 	pDetailInfoBufferDomain->Update(gfx, detailInfo);
 	Drawable::Draw(gfx);
+
+	instancedFoliage->Draw(gfx);
 
 	if (smoothingRequiresCalc)
 	{

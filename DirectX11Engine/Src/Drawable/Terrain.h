@@ -2,6 +2,7 @@
 #include "Drawable.h"
 #include "../Bindable/BindableCommon.h"
 #include "../Image.h"
+#include "Model.h"
 
 class Terrain : public Drawable
 {
@@ -67,4 +68,5 @@ private:
 	std::shared_ptr<HullConstantBuffer<DetailInfo>> pDetailInfoBufferHull = nullptr;
 	std::shared_ptr<DomainConstantBuffer<DetailInfo>> pDetailInfoBufferDomain = nullptr;
 	std::shared_ptr<Texture> pTerrainTexture = nullptr;
+	std::unique_ptr<InstanceModel> instancedFoliage;
 };

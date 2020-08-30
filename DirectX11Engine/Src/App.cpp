@@ -16,12 +16,6 @@ App::App()
 	terrainInfo.terrainUnitScale = 1000.0f;
 	terrains.push_back(std::make_unique<Terrain>(wnd.Gfx(), "Resources\\Images\\testHeightMap2.png", terrainInfo));
 
-	ShaderSetPath instancedGrassShaderSet;
-	instancedGrassShaderSet.vertexShader = "Shaders\\InstancedFoliageVertexShader.cso";
-	instancedGrassShaderSet.pixelShader = "Shaders\\InstancedFoliagePixelShader.cso";
-
-	models.push_back(std::make_unique<InstanceModel>(wnd.Gfx(), "Resources\\Models\\Grass.obj", instancedGrassShaderSet, 1.0f, terrains[0]->GetTerrainTexture()));
-
 	ShaderSetPath phongShaderSet;
 	phongShaderSet.vertexShader = "Shaders\\VertexShader.cso";
 	phongShaderSet.pixelShader = "Shaders\\PixelShader.cso";
@@ -127,7 +121,7 @@ void App::DoFrame()
 
 	if (displayMeshBounds)
 	{
-		models[1]->DrawDebug(wnd.Gfx());
+		models[0]->DrawDebug(wnd.Gfx());
 	}
 
 	ImGui_ImplDX11_NewFrame();
@@ -141,7 +135,7 @@ void App::DoFrame()
 		ImGui::ShowDemoWindow(&showDemoWindow);
 	}
 
-	models[1]->ShowWindow("DEBUG INFO");
+	models[0]->ShowWindow("DEBUG INFO");
 
 	static_cast<Terrain*>(terrains[0].get())->ShowWindow("TERRAIN INFO");
 	static_cast<PhysicalSkybox*>(drawables[0].get())->ShowWindow("SKY INFO");

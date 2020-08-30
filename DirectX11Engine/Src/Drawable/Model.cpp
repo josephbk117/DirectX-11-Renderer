@@ -1,4 +1,6 @@
 #include "Model.h"
+#include "../Bindable/NullHullShader.h"
+#include "../Bindable/NullDomainShader.h"
 
 Model::Model(Graphics& gfx, const std::string& fileName, const ShaderSetPath& shaderSet, float scale /*= 1.0f*/)
 {
@@ -199,6 +201,8 @@ Mesh::Mesh(Graphics& gfx, const MeshInfo& meshInfo)
 	boundingBoxData = meshInfo.minMaxVertexPair;
 
 	AddBind(Topology::Resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+	AddBind(NullHullShader::Resolve(gfx));
+	AddBind(NullDomainShader::Resolve(gfx));
 
 	for (auto& pb : meshInfo.bindPtrs)
 	{
@@ -247,6 +251,8 @@ void Mesh::DrawDebug(Graphics& gfx) const noexcept
 InstancedMesh::InstancedMesh(Graphics& gfx, std::vector<std::shared_ptr<Bindable>> bindPtrs)
 {
 	AddBind(Topology::Resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+	AddBind(NullHullShader::Resolve(gfx));
+	AddBind(NullDomainShader::Resolve(gfx));
 
 	for (auto& pb : bindPtrs)
 	{
