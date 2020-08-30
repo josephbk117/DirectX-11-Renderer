@@ -144,14 +144,15 @@ void Graphics::DrawDebugLines(const std::vector<DirectX::XMFLOAT3>& linePoints, 
 	static auto pvsbc = vertShader.GetBytecode();
 	static InputLayout inputLayout(*this, ied, pvsbc);
 	inputLayout.Bind(*this);
-	
+
 	const DirectX::XMMATRIX modelViewProj = DirectX::XMMatrixTranspose(objectTransform * GetCamera() * GetProjection());
 
 	static VertexConstantBuffer<DirectX::XMMATRIX> vcBuf(*this);
 	vcBuf.Update(*this, modelViewProj);
 	vcBuf.Bind(*this);
 
-	VertexBuffer vertexBuf(*this, linePoints);
+	static VertexBuffer vertexBuf(*this, linePoints, BufferUsage::Temporary);
+	vertexBuf.UpdateBuffer(*this, linePoints);
 	vertexBuf.Bind(*this);
 
 	Draw(linePoints.size());
