@@ -512,7 +512,7 @@
       <ShaderModel>5.0</ShaderModel>
     </FxCompile>
     <PostBuildEvent>
-      <Command>xcopy /y/d "$(SolutionDir)\DLLs\assimp-vc140-mt.dll" "$(SolutionDir)$(Platform)\Debug"</Command>
+      <Command>xcopy /y/d "$(SolutionDir)DLLs\assimp-vc140-mt.dll" "$(SolutionDir)$(Platform)\Debug"</Command>
       <Message>Copied assimp dll to debug output folder</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -569,7 +569,7 @@
       <ShaderModel>5.0</ShaderModel>
     </FxCompile>
     <PostBuildEvent>
-      <Command>xcopy /y/d "$(SolutionDir)\DLLs\assimp-vc140-mt.dll" "$(SolutionDir)$(Platform)\Release"</Command>
+      <Command>xcopy /y/d "$(SolutionDir)DLLs\assimp-vc140-mt.dll" "$(SolutionDir)$(Platform)\Release"</Command>
       <Message>Copied assimp dll to release output folder</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
