@@ -36,8 +36,6 @@ uint2 dim(Texture2D textureObj)
     return uint2(width, height);
 }
 
-
-
 float4 setAxisAngle(float3 axis, float rad)
 {
     rad = rad * 0.5f;
@@ -95,13 +93,16 @@ VS_Out main(float3 pos : Position, float3 norm : Normal, float3 tan : Tangent, f
 {
     VS_Out vso;
 
-    const uint3 tempIndex = { ((instanceID) % 512), ((instanceID) / 512), 0 };
-    float mulp = 1000.0f / 512.0f;
+    uint2 texDim = dim(terrainTex);
     
-    float4 terrainData = terrainTex.SampleLevel(terrainSplr, float2(tempIndex.x / 512.0f, tempIndex.y / 512.0f), 0);
+    const uint3 tempIndex = { ((instanceID) % texDim.x), ((instanceID) / texDim.x), 0 };
+    const float density = 528.0f;
+    float mulp = 1000.0f / density;
+    
+    float4 terrainData = terrainTex.SampleLevel(terrainSplr, float2(tempIndex.x / density, tempIndex.y / density), 0);
     float3 terrainNormal = normalize(terrainData.rgb);
     
-    float3 disp = float3((instanceID % 512) * mulp, terrainData.a, (instanceID / 512.0f) * mulp);
+    float3 disp = float3((instanceID % texDim.x) * mulp, terrainData.a, (instanceID / (float)texDim.x) * mulp);
     
     pos = rotateVector(rotationTo(terrainNormal, float3(0, 1, 0)), pos).rgb;
     pos += terrainNormal * 1.0f;
