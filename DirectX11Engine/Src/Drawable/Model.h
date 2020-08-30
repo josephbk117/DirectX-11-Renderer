@@ -96,7 +96,7 @@ public:
 
 protected:
 	std::optional<int> selectedIndex;
-	Node* pSelectedNode;
+	Node* pSelectedNode = nullptr;
 	std::unique_ptr<Node> pRoot;
 	std::vector<std::unique_ptr<BaseMesh>> meshPtrs;
 	struct TransformParameters

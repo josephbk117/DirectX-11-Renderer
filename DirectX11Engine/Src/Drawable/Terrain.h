@@ -24,7 +24,7 @@ public:
 			{1.0f, 1.0f, 1.0f, 0.1f}
 		};
 		float texScale[3] = { 0.02f, 0.1f, 0.1f };
-		float padding;
+		float padding = 0.0f;
 		float startHeight[3] = { 0.0f, 0.3f, 0.6f };
 		float heightScale = 0.0f;
 	};
@@ -70,3 +70,4 @@ private:
 	std::shared_ptr<Texture> pTerrainTexture = nullptr;
 	std::unique_ptr<InstanceModel> instancedFoliage;
 };
+

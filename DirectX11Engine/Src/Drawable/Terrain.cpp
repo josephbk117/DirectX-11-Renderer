@@ -52,7 +52,7 @@ Terrain::Terrain(Graphics& gfx, const std::string& heightMap, const TerrainInitI
 		}
 	}
 
-	for (int i = 0; i < initInfo.baseMeshResolution * initInfo.baseMeshResolution - initInfo.baseMeshResolution; i++)
+	for (unsigned int i = 0; i < initInfo.baseMeshResolution * initInfo.baseMeshResolution - initInfo.baseMeshResolution; i++)
 	{
 		if ((i + 1) % initInfo.baseMeshResolution == 0)
 			continue;
@@ -473,7 +473,7 @@ void Terrain::CalculateNormals(std::vector<ImageHDR::ColorFloat>& terraintexture
 
 void Terrain::CalculateTerrainVectors(std::vector<ImageHDR::ColorFloat>& terraintexture, std::vector<Vertex>& vertices) noexcept
 {
-	unsigned int faceCount, i, index;
+	size_t faceCount, i, index;
 	Vertex vertex1, vertex2, vertex3;
 	DirectX::XMVECTOR tangent, binormal;
 
@@ -519,7 +519,6 @@ void Terrain::CalculateTangentBinormal(Vertex vertex1, Vertex vertex2, Vertex ve
 	DirectX::XMVECTOR vector1, vector2;
 	DirectX::XMVECTOR tuVector, tvVector;
 	float den;
-	float length;
 
 	using namespace DirectX;
 
