@@ -5,6 +5,7 @@
 #include "Drawable/PhysicalSkybox.h"
 #include "Drawable/Terrain.h"
 #include "Image.h"
+#include "Utilities/BoundingVolume/QuadTree.h"
 
 App::App()
 	:
@@ -129,6 +130,27 @@ void App::DoFrame()
 	{
 		models[1]->DrawDebug(wnd.Gfx());
 	}
+
+	static QuadTree quadTree({ { -100.0f, -100.0f, 0.0f }, { 100.0f, 100.0f, 0.0f } });
+	static bool cx = false;
+
+	if (!cx)
+	{
+		quadTree.Insert({ -20.0f, 40.0f, 0.0f });
+		quadTree.Insert({ -20.0f, 50.0f, 0.0f });
+		quadTree.Insert({ -20.0f, 60.0f, 0.0f });
+		quadTree.Insert({ -20.0f, 70.0f, 0.0f });
+		quadTree.Insert({ -20.0f, 80.0f, 0.0f });
+		quadTree.Insert({ 20.0f, 20.0f, 0.0f });
+		quadTree.Insert({ -20.0f, -50.0f, 0.0f });
+		quadTree.Insert({ -25.0f, 25.0f, 0.0f });
+		quadTree.Insert({ 10.0f, -50.0f, 0.0f });
+		cx = true;
+	}
+
+	wnd.Gfx().SetDebugDrawColour({ 1,0,0,1 });
+	quadTree.DrawDebug(wnd.Gfx());
+	wnd.Gfx().SetDebugDrawColour({ 1,0,1,1 });
 
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();

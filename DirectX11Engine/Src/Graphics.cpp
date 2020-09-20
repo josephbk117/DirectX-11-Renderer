@@ -133,7 +133,7 @@ void Graphics::DrawDebugLines(const std::vector<DirectX::XMFLOAT3>& linePoints, 
 	vertShader.Bind(*this);
 	static PixelShader pixShader(*this, "Shaders\\DebugLinePixelShader.cso");
 	pixShader.Bind(*this);
-	static Topology topology(*this, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINELIST);
+	static Topology topology(*this, D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 	topology.Bind(*this);
 
 	const std::vector< D3D11_INPUT_ELEMENT_DESC >ied =
@@ -151,11 +151,68 @@ void Graphics::DrawDebugLines(const std::vector<DirectX::XMFLOAT3>& linePoints, 
 	vcBuf.Update(*this, modelViewProj);
 	vcBuf.Bind(*this);
 
-	static VertexBuffer vertexBuf(*this, linePoints, BufferUsage::Temporary);
-	vertexBuf.UpdateBuffer(*this, linePoints);
+	static PixelConstantBuffer<DirectX::XMFLOAT4> pConstBuf(*this);
+	pConstBuf.Update(*this, debugDrawColour);
+	pConstBuf.Bind(*this);
+
+	VertexBuffer vertexBuf(*this, linePoints, BufferUsage::Temporary);
 	vertexBuf.Bind(*this);
 
 	Draw(linePoints.size());
+}
+
+void Graphics::DrawDebugCircle(const DirectX::XMFLOAT3& center, float radius, DirectX::XMMATRIX objectTransform) noexcept
+{
+	static NullIndexBuffer nullIndexBuf(*this);
+	nullIndexBuf.Bind(*this);
+	static VertexShader vertShader(*this, "Shaders\\DebugLineVertexShader.cso");
+	vertShader.Bind(*this);
+	static PixelShader pixShader(*this, "Shaders\\DebugLinePixelShader.cso");
+	pixShader.Bind(*this);
+	static Topology topology(*this, D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
+	topology.Bind(*this);
+
+	const std::vector< D3D11_INPUT_ELEMENT_DESC >ied =
+	{
+		{ "Position",0,DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 }
+	};
+
+	static auto pvsbc = vertShader.GetBytecode();
+	static InputLayout inputLayout(*this, ied, pvsbc);
+	inputLayout.Bind(*this);
+
+	const DirectX::XMMATRIX modelViewProj = DirectX::XMMatrixTranspose(objectTransform * GetCamera() * GetProjection());
+
+	static VertexConstantBuffer<DirectX::XMMATRIX> vcBuf(*this);
+	vcBuf.Update(*this, modelViewProj);
+	vcBuf.Bind(*this);
+
+	static PixelConstantBuffer<DirectX::XMFLOAT4> pConstBuf(*this);
+	pConstBuf.Update(*this, debugDrawColour);
+	pConstBuf.Bind(*this);
+
+	std::vector<DirectX::XMFLOAT3> linePoints;
+	constexpr int LINE_SEGMENTS = 12;
+	for (int i = 0; i < LINE_SEGMENTS; i++)
+	{
+		float x = center.x + sinf((i / static_cast<float>(LINE_SEGMENTS)) * (22.0f / 7.0f) * 2.0f) * radius;
+		float y = center.y + cosf((i / static_cast<float>(LINE_SEGMENTS)) * (22.0f / 7.0f) * 2.0f) * radius;
+		linePoints.push_back({ x,y,0 });
+	}
+
+	float x = center.x + sinf((0.0f / static_cast<float>(LINE_SEGMENTS)) * (22.0f / 7.0f) * 2.0f) * radius;
+	float y = center.y + cosf((0.0f / static_cast<float>(LINE_SEGMENTS)) * (22.0f / 7.0f) * 2.0f) * radius;
+	linePoints.push_back({ x,y,0 });
+
+	VertexBuffer vertexBuf(*this, linePoints, BufferUsage::Temporary);
+	vertexBuf.Bind(*this);
+
+	Draw(linePoints.size());
+}
+
+void Graphics::SetDebugDrawColour(DirectX::XMFLOAT4 colour)
+{
+	debugDrawColour = colour;
 }
 
 void Graphics::Dispatch(UINT x, UINT y, UINT z) noexcept

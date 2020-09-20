@@ -7,7 +7,7 @@
 class Octree
 {
 public:
-	enum class Octants : unsigned char
+	enum class Octant : unsigned char
 	{
 		Q1 = 0x01,
 		Q2 = 0x02,
@@ -22,9 +22,9 @@ public:
 	struct Node
 	{
 		Node* parent = nullptr;
-		Node* children[4];
+		Node* children[4] = { nullptr };
 
-		unsigned char activeOctants;
+		unsigned char activeOctants = 0;
 
 		bool hasChildren = false;
 		bool treeReady = false;
@@ -34,7 +34,19 @@ public:
 		std::queue<MinMaxVertexPair> queue;
 
 		MinMaxVertexPair boundingBox;
+
+		Node();
+		Node(MinMaxVertexPair bounds);
+		Node(MinMaxVertexPair bounds, std::vector<MinMaxVertexPair> objectList);
+
+		void Build();
+		void Update();
+		void ProcessPending();
+		bool Insert(MinMaxVertexPair obj);
+		void Destroy();
 	};
+
+	void CalculateBounds(MinMaxVertexPair* out, Octant octant, MinMaxVertexPair parentRegion);
 
 };
 

@@ -24,6 +24,7 @@ public:
 	void UpdateBuffer(Graphics& gfx, const std::vector<V>& vertices)
 	{
 		D3D11_MAPPED_SUBRESOURCE resource;
+		ZeroMemory(&resource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 		GetContext(gfx)->Map(pVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
 		memcpy(resource.pData, vertices.data(), stride * vertices.size());
 		GetContext(gfx)->Unmap(pVertexBuffer.Get(), 0);

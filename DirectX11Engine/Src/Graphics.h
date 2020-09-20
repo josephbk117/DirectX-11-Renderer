@@ -47,6 +47,8 @@ public:
 	void DrawIndexed(UINT indexCount)noexcept;
 	void DrawIndexedInstanced(UINT indexCount, UINT instanceCount)noexcept;
 	void DrawDebugLines(const std::vector<DirectX::XMFLOAT3>& linePoints, DirectX::XMMATRIX objectTransform)noexcept;
+	void DrawDebugCircle(const DirectX::XMFLOAT3& center, float radius, DirectX::XMMATRIX objectTransform)noexcept;
+	void SetDebugDrawColour(DirectX::XMFLOAT4 colour);
 	void Dispatch(UINT x, UINT y, UINT z) noexcept;
 	void SetProjection(DirectX::FXMMATRIX proj) noexcept;
 	DirectX::XMMATRIX GetProjection() const noexcept;
@@ -65,6 +67,7 @@ private:
 	DirectX::XMMATRIX projection = DirectX::XMMatrixIdentity();
 	DirectX::XMMATRIX view = DirectX::XMMatrixIdentity();
 	DirectX::XMVECTOR camPos;
+	DirectX::XMFLOAT4 debugDrawColour = { 0.0f, 0.0f, 1.0f, 1.0f };
 
 	Microsoft::WRL::ComPtr<ID3D11Device> pDevice = nullptr;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pSawp = nullptr;

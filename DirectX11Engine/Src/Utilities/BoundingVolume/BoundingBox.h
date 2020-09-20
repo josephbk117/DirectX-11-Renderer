@@ -1,5 +1,6 @@
 #pragma once
 #include <DirectXMath.h>
+
 struct MinMaxVertexPair
 {
 	MinMaxVertexPair() = default;
@@ -18,6 +19,24 @@ struct MinMaxVertexPair
 		mid.x = (minVal.x + maxVal.x) * 0.5f;
 		mid.y = (minVal.y + maxVal.y) * 0.5f;
 		mid.z = (minVal.z + maxVal.z) * 0.5f;
+	}
+
+	void SetCenterandExtents(DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 extents)
+	{
+		mid = center;
+
+		min.x = mid.x - extents.x;
+		min.y = mid.y - extents.y;
+		min.z = mid.z - extents.z;
+
+		max.x = mid.x + extents.x;
+		max.y = mid.y + extents.y;
+		max.z = mid.z + extents.z;
+	}
+
+	bool ContainsPoint(DirectX::XMFLOAT3 point) const
+	{
+		return (point.x > min.x && point.x < max.x&& point.y > min.y && point.y < max.y);
 	}
 
 	DirectX::XMFLOAT3 GetMin() const

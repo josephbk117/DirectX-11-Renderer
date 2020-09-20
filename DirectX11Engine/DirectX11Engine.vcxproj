@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Utilities\BoundingVolume\QuadTree.cpp" />
     <ClCompile Include="Src\Utilities\BoundingVolume\Octree.cpp" />
     <ClCompile Include="Src\Bindable\ComputeShader.cpp" />
     <ClCompile Include="Src\Bindable\NullDomainShader.cpp" />
@@ -65,6 +66,7 @@
     <ClCompile Include="Src\Bindable\TextureArray.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Utilities\BoundingVolume\QuadTree.h" />
     <ClInclude Include="Src\Utilities\BoundingVolume\Octree.h" />
     <ClInclude Include="Src\Bindable\BindableCommon.h" />
     <ClInclude Include="Src\Bindable\ComputeShader.h" />
