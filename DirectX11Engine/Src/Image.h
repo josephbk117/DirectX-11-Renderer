@@ -2,6 +2,7 @@
 #include "GlobalDefines.h"
 #include "DirectXTex/DirectXTex.h"
 #include <vector>
+#include <string>
 
 class Image
 {
